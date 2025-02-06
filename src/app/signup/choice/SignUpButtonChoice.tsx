@@ -1,13 +1,16 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 
-interface SignUpButtonChoiceProps {
+interface SignUpChoiceButtonProps {
   title: string;
   description: string;
   bgColor: string;
+  variant?: 'lawyer' | 'layman';
 }
 
-const SignUpButtonChoice: React.FC<SignUpButtonChoiceProps> = ({ title, description, bgColor }) => {
+const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({ title, description, variant = 'lawyer' }) => {
+  const bgColor = variant === 'lawyer' ? 'bg-[#540007]' : 'bg-[#1A1047]';
+
   return (
     <div className={`${bgColor} text-white py-4 px-8 rounded-lg cursor-pointer text-lg w-full flex justify-between items-center transition duration-300 hover:brightness-125`}>
       <div>
@@ -19,4 +22,4 @@ const SignUpButtonChoice: React.FC<SignUpButtonChoiceProps> = ({ title, descript
   );
 };
 
-export default SignUpButtonChoice;
+export default SignUpChoiceButton;

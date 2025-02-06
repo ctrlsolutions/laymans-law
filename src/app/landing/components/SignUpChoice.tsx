@@ -27,11 +27,13 @@ export default function SignUpChoice() {
             title="I am a lawyer" 
             description="I want to help people with regards to legal matters."
             bgColor="bg-[#540007]"
+            variant='lawyer'
           />
           <SignUpButtonChoice 
             title="I am not a lawyer (layman)" 
             description="I would like to seek guidance/advice from lawyers regarding concerns and problems."
             bgColor="bg-[#1A1047]"
+            variant='layman'
           />
         </div>
       </div>
