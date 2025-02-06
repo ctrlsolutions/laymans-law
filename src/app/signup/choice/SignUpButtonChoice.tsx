@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 interface SignUpChoiceButtonProps {
   title: string;
   description: string;
-  bgColor: string;
+  bgColor?: string;
   variant?: 'lawyer' | 'layman';
 }
 
@@ -17,7 +17,7 @@ const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({ title, descript
         <p className="text-2xl font-bold leading-tight">{title}</p>
         <p className="italic mt-2 text-sm leading-tight">{description}</p>
       </div>
-      <ArrowRight size={24} />
+      <ArrowRight size={28} className="flex-shrink-0" />
     </div>
   );
 };
