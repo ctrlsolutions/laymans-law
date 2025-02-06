@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import SignUpButtonChoice from '@/app/signup/choice/SignUpButtonChoice';
 
 export default function SignUpChoice() {
   return (
@@ -22,16 +23,16 @@ export default function SignUpChoice() {
         
         {/* Buttons */}
         <div className="space-y-6 w-full">
-          <div className="bg-[#540007] text-white py-4 px-8 rounded-lg cursor-pointer text-lg w-full text-left">
-            <p className="text-2xl font-bold leading-tight">I am a lawyer</p>
-            <p className="italic mt-2 text-sm leading-tight">I want to help people with regards to legal matters.</p>
-          </div>
-          
-          <div className="bg-[#1A1047] text-white py-4 px-8 rounded-lg cursor-pointer text-lg w-full text-left">
-            <p className="text-2xl font-bold leading-tight">I am not a lawyer (layman)</p>
-            <p className="italic mt-2 text-sm leading-tight">I would like to seek guidance/advice from lawyers <br />
-            regarding concerns and problems.</p>
-          </div>
+          <SignUpButtonChoice 
+            title="I am a lawyer" 
+            description="I want to help people with regards to legal matters."
+            bgColor="bg-[#540007]"
+          />
+          <SignUpButtonChoice 
+            title="I am not a lawyer (layman)" 
+            description="I would like to seek guidance/advice from lawyers regarding concerns and problems."
+            bgColor="bg-[#1A1047]"
+          />
         </div>
       </div>
     </div>
