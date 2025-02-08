@@ -22,7 +22,7 @@ export default function SignUpChoice() {
         </p>
         
         {/* Buttons */}
-        <div className="space-y-6 w-full">
+        <div className="space-y-2 w-full">
           <SignUpButtonChoice 
             title="I am a lawyer" 
             description="I want to help people with regards to legal matters."
