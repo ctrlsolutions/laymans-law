@@ -12,6 +12,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontSize: {
+        xxs: "10px",  // Extra extra small
+        xxxs: "8px",   // Super small text
+      },
     },
   },
   plugins: [],
