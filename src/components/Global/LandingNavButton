@@ -1,0 +1,28 @@
+import React from "react";
+
+const NavButton = ({
+  text = "Placeholder",
+  bgColor = "#540007",
+  textColor = "#ffffff",
+  opacity = 1,
+  borderRadius = "2rem",
+}) => {
+  return (
+    <button
+      style={{
+        backgroundColor: bgColor,
+        color: textColor,
+        opacity: opacity,
+        borderRadius: borderRadius,
+        width: "10rem",
+        height: "3rem",
+        fontSize: "1rem",
+      }}
+      className="rounded-full font-bold transition duration-200 ease-in-out hover:opacity-80"
+    >
+      {text}
+    </button>
+  );
+};
+
+export default NavButton;
