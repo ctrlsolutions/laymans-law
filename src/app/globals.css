@@ -19,3 +19,32 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer components {
+  .no-calendar {
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .no-calendar::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+
+  .no-calendar::-webkit-inner-spin-button {
+    display: none;
+  }
+
+  .no-calendar::placeholder {
+    color: transparent;
+  }
+  
+  .no-calendar::-webkit-datetime-edit {
+    color: transparent;
+  }
+  .no-calendar:focus::-webkit-datetime-edit {
+    color: gray;
+    font-style: italic;
+    font-size: small;
+  }
+}
