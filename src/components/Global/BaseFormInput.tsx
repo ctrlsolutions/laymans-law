@@ -7,6 +7,9 @@ interface BaseFormInputProps {
   color?: string;
   icon?: IconType;
   type: string;
+  options?: string[];
+  value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 export default function BaseFormInput({
@@ -15,6 +18,9 @@ export default function BaseFormInput({
   color,
   icon: Icon,
   type,
+  options,
+  value,
+  onChange,
 }: BaseFormInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dateValue, setDateValue] = useState("");
@@ -22,37 +28,59 @@ export default function BaseFormInput({
 
   const handleIconClick = () => {
     if (inputRef.current && type === "date") {
-      inputRef.current.showPicker(); 
+      inputRef.current.showPicker();
     }
   };
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    const [year, month, day] = value.split("-").map(Number);
+    const [year] = value.split("-").map(Number);
     if (year <= currentYear) {
       setDateValue(value);
+    }
+  };
+
+  const handleContactChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (/^\d*$/.test(event.target.value)) {
+      onChange?.(event);
     }
   };
 
   return (
     <label htmlFor={id} className="flex flex-col space-y-1 mt-4">
       <span className={`text-m font-bold text-${color}`}>{label}</span>
-      <div className="relative">
-        <input
-          ref={inputRef}
-          id={id}
-          type={type}
-          value={dateValue}
-          onChange={handleDateChange}
-          pattern="\d{4}-\d{2}-\d{2}"
-          max={`${currentYear}-12-31`}
-          className={`no-calendar border border-stroke rounded-lg p-2 pl-3 pr-10 h-7 w-full bg-white font-semibold focus:outline-none focus:ring-0 text-${color}`}
-        />
+      <div className="relative text-black">
+        {type === "select" && options ? (
+          <select
+            id={id}
+            value={value}
+            onChange={onChange}
+            className="border border-stroke rounded-lg pl-3 h-7 w-full bg-white font-semibold focus:outline-none"
+          >
+            <option value="" hidden></option> 
+            {options.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            ref={inputRef}
+            id={id}
+            type={type}
+            value={type === "date" ? dateValue : value}
+            onChange={type === "date" ? handleDateChange : type === "tel" ? handleContactChange : onChange}
+            pattern={type === "date" ? "\\d{4}-\d{2}-\d{2}" : undefined}
+            max={type === "date" ? `${currentYear}-12-31` : undefined}
+            className={`no-calendar border border-stroke rounded-lg p-2 pl-3 pr-10 h-7 w-full bg-white font-semibold focus:outline-none focus:ring-0 text-${color}`}
+          />
+        )}
         {Icon && (
           <Icon
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-lg cursor-pointer"
             style={{ color }}
-            onClick={handleIconClick} 
+            onClick={handleIconClick}
           />
         )}
       </div>
