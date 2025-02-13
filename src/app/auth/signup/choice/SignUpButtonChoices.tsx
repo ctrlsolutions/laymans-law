@@ -17,11 +17,10 @@ const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({
   return (
     <div
       className={`${bgColor} text-white py-4 px-6 rounded-lg cursor-pointer text-lg flex justify-between items-center transition duration-300 hover:brightness-125
-      w-[22rem] h-[5rem] 
       sm:w-[18rem] sm:h-[3.5rem] 
-      md:w-[20rem] md:h-[4rem] 
-      lg:w-[22rem] lg:h-[4.5rem] 
-      xl:w-[24rem] xl:h-[5rem]`}
+      md:w-[20rem] md:h-[4.5rem] 
+      lg:w-[22rem] lg:h-[5.5rem] 
+      xl:w-[24rem] xl:h-[6rem]`}
     >
       <div>
         <p className="text-lg sm:text-base md:text-lg font-bold leading-tight">{title}</p>
