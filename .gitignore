@@ -17,6 +17,7 @@ pnpm-lock.yaml
 # next.js
 /.next/
 /out/
+.vscode
 
 # production
 /build
