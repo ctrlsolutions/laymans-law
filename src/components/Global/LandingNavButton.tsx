@@ -17,8 +17,8 @@ interface NavButtonProps {
 
 export default function NavButton({
   text = 'Placeholder',
-  bgColor = '#540007',
-  textColor = '#ffffff',
+  bgColor = red,
+  textColor = stroke,
   opacity = 1,
   borderRadius = '2rem',
   onClick,
