@@ -12,7 +12,7 @@ const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({
   description,
   variant = 'lawyer',
 }) => {
-  const bgColor = variant === 'lawyer' ? 'bg-[#540007]' : 'bg-[#1A1047]';
+  const bgColor = variant === 'lawyer' ? 'bg-red' : 'bg-blue';
 
   return (
     <div
