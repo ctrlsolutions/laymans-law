@@ -5,26 +5,24 @@ import React from 'react';
 
 interface NavButtonProps {
   text?: string;
-  bgColor?: string;
-  textColor?: string;
   opacity?: number;
   borderRadius?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   route?: string;
   replace?: boolean;
+  variant?: 'red' | 'blue' | 'black';
 }
 
 export default function NavButton({
   text = 'Placeholder',
-  bgColor = red,
-  textColor = stroke,
   opacity = 1,
   borderRadius = '2rem',
   onClick,
   type = 'button',
   route,
   replace = false,
+  variant = 'red',
 }: NavButtonProps) {
   const router = useRouter();
 
@@ -32,15 +30,11 @@ export default function NavButton({
     if (type !== 'submit') {
       e.preventDefault();
     }
-    
+
     if (route) {
-      if (replace) {
-        router.replace(route);
-      } else {
-        router.push(route);
-      }
+      replace ? router.replace(route) : router.push(route);
     }
-    
+
     onClick?.();
   };
 
@@ -48,12 +42,7 @@ export default function NavButton({
     <button
       type={type}
       onClick={handleClick}
-      style={{
-        backgroundColor: bgColor,
-        color: textColor,
-        opacity: opacity,
-        borderRadius: borderRadius,
-      }}
+      style={{ opacity, borderRadius }}
       className={`
         font-bold transition duration-200 ease-in-out hover:opacity-80
         w-[15.625rem] h-[1.75rem] text-xs rounded-[0.375rem] px-4
@@ -61,6 +50,7 @@ export default function NavButton({
         md:w-[21.875rem] md:h-[2.5rem] md:text-base md:rounded-[0.5rem] md:px-6
         lg:w-[25rem] lg:h-[2.8125rem] lg:text-lg lg:rounded-[0.5625rem] lg:px-7
         xl:w-[28.1875rem] xl:h-[3.1875rem] xl:text-xl xl:rounded-[0.625rem] xl:px-8
+        bg-${variant} text-white
       `}
     >
       {text}
