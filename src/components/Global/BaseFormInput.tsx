@@ -17,8 +17,8 @@ interface FormInputProps {
     label: string;
     id?: string;
     color: string;
-    type?: string;
-    icon?: string;
+    type: string;
+    icon: string;
     width?: string;
     height?: string;
 }
