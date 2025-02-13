@@ -1,5 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 interface NavButtonProps {
   text?: string;
@@ -8,31 +10,35 @@ interface NavButtonProps {
   opacity?: number;
   borderRadius?: string;
   onClick?: () => void;
-  type?: "button" | "submit" | "reset";
+  type?: 'button' | 'submit' | 'reset';
   route?: string;
   replace?: boolean;
 }
 
 export default function NavButton({
-  text = "Placeholder",
-  bgColor = "#540007",
-  textColor = "#ffffff",
+  text = 'Placeholder',
+  bgColor = '#540007',
+  textColor = '#ffffff',
   opacity = 1,
-  borderRadius = "2rem",
+  borderRadius = '2rem',
   onClick,
-  type = "button",
+  type = 'button',
   route,
   replace = false,
 }: NavButtonProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (type !== "submit") {
+    if (type !== 'submit') {
       e.preventDefault();
     }
     
     if (route) {
-      navigate(route, { replace });
+      if (replace) {
+        router.replace(route);
+      } else {
+        router.push(route);
+      }
     }
     
     onClick?.();
