@@ -1,5 +1,6 @@
 import { IconType } from "react-icons";
 import { useRef, useState } from "react";
+import { Eye, EyeOff } from "react-feather";
 
 interface BaseFormInputProps {
   label: string;
@@ -10,6 +11,15 @@ interface BaseFormInputProps {
   options?: string[];
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+}
+
+interface lawyerInfo {
+  user_id: string;
+  lawyer_acc_id: string;
+  roll_number: string;
+  roll_signed_date: string;
+  verified: boolean;
+  cases_taken: number;
 }
 
 export default function BaseFormInput({
@@ -24,11 +34,26 @@ export default function BaseFormInput({
 }: BaseFormInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dateValue, setDateValue] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRePassword, setShowRePassword] = useState(false); 
   const currentYear = new Date().getFullYear();
 
+  const assignRollInfo = (lawyer: lawyerInfo) => {
+    const rollNumber = `RN-${lawyer.lawyer_acc_id}-${new Date().getTime()}`;
+    const rollSignedDate = new Date().toISOString().split('T')[0];
+  
+    return { rollNumber, rollSignedDate };
+  }
+
   const handleIconClick = () => {
-    if (inputRef.current && type === "date") {
+    if (type === "date" && inputRef.current) {
       inputRef.current.showPicker();
+    }
+    if (id === "password") {
+      setShowPassword(!showPassword);
+    }
+    if (id === "retypePassword") {
+      setShowRePassword(!showRePassword);
     }
   };
 
@@ -46,6 +71,7 @@ export default function BaseFormInput({
     }
   };
 
+
   return (
     <label htmlFor={id} className="flex flex-col space-y-1 mt-4">
       <span className={`text-m font-bold text-${color}`}>{label}</span>
@@ -55,7 +81,7 @@ export default function BaseFormInput({
             id={id}
             value={value}
             onChange={onChange}
-            className="border border-stroke rounded-lg pl-3 h-7 w-full bg-white font-semibold focus:outline-none"
+            className="border border-stroke rounded-lg pl-3 h-10 w-full bg-white font-semibold focus:outline-none"
           >
             <option value="" hidden></option> 
             {options.map((option, index) => (
@@ -68,17 +94,34 @@ export default function BaseFormInput({
           <input
             ref={inputRef}
             id={id}
-            type={type}
+            type={
+              id === "password" && showPassword
+                ? "text"
+                : id === "retypePassword" && showRePassword
+                ? "text"
+                : type
+            }
             value={type === "date" ? dateValue : value}
             onChange={type === "date" ? handleDateChange : type === "tel" ? handleContactChange : onChange}
             pattern={type === "date" ? "\\d{4}-\d{2}-\d{2}" : undefined}
             max={type === "date" ? `${currentYear}-12-31` : undefined}
-            className={`no-calendar border border-stroke rounded-lg p-2 pl-3 pr-10 h-7 w-full bg-white font-semibold focus:outline-none focus:ring-0 text-${color}`}
+            className={`no-calendar border border-stroke rounded-lg p-2 pl-3 pr-10 h-10 w-full bg-white font-semibold focus:outline-none focus:ring-0 text-${color}`}
           />
         )}
+        
+        {(id === "password" || id === "retypePassword") && (
+          <div onClick={handleIconClick} className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer">
+            {((id === "password" && showPassword) || (id === "retypePassword" && showRePassword)) ? (
+              <EyeOff className="text-red-600 fill-red-600" /> 
+            ) : (
+              <Eye className="text-red-600" /> 
+            )}
+          </div>
+        )}
+        
         {Icon && (
-          <Icon
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-lg cursor-pointer"
+          <Icon 
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-lg cursor-pointer text-red-600"
             style={{ color }}
             onClick={handleIconClick}
           />
@@ -86,4 +129,4 @@ export default function BaseFormInput({
       </div>
     </label>
   );
-}
+}	
