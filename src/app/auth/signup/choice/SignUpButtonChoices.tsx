@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { FaArrowRight } from "react-icons/fa";
 
 interface SignUpChoiceButtonProps {
   title: string;
@@ -26,7 +26,7 @@ const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({
         <p className="text-lg sm:text-base md:text-lg font-bold leading-tight">{title}</p>
         <p className="italic mt-1 text-sm sm:text-xs md:text-sm leading-tight">{description}</p>
       </div>
-      <ArrowRight size={24} className="flex-shrink-0" />
+      <FaArrowRight size={24} className="flex-shrink-0" />
     </div>
   );
 };
