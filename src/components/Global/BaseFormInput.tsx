@@ -37,7 +37,6 @@ const BaseFormInput: FC<FormInputProps> = ({
         <label htmlFor={id} className={`flex flex-col space-y-1 mt-4 text-${color}`}>
             <span 
                 className={`
-                    var(--font-poppins)
                     text-sm font-extrabold
                     sm:text-sm
                     md:text-base
@@ -53,7 +52,6 @@ const BaseFormInput: FC<FormInputProps> = ({
                     type={type}
                     className={`
                         text-${color}
-                        font-poppins
                         p-2 w-full text-ellipsis
                         border border-gray-300
                         font-semibold 
