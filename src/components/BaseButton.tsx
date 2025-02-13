@@ -2,7 +2,7 @@ interface ButtonProps {
   text: string;
   color?: string;
   textColor?: string;
-  width?: string; // Expecting values like "30rem"
+  width?: string; 
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
 }
@@ -11,7 +11,7 @@ export default function Button({
   text,
   color = "red",
   textColor = "white",
-  width, // No default, width is optional
+  width, 
   onClick,
   type = "button",
 }: ButtonProps) {
@@ -19,7 +19,7 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      style={width ? { width } : {}} // Apply inline width if provided
+      style={width ? { width } : {}} 
       className={`
         bg-${color} text-${textColor} font-semibold transition hover:opacity-80  
         h-[2rem] text-sm rounded-[0.375rem]  
