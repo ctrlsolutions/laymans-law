@@ -6,19 +6,19 @@ import { FaArrowRight } from "react-icons/fa";
 interface SignUpChoiceButtonProps {
   title: string;
   description: string;
-  variant: 'lawyer' | 'layman';  
+  userType: 'lawyer' | 'layman';  
 }
 
 const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({
   title,
   description,
-  variant, 
+  userType, 
 }) => {
-  const bgColor = variant === 'lawyer' ? 'bg-red' : 'bg-blue';  
+  const bgColor = userType === 'lawyer' ? 'bg-red' : 'bg-blue';  
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/signup?userType=${variant}`);
+    router.push(`/auth/signup/${userType}`);
   };
 
   return (
