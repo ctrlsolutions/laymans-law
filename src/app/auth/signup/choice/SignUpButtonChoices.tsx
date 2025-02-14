@@ -6,7 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 interface SignUpChoiceButtonProps {
   title: string;
   description: string;
-  variant?: 'lawyer' | 'layman';  
+  variant: 'lawyer' | 'layman';  
 }
 
 const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({
