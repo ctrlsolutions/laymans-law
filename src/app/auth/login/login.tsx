@@ -39,8 +39,6 @@ export default function Login() {
     const { id, value } = e.target;
     setForm(prev => ({ ...prev, [id]: value }));
 
-    // Only validate and show error if there's a current error
-    // or if the value is empty (to maintain required field validation)
     if (errors[id] || !value) {
       const error = validateField(id, value);
       setErrors(prev => ({ ...prev, [id]: error }));
@@ -50,7 +48,6 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate all fields
     const newErrors = {
       email: validateField('email', form.email),
       password: validateField('password', form.password)
