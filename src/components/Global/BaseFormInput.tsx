@@ -1,12 +1,11 @@
-//NO POPPINS FONT!!!
-
 import { FC } from "react";
 import { IconType } from "react-icons";
-import { FiMail, FiEye, FiPhone, FiUser, FiHash, FiCalendar } from "react-icons/fi";
+import { FiMail, FiEye, FiEyeOff, FiPhone, FiUser, FiHash, FiCalendar } from "react-icons/fi";
 
 const iconMapping: Record<string, IconType> = {
     "email": FiMail,
     "pass": FiEye,
+    "passhide": FiEyeOff,
     "tel": FiPhone,
     "user": FiUser,
     "hash": FiHash,
@@ -15,26 +14,32 @@ const iconMapping: Record<string, IconType> = {
 
 interface FormInputProps {
     label: string;
-    id?: string;
+    name: string;
     color: string;
     type: string;
     icon: string;
     width?: string;
     height?: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onIconClick?: () => void;
 }
 
 const BaseFormInput: FC<FormInputProps> = ({ 
     label, 
-    id,
+    name,
     type,
     color = "black", 
     icon,
     width = "null",
+    value,
+    onChange,
+    onIconClick,
 }) => {
-    const IconComponent = icon ? iconMapping [icon] : null;
+    const IconComponent = icon ? iconMapping[icon] : null;
 
     return (
-        <label htmlFor={id} className={`flex flex-col space-y-1 mt-4 text-${color}`}>
+        <label htmlFor={name} className={`flex flex-col space-y-1 mt-4 text-${color}`}>
             <span 
                 className={`
                     text-sm font-extrabold
@@ -48,8 +53,11 @@ const BaseFormInput: FC<FormInputProps> = ({
             </span>
             <div className={`relative flex items-center ${width}`}>
                 <input
-                    id={id}
+                    id={name}
+                    name={name}
                     type={type}
+                    value={value}
+                    onChange={onChange}
                     className={`
                         text-${color}
                         p-2 w-full text-ellipsis
@@ -65,7 +73,9 @@ const BaseFormInput: FC<FormInputProps> = ({
                     `}
                 />  
                 {IconComponent && <IconComponent 
-                    className={`absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl ${color}`}
+                    className={`absolute right-5 sm:right-5 top-1/2 transform -translate-y-1/2 ${icon === 'pass' || icon === 'passhide' ? 'text-gray-500' : 'text-gray-900'}`}
+                    onClick={onIconClick}
+                    style={{ cursor: onIconClick ? 'pointer' : 'default', fontSize: '1.3rem' }} // Adjust font size and color
                 />}
             </div>
         </label>
