@@ -15,26 +15,30 @@ const iconMapping: Record<string, IconType> = {
 
 interface FormInputProps {
     label: string;
-    id?: string;
+    name: string;
     color: string;
     type: string;
     icon: string;
     width?: string;
     height?: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const BaseFormInput: FC<FormInputProps> = ({ 
     label, 
-    id,
+    name,
     type,
     color = "black", 
     icon,
     width = "null",
+    value,
+    onChange,
 }) => {
     const IconComponent = icon ? iconMapping [icon] : null;
 
     return (
-        <label htmlFor={id} className={`flex flex-col space-y-1 mt-4 text-${color}`}>
+        <label htmlFor={name} className={`flex flex-col space-y-1 mt-4 text-${color}`}>
             <span 
                 className={`
                     text-sm font-extrabold
@@ -48,8 +52,11 @@ const BaseFormInput: FC<FormInputProps> = ({
             </span>
             <div className={`relative flex items-center ${width}`}>
                 <input
-                    id={id}
+                    id={name}
+                    name={name}
                     type={type}
+                    value={value}
+                    onChange={onChange}
                     className={`
                         text-${color}
                         p-2 w-full text-ellipsis

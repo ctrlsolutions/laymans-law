@@ -4,55 +4,63 @@ import BaseButton from "@/components/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { useState } from "react";
 
+type FormState = {
+  email: string;
+  password: string;
+  [key: string]: string;
+};
+
 export default function Login() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     email: "",
     password: "",
   });
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<FormState>({
     email: "",
     password: "",
   });
 
   const validateField = (name: string, value: string) => {
-    if (name === 'email') {
-      if (!value) {
-        return "Email is required.";
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return "Invalid email format.";
-      }
+    const trimmedValue = value.trim();
+
+    if (name === "email") {
+        if (!trimmedValue) {
+            return "Email is required.";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
+            return "Invalid email format.";
+        }
+        return ""; 
     }
-    
-    if (name === 'password') {
-      if (!value) {
-        return "Password is required.";
-      } else if (value.length < 6) {
-        return "Password must be at least 6 characters.";
-      }
+
+    if (name === "password") {
+        if (!trimmedValue) {
+            return "Password is required.";
+        } else if (trimmedValue.length < 6) {
+            return "Password must be at least 6 characters.";
+        }
+        return "";
     }
-    
+
     return "";
   };
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setForm(prev => ({ ...prev, [id]: value }));
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
 
-    if (errors[id] || !value) {
-      const error = validateField(id, value);
-      setErrors(prev => ({ ...prev, [id]: error }));
-    }
+    const error = validateField(name, value);
+    setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const newErrors = {
       email: validateField('email', form.email),
       password: validateField('password', form.password)
     };
-    
+
     setErrors(newErrors);
 
     if (!newErrors.email && !newErrors.password) {
@@ -69,7 +77,7 @@ export default function Login() {
         <div>
           <BaseFormInput
             label="Email"
-            id="email"
+            name="email"
             type="email"
             value={form.email}
             onChange={handleChange}
@@ -85,7 +93,7 @@ export default function Login() {
         <div>
           <BaseFormInput
             label="Password"
-            id="password"
+            name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
