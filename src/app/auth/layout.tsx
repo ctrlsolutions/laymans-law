@@ -1,4 +1,4 @@
-const Layout = () => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
     return (
       <div
         className="flex h-screen items-center justify-center bg-cover bg-center relative"
@@ -10,7 +10,7 @@ const Layout = () => {
         </div>
   
         {/* Main Content */}
-        <div className="absolute left-[35vw] w-1/2 h-[80vh] bg-white p-8 rounded-xl shadow-lg"></div>
+        <div className="absolute left-[35vw] w-1/2 h-fit max-h-[85vh] bg-white p-8 rounded-xl shadow-lg">{children}</div>
       </div>
     );
   };
