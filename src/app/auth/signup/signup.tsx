@@ -1,3 +1,5 @@
+signup
+
 import { useState, useEffect } from "react";
 import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
@@ -32,7 +34,7 @@ export default function Signup() {
     if (router.query && router.query.userType) {
       setForm(prevForm => ({
         ...prevForm,
-        userType: router.query.userType.toLowerCase() 
+        userType: router.query.userType as string
       }));
     }
   }, [router.query]);
@@ -56,13 +58,9 @@ export default function Signup() {
     }
   };
 
-  const textColor = form.userType === "lawyer" ? "text-red" : "text-blue";
-  const errorTextColor = form.userType === "lawyer" ? "text-red-500" : "text-blue-500";
-  const labelTextColor = form.userType === "lawyer" ? "text-red-700" : "text-blue-700";
-
   return (
-    <div className={`p-4 ${textColor} max-w-md mx-auto`}>
-      <h2 className={`text-3xl font-extrabold text-center ${textColor}-800`}>Create an account</h2>
+    <div className="p-4 text-red max-w-md mx-auto">
+      <h2 className="text-3xl font-extrabold text-center text-red-800">Create an account</h2>
 
       <div className="max-h-[450px] overflow-y-auto p-4">
         <div className="grid grid-cols-2 gap-6 mb-2">
@@ -71,7 +69,7 @@ export default function Signup() {
         </div>
 
         <BaseFormInput label="Email" id="email" type="email" icon={Mail} value={form.email} onChange={handleChange} />
-        {errors.email && <p className={errorTextColor}>{errors.email}</p>}
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
         <BaseFormInput label="Contact No." id="contact" type="tel" icon={Hash} value={form.contact} onChange={handleChange} />
 
@@ -80,7 +78,7 @@ export default function Signup() {
           <BaseFormInput label="Date of Birth" id="dob" type="date" icon={Calendar} value={form.dob} onChange={handleChange} />
         </div>
 
-        {form.userType === "lawyer" && (
+        {form.userType === "Lawyer" && (
           <>
             <BaseFormInput label="Roll Number" id="rollNumber" type="text" value={form.rollNumber} onChange={handleChange} />
             <BaseFormInput label="Roll Signed Date" id="rollSignedDate" type="date" value={form.rollSignedDate} onChange={handleChange} />
@@ -89,22 +87,22 @@ export default function Signup() {
 
         <BaseFormInput label="Password" id="password" type="password" icon={Eye} value={form.password} onChange={handleChange} />
         <BaseFormInput label="Re-Type Password" id="retypePassword" type="password" icon={Eye} value={form.retypePassword} onChange={handleChange} />
-        {errors.passwordMatch && <p className={errorTextColor}>{errors.passwordMatch}</p>}
+        {errors.passwordMatch && <p className="text-red-500 text-sm">{errors.passwordMatch}</p>}
       </div>
 
       <div className="mt-4">
         <div className="flex items-center mb-6">
           <input type="checkbox" id="terms" className="mr-2" checked={agree} onChange={() => setAgree(!agree)} />
-          <label htmlFor="terms" className={`text-sm ${labelTextColor}`}>
+          <label htmlFor="terms" className="text-sm text-red-700">
             I agree with the <span className="font-bold underline">Terms & Conditions</span>
           </label>
         </div>
 
         <div className="flex justify-center mb-4 text-white">
-          <BaseButton text="CREATE ACCOUNT" color={form.userType === "lawyer" ? "red" : "blue"} />
+          <BaseButton text="CREATE ACCOUNT" color="red" />
         </div>
 
-        <p className={`text-center text-sm ${labelTextColor}`}>
+        <p className="text-center text-sm text-red-700">
           Already have an account? <span className="font-bold underline cursor-pointer" onClick={() => router.push("/auth/login")}>Login</span>
         </p>
       </div>
