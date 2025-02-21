@@ -1,5 +1,6 @@
-import SignUpChoice from "@/app/landing/components/SignUpChoice";
+import Image from "next/image";
+import SignUpChoice from "./landing/components/SignUpChoice"; 
 
-export default function Home() {
+export default function Page() {
   return <SignUpChoice />;
 }

@@ -25,14 +25,14 @@ const SignUpChoiceButton: React.FC<SignUpChoiceButtonProps> = ({
     <div
       onClick={handleClick}  
       className={`${bgColor} text-white py-4 px-6 rounded-lg cursor-pointer text-lg flex justify-between items-center transition duration-300 hover:brightness-125
-      sm:w-[18rem] sm:h-[3.5rem] 
-      md:w-[20rem] md:h-[4.5rem] 
-      lg:w-[22rem] lg:h-[5.5rem] 
-      xl:w-[24rem] xl:h-[6rem]`} 
+      w-[18rem] h-[4rem] 
+      sm:w-[21rem] sm:h-[4.5rem]
+      md:w-[25rem] md:h-[4.5rem]
+      `} 
     >
       <div>
-        <p className="text-lg sm:text-base md:text-lg font-bold leading-tight">{title}</p>
-        <p className="italic mt-1 text-sm sm:text-xs md:text-sm leading-tight">{description}</p>
+        <p className="text-[.75rem] sm:text-[1rem] font-bold leading-tight">{title}</p>
+        <p className="italic mt-1 text-[.5rem] sm:text-[.65rem] leading-tight">{description}</p>
       </div>
       <FaArrowRight size={24} className="flex-shrink-0" />
     </div>
