@@ -1,5 +1,5 @@
 import Image from "next/image";
-import SignUpButtonChoices from "@/app/auth/signup/choice/SignUpChoiceButton";
+import SignUpButtonChoices from "@/app/auth/signup/choice/components/SignUpChoiceButton";
 
 export default function Home() {
   return (
