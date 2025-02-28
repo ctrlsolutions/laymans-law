@@ -22,31 +22,32 @@ export default function Login() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validateField = (name: string, value: string) => {
     const trimmedValue = value.trim();
 
     if (name === "email") {
-        if (!trimmedValue) {
-            return "Email is required.";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
-            return "Invalid email format.";
-        }
-        return ""; 
+      if (!trimmedValue) {
+        return "Email is required.";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
+        return "Invalid email format.";
+      }
+      return ""; 
     }
 
     if (name === "password") {
-        if (!trimmedValue) {
-            return "Password is required.";
-        } else if (trimmedValue.length < 6) {
-            return "Password must be at least 6 characters.";
-        }
-        return "";
+      if (!trimmedValue) {
+        return "Password is required.";
+      } else if (trimmedValue.length < 3) {
+        return "Password must be at least 3 characters.";
+      }
+      return "";
     }
 
     return "";
   };
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -55,20 +56,53 @@ export default function Login() {
     setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      console.log("Login form submitted!"); // Add this log
 
-    const newErrors = {
-      email: validateField('email', form.email),
-      password: validateField('password', form.password)
-    };
+      const newErrors = {
+          email: validateField("email", form.email),
+          password: validateField("password", form.password),
+      };
 
-    setErrors(newErrors);
+      setErrors(newErrors);
 
-    if (!newErrors.email && !newErrors.password) {
-      console.log("Form submitted successfully!", form);
-    }
+      if (newErrors.email || newErrors.password) {
+          console.log("Validation failed!", newErrors);
+          return; // Stop execution if there are errors
+      }
+
+      console.log("Validation passed, sending request...");
+
+      try {
+          const response = await fetch("http://127.0.0.1:8000/api/user/login/", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              credentials: "include", // Important for CSRF protection
+              body: JSON.stringify({
+                  email: form.email,
+                  password: form.password,
+              }),
+          });
+
+          const data = await response.json();
+          console.log("Server response:", data);
+
+          if (response.ok) {
+              console.log("Login successful! User ID:", data.user_id);
+          } else {
+              console.log("Login failed:", data);
+          }
+      } catch (error) {
+          console.error("Error during login:", error);
+      }
   };
+
+  
+
 
   const toggleShowPassword = () => {
     setShowPassword(prevShowPassword => !prevShowPassword);
@@ -91,9 +125,7 @@ export default function Login() {
             color="black"
             width="100%"
           />
-          {errors.email && (
-            <p style={{ color: "red" }}>{errors.email}</p>
-          )}
+          {errors.email && <p className="text-red-500">{errors.email}</p>}
         </div>
 
         <div>
@@ -108,9 +140,7 @@ export default function Login() {
             width="100%"
             onIconClick={toggleShowPassword}
           />
-          {errors.password && (
-            <p style={{ color: "red" }}>{errors.password}</p>
-          )}
+          {errors.password && <p className="text-red-500">{errors.password}</p>}
         </div>
 
         <div className="flex items-center justify-between mt-4">
@@ -126,7 +156,14 @@ export default function Login() {
           </a>
         </div>
 
-        <BaseButton text="LOGIN" type="submit" color="black" textColor="white" width="100%" />
+        <BaseButton
+          text={loading ? "Logging in..." : "LOGIN"}
+          type="submit"
+          color="black"
+          textColor="white"
+          width="100%"
+          disabled={loading}
+        />
 
         <p className="text-center text-sm text-gray-600 mt-4">
           Don't have an account?{" "}
