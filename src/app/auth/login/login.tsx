@@ -23,6 +23,8 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loginMessage, setLoginMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
 
   const validateField = (name: string, value: string) => {
     const trimmedValue = value.trim();
@@ -33,7 +35,7 @@ export default function Login() {
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
         return "Invalid email format.";
       }
-      return ""; 
+      return "";
     }
 
     if (name === "password") {
@@ -50,68 +52,77 @@ export default function Login() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
 
     const error = validateField(name, value);
-    setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      
-      console.log("Login form submitted!"); // Add this log
+    e.preventDefault();
+    setLoginMessage(null);
+    setMessageType(null);
 
-      const newErrors = {
-          email: validateField("email", form.email),
-          password: validateField("password", form.password),
-      };
+    const newErrors = {
+      email: validateField("email", form.email),
+      password: validateField("password", form.password),
+    };
 
-      setErrors(newErrors);
+    setErrors(newErrors);
 
-      if (newErrors.email || newErrors.password) {
-          console.log("Validation failed!", newErrors);
-          return; // Stop execution if there are errors
+    if (newErrors.email || newErrors.password) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/user/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setLoginMessage("Login successful! Redirecting...");
+        setMessageType("success");
+
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2000);
+      } else {
+        setLoginMessage(data.message || "Login failed. Please try again.");
+        setMessageType("error");
       }
-
-      console.log("Validation passed, sending request...");
-
-      try {
-          const response = await fetch("http://127.0.0.1:8000/api/user/login/", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              credentials: "include", // Important for CSRF protection
-              body: JSON.stringify({
-                  email: form.email,
-                  password: form.password,
-              }),
-          });
-
-          const data = await response.json();
-          console.log("Server response:", data);
-
-          if (response.ok) {
-              console.log("Login successful! User ID:", data.user_id);
-          } else {
-              console.log("Login failed:", data);
-          }
-      } catch (error) {
-          console.error("Error during login:", error);
-      }
+    } catch (error) {
+      setLoginMessage("An error occurred. Please try again.");
+      setMessageType("error");
+      console.error("Error during login:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  
-
-
   const toggleShowPassword = () => {
-    setShowPassword(prevShowPassword => !prevShowPassword);
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
     <div className="h-fit w-full items-center justify-center max-w-4xl flex flex-col gap-9 my-8 px-6 sm:gap-3">
-      <h1 className="text-3xl sm:text-4xl m:tex-3xl lg:text-5xl font-extrabold text-black w-full">Login</h1>
-      <p className="text-gray-600 w-full sm:text-1xl">Welcome back! Please log in to your account.</p>
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black w-full">
+        Login
+      </h1>
+      <p className="text-gray-600 w-full sm:text-xl">
+        Welcome back! Please log in to your account.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4 w-full">
         <div>
@@ -125,7 +136,7 @@ export default function Login() {
             color="black"
             width="100%"
           />
-          {errors.email && <p className="text-red-500">{errors.email}</p>}
+          {errors.email && <p style={{ color: "gray" }}>{errors.email}</p>}
         </div>
 
         <div>
@@ -140,7 +151,7 @@ export default function Login() {
             width="100%"
             onIconClick={toggleShowPassword}
           />
-          {errors.password && <p className="text-red-500">{errors.password}</p>}
+          {errors.password && <p style={{ color: "gray" }}>{errors.password}</p>}
         </div>
 
         <div className="flex items-center justify-between mt-4">
@@ -165,8 +176,14 @@ export default function Login() {
           disabled={loading}
         />
 
+        {loginMessage && (
+          <p className={`text-center mt-4 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}>
+            {loginMessage}
+          </p>
+        )}
+
         <p className="text-center text-sm text-gray-600 mt-4">
-          Don't have an account?{" "}
+          Don't have an account? {" "}
           <a href="#" className="text-black font-bold hover:underline">
             Sign Up
           </a>
