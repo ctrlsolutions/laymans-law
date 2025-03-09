@@ -30,7 +30,7 @@ export default function Home() {
   return (
     <Layout bgColor="blue">
         <div className="flex items-center justify-center h-full">
-        <SignupForm
+        <SignupForm fontColor="blue"
         />
         </div>
     </Layout>

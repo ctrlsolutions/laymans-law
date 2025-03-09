@@ -3,7 +3,11 @@ import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { useRouter } from "next/navigation";
 
-export default function signupForm() {
+interface props {
+  fontColor?: string; 
+}
+
+export default function signupForm({fontColor = "black"}: props) {
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -56,7 +60,7 @@ export default function signupForm() {
   };
 
   return (
-    <div className="p-4 text-blue max-w-md mx-auto h-full flex flex-col">
+    <div className={`p-4 text-${fontColor} max-w-md mx-auto h-full flex flex-col`}>
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
       <div className="overflow-y-auto p-4 ">
@@ -95,7 +99,7 @@ export default function signupForm() {
           </label>
         </div>
 
-        <button className="bg-red text-white font-semibold py-3 px-6 rounded-lg shadow-md self-center w-[100%] mb-2">
+        <button className={`bg-${fontColor} text-white font-semibold py-3 px-6 rounded-lg shadow-md self-center w-[100%] mb-2`}>
           CREATE ACCOUNT
         </button>
 
