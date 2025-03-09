@@ -177,7 +177,7 @@ export default function Login() {
         />
 
         {loginMessage && (
-          <p className={`text-center mt-4 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}>
+          <p className={`text-center mt-4 ${messageType === "success" ? "text-green-600" : "text-gray-500"}`}>
             {loginMessage}
           </p>
         )}
