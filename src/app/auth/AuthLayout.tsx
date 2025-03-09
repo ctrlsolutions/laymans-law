@@ -11,11 +11,11 @@ const Layout = ({ children, bgColor = "black" }: LayoutProps) => {
       >
         {/* Logo on Side */}
         <div
-          className="absolute left-[15vw] w-1/4 h-[75vh] p-6 flex items-center justify-left rounded-xl bg-black/30 rounded-2xl"
+          className="absolute left-[15vw] w-[22vw] h-[75vh] p-6 flex items-center justify-left bg-black/50 rounded-2xl  overflow-hidden z-10"
         >
           <div 
-            className="absolute inset-0 overflow-hidden"
-            style={{ backgroundColor: bgColor, opacity: 0.2 }}
+            className="absolute inset-0"
+            style={{ backgroundColor: bgColor, opacity: 0.1 }}
           ></div>
           <img src="/logo.png" alt="Logo" className="max-w-full h-auto z-10" />
         </div>
