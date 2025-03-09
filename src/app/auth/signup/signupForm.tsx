@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface props {
   fontColor?: string; 
@@ -9,6 +9,8 @@ interface props {
 
 export default function signupForm({fontColor = "black"}: props) {
   const router = useRouter();
+  const path = usePathname();
+  const lastParam = path.split('/').filter(Boolean).pop();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -78,6 +80,27 @@ export default function signupForm({fontColor = "black"}: props) {
           <BaseFormInput label="Gender" id="gender" type="select" options={["Male", "Female", "Other"]} value={form.gender} onChange={handleChange} />
           <BaseFormInput label="Date of Birth" id="dob" type="date" icon={Calendar} value={form.dob} onChange={handleChange} />
         </div>
+
+        {lastParam === 'lawyer' && (
+        <div className="grid grid-cols-2 gap-6 mb-2">
+          <BaseFormInput
+            label="Roll No."
+            id="roll-no"
+            type="text"
+            icon={Hash}
+            value={form.gender}
+            onChange={handleChange}
+          />
+          <BaseFormInput
+            label="Roll Signed Date"
+            id="roll-signed-date"
+            type="date"
+            icon={Calendar}
+            value={form.dob}
+            onChange={handleChange}
+          />
+        </div>
+      )}
 
         {form.userType === "Lawyer" && (
           <>
