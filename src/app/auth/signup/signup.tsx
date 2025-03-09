@@ -57,10 +57,10 @@ export default function Signup() {
   };
 
   return (
-    <div className="p-4 text-red max-w-md mx-auto">
+    <div className="p-4 text-red max-w-md mx-auto h-full flex flex-col">
       <h2 className="text-3xl font-extrabold text-center text-red-800">Create an account</h2>
 
-      <div className="max-h-[450px] overflow-y-auto p-4">
+      <div className="overflow-y-auto p-4 ">
         <div className="grid grid-cols-2 gap-6 mb-2">
           <BaseFormInput label="First Name" id="firstName" type="text" icon={User} value={form.firstName} onChange={handleChange} />
           <BaseFormInput label="Last Name" id="lastName" type="text" icon={User} value={form.lastName} onChange={handleChange} />
@@ -88,17 +88,17 @@ export default function Signup() {
         {errors.passwordMatch && <p className="text-red-500 text-sm">{errors.passwordMatch}</p>}
       </div>
 
-      <div className="mt-4">
-        <div className="flex items-center mb-6">
+      <div className="flex flex-col justify-between m-4">
+        <div className="flex items-center mb-2">
           <input type="checkbox" id="terms" className="mr-2" checked={agree} onChange={() => setAgree(!agree)} />
           <label htmlFor="terms" className="text-sm text-red-700">
             I agree with the <span className="font-bold underline">Terms & Conditions</span>
           </label>
         </div>
 
-        <div className="flex justify-center mb-4 text-white">
-          <BaseButton text="CREATE ACCOUNT" color="red" />
-        </div>
+        <button className="bg-red text-white font-semibold py-3 px-6 rounded-lg shadow-md self-center w-[100%] mb-2">
+          CREATE ACCOUNT
+        </button>
 
         <p className="text-center text-sm text-red-700">
           Already have an account? <span className="font-bold underline cursor-pointer" onClick={() => router.push("/auth/login")}>Login</span>
