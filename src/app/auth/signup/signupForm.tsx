@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import BaseButton from "@/components/BaseButton";
 import { useRouter } from "next/navigation";
 
-export default function Signup() {
+export default function signupForm() {
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -57,8 +56,8 @@ export default function Signup() {
   };
 
   return (
-    <div className="p-4 text-red max-w-md mx-auto h-full flex flex-col">
-      <h2 className="text-3xl font-extrabold text-center text-red-800">Create an account</h2>
+    <div className="p-4 text-blue max-w-md mx-auto h-full flex flex-col">
+      <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
       <div className="overflow-y-auto p-4 ">
         <div className="grid grid-cols-2 gap-6 mb-2">

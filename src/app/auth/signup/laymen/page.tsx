@@ -3,7 +3,7 @@ import { useState } from "react";
 import SignupForm from "../signupForm";
 import Layout from "@/app/auth/AuthLayout";
 
-export default function Signup() {
+export default function Home() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
