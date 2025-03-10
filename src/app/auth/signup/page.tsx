@@ -19,11 +19,11 @@ const SignUpPage = () => {
         <div className="space-y-4 text-white">
           <button
             onClick={() => router.push("/auth/signup/lawyer")}
-            className="w-full bg-red py-4 rounded-lg flex items-center justify-between px-6"
+            className="w-full bg-indigo-900 py-4 rounded-lg flex items-center justify-between px-6"
           >
             <div className="flex flex-col items-start text-[3vh]">
               <span className="font-semibold">I am a lawyer</span>
-              <p className=" text-[1.5vh] text-sm italic text-left">
+              <p className=" text-[1.5vh] italic text-left">
                 I want to help people with regards to legal matters.
               </p>
             </div>
@@ -33,7 +33,7 @@ const SignUpPage = () => {
 
           <button
             onClick={() => router.push("/auth/signup/layman")}
-            className="w-full bg-indigo-900 py-4 rounded-lg flex items-center justify-between px-6"
+            className="w-full bg-red py-4 rounded-lg flex items-center justify-between px-6"
           >
             <div className="flex flex-col items-start">
               <span className="font-semibold text-[3vh]">I am not a lawyer (layman)</span>

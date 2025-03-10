@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface props {
   fontColor?: string; 
@@ -9,21 +9,20 @@ interface props {
 
 export default function signupForm({fontColor = "black"}: props) {
   const router = useRouter();
-  const path = usePathname();
-  const lastParam = path.split('/').filter(Boolean).pop();
+  const searchParams = useSearchParams();
 
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    contact: "",
+    contact_number: "",
     gender: "",
-    dob: "",
+    birth_date: "",
     password: "",
-    retypePassword: "",
+    confirm_password: "",
     userType: "", 
     rollNumber: "",
-    rollSignedDate: ""
+    rollSignedDate: "",
   });
 
   const [errors, setErrors] = useState({
@@ -34,13 +33,14 @@ export default function signupForm({fontColor = "black"}: props) {
   const [agree, setAgree] = useState(false);
 
   useEffect(() => {
-    if (router.query && router.query.userType) {
+    const userType = searchParams.get("userType");
+    if (userType) {
       setForm(prevForm => ({
         ...prevForm,
-        userType: router.query.userType as string
+        userType: userType.toLowerCase() 
       }));
     }
-  }, [router.query]);
+  }, [searchParams]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [event.target.id]: event.target.value });
@@ -53,7 +53,7 @@ export default function signupForm({fontColor = "black"}: props) {
       });
     }
 
-    if (event.target.id === "retypePassword") {
+    if (event.target.id === "confirm_password") {
       setErrors({
         ...errors,
         passwordMatch: form.password === event.target.value ? "" : "Passwords do not match",
@@ -61,46 +61,53 @@ export default function signupForm({fontColor = "black"}: props) {
     }
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("Submitting form:", form);
+    console.log("Birth date before submit:", form.birth_date);
+
+
+    const filteredForm = Object.fromEntries(
+      Object.entries(form).map(([key, value]) => [key, value === "" ? null : value])
+    );
+
+    const response = await fetch("http://localhost:8000/api/users/signup/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const data = await response.json();
+    if(response.ok) {
+      alert("Signup successful!");
+    } else {
+      alert(data.error || "Signup failed");
+    }
+  }
+
   return (
     <div className={`p-4 text-${fontColor} max-w-md mx-auto h-full flex flex-col`}>
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
       <div className="overflow-y-auto p-4 ">
         <div className="grid grid-cols-2 gap-6 mb-2">
-          <BaseFormInput label="First Name" id="firstName" type="text" icon={User} value={form.firstName} onChange={handleChange} />
-          <BaseFormInput label="Last Name" id="lastName" type="text" icon={User} value={form.lastName} onChange={handleChange} />
+          <BaseFormInput label="First Name" id="first_name" type="text" icon={User} value={form.first_name} onChange={handleChange} />
+          <BaseFormInput label="Last Name" id="last_name" type="text" icon={User} value={form.last_name} onChange={handleChange} />
         </div>
 
         <BaseFormInput label="Email" id="email" type="email" icon={Mail} value={form.email} onChange={handleChange} />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-        <BaseFormInput label="Contact No." id="contact" type="tel" icon={Hash} value={form.contact} onChange={handleChange} />
+        <BaseFormInput label="Contact No." id="contact_number" type="tel" icon={Hash} value={form.contact_number} onChange={handleChange} />
 
         <div className="grid grid-cols-2 gap-6 mb-2">
-          <BaseFormInput label="Gender" id="gender" type="select" options={["Male", "Female", "Other"]} value={form.gender} onChange={handleChange} />
-          <BaseFormInput label="Date of Birth" id="dob" type="date" icon={Calendar} value={form.dob} onChange={handleChange} />
+          <BaseFormInput label="Gender" id="gender" type="select" options={["M", "F", "Other"]} value={form.gender} onChange={handleChange} />
+          <BaseFormInput label="Date of Birth" id="birth_date" type="date" icon={Calendar} value={form.birth_date || ""} onChange={handleChange} />
         </div>
 
-        {lastParam === 'lawyer' && (
-        <div className="grid grid-cols-2 gap-6 mb-2">
-          <BaseFormInput
-            label="Roll No."
-            id="roll-no"
-            type="text"
-            icon={Hash}
-            value={form.gender}
-            onChange={handleChange}
-          />
-          <BaseFormInput
-            label="Roll Signed Date"
-            id="roll-signed-date"
-            type="date"
-            icon={Calendar}
-            value={form.dob}
-            onChange={handleChange}
-          />
-        </div>
-      )}
+        
 
         {form.userType === "Lawyer" && (
           <>
@@ -110,7 +117,7 @@ export default function signupForm({fontColor = "black"}: props) {
         )}
 
         <BaseFormInput label="Password" id="password" type="password" icon={Eye} value={form.password} onChange={handleChange} />
-        <BaseFormInput label="Re-Type Password" id="retypePassword" type="password" icon={Eye} value={form.retypePassword} onChange={handleChange} />
+        <BaseFormInput label="Re-Type Password" id="confirm_password" type="password" icon={Eye} value={form.confirm_password} onChange={handleChange} />
         {errors.passwordMatch && <p className="text-red-500 text-sm">{errors.passwordMatch}</p>}
       </div>
 
@@ -122,9 +129,11 @@ export default function signupForm({fontColor = "black"}: props) {
           </label>
         </div>
 
-        <button className={`bg-${fontColor} text-white font-semibold py-3 px-6 rounded-lg shadow-md self-center w-[100%] mb-2`}>
-          CREATE ACCOUNT
-        </button>
+        <form onSubmit={handleSubmit}>
+          <button className={`bg-${fontColor} text-white font-semibold py-3 px-6 rounded-lg shadow-md self-center w-[100%] mb-2`} type="submit" >
+            CREATE ACCOUNT
+          </button>
+        </form>
 
         <p className="text-center text-sm text-red-700">
           Already have an account? <span className="font-bold underline cursor-pointer" onClick={() => router.push("/auth/login")}>Login</span>

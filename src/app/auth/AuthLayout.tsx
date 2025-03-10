@@ -17,7 +17,7 @@ const Layout = ({ children, bgColor = "black" }: LayoutProps) => {
             className="absolute inset-0"
             style={{ backgroundColor: bgColor, opacity: 0.1 }}
           ></div>
-          <img src="/logo.png" alt="Logo" className="max-w-full h-auto z-10" />
+          <img src="/logo.png" alt="Logo" className="max-w-full h-auto" />
         </div>
   
         {/* Main Content */}

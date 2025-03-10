@@ -28,9 +28,9 @@ export default function Home() {
   };
 
   return (
-    <Layout bgColor="red">
+    <Layout bgColor="blue">
         <div className="flex items-center justify-center h-full">
-        <SignupForm fontColor="red"
+        <SignupForm fontColor="blue"
         />
         </div>
     </Layout>

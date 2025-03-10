@@ -11,6 +11,7 @@ interface BaseFormInputProps {
   options?: string[];
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  className?: string;
 }
 
 interface lawyerInfo {
@@ -62,6 +63,7 @@ export default function BaseFormInput({
     const [year] = value.split("-").map(Number);
     if (year <= currentYear) {
       setDateValue(value);
+      onChange?.(event);
     }
   };
 
@@ -101,8 +103,8 @@ export default function BaseFormInput({
                 ? "text"
                 : type
             }
-            value={type === "date" ? dateValue : value}
-            onChange={type === "date" ? handleDateChange : type === "tel" ? handleContactChange : onChange}
+            value={value}
+            onChange={onChange}
             pattern={type === "date" ? "\\d{4}-\d{2}-\d{2}" : undefined}
             max={type === "date" ? `${currentYear}-12-31` : undefined}
             className={`no-calendar border border-stroke rounded-lg p-2 pl-3 pr-10 h-10 w-full bg-white font-semibold focus:outline-none focus:ring-0 text-${color}`}
