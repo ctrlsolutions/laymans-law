@@ -92,11 +92,14 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem("user", JSON.stringify(data.user)); // Store user details
+        localStorage.setItem("token", data.token); // Store token if applicable
+      
         setLoginMessage("Login successful! Redirecting...");
         setMessageType("success");
-
+      
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          window.location.href = "/auth/details"; // Ensure correct route
         }, 2000);
       } else {
         setLoginMessage(data.message || "Login failed. Please try again.");
