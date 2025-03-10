@@ -1,9 +1,9 @@
-import StatisticsInfo from "@/components/StatisticsInfoComponent"; // Ensure the path is correct
+import LawyerNotificationsComponent from "@/components/LawyerNotificationsComponent";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <StatisticsInfo wikiContributions={25} totalCasesFinished={10} totalActiveCases={3} />
-    </div>
+    <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+      <LawyerNotificationsComponent />
+    </main>
   );
 }
