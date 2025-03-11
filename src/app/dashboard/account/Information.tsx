@@ -16,20 +16,18 @@ const user = {
 
 const UserProfile: React.FC = () => {
   return (
-    <main className='color-gray flex items-center justify-center min-h-screen font-[Poppins] font-black'>
-      <div className="relative bg-white shadow-lg rounded-3xl p-8 max-w-sm text-center">
-        <div className="absolute left-1/2 -top-14 transform -translate-x-1/2">
+
+      <div className="w-[48%] relative bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl p-5 pt-20 mt-20 max-w-sm text-center flex flex-col items-center">
           <img
             src={user.avatar}
             alt={`Profile picture of ${user.name}`}
-            className="w-30 ,h-30 rounded-transparent border-4 border-transparent"
+            className="w-[50%] h-auto rounded-transparent -mt-[50%]"
           />
+        <div className="mt-2">
+          <h1 className="text-l font-bold text-black">{user.name}</h1>
+          <p className="text-l font-bold text-red">{user.role}</p>
         </div>
-        <div className="mt-16">
-          <h1 className="text-xl font-bold text-black">{user.name}</h1>
-          <p className="text-xl font-bold text-red">{user.role}</p>
-        </div>
-        <div className="mt-10 text-left text-sm text-black space-y-3">
+        <div className="mt-2 text-left text-sm text-black space-y-3">
           <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-sm" />{user.address}</p>
           <p className="flex items-center gap-2"><FaEnvelope className="text-sm" /><a href={`mailto:${user.email}`} className="hover:underline">{user.email}</a></p>
           <p className="flex items-center gap-2"><FaPhone className="text-sm" /><a href={`tel:${user.phone}`} className="hover:underline">{user.phone}</a></p>
@@ -38,7 +36,7 @@ const UserProfile: React.FC = () => {
           <p className="ml-7">{user.occupation}</p>
         </div>
       </div>
-    </main>
+
   );
 };
 

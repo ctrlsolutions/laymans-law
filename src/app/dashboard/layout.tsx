@@ -3,14 +3,14 @@
 const Layout = ({ children }: { children: React.ReactNode }) => {
     return (
       <div
-        className="flex h-screen items-center justify-end bg-cover bg-center relative"
+        className="flex h-screen justify-end bg-cover bg-center relative"
         style={{ backgroundImage: `url("/bg_blue.png")` }}
       >
         {/* Sidebar */}
         <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[320px] bg-blue/30 ml-8 p-6 rounded-3xl">
           this is nav
         </div>
-        <div className="justify-self-end h-[95vh] w-[75vw] bg-white p-8 rounded-xl shadow-lg z-10 m-8">{children}</div>
+        <div className="justify-self-end h-[95vh] w-[70vw] bg-white p-10 pt-5 rounded-xl shadow-lg z-10 m-8 flex-col ">{children}</div>
       </div>
     );
   };
