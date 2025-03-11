@@ -27,7 +27,7 @@ const UserProfile: React.FC = () => {
           <h1 className="text-l font-bold text-black truncate">{user.name}</h1>
           <p className="text-l font-bold text-red overflow-hidden">{user.role}</p>
         </div>
-        <div className="mt-2 w-full text-left text-sm text-black space-y-3 truncate">
+        <div className="mt-2 text-left text-sm text-black space-y-3 truncate">
           <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-sm" />{user.address}</p>
           <p className="flex items-center gap-2"><FaEnvelope className="text-sm" /><a href={`mailto:${user.email}`} className="hover:underline">{user.email}</a></p>
           <p className="flex items-center gap-2"><FaPhone className="text-sm" /><a href={`tel:${user.phone}`} className="hover:underline">{user.phone}</a></p>
