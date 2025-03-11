@@ -1,7 +1,7 @@
 import Layout from "./layout";
 
 const App = () => {
-  return <Layout />;
+  return <Layout children={undefined} />;
 };
 
 export default App;
