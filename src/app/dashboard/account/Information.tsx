@@ -17,7 +17,7 @@ const user = {
 const UserProfile: React.FC = () => {
   return (
 
-      <div className="w-[48%] relative bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl p-5 pt-20 mt-20 max-w-sm text-center flex flex-col items-center">
+      <div className="w-[48%] relative bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl p-5 pt-[12%] mt-[10%] text-center flex flex-col items-center">
           <img
             src={user.avatar}
             alt={`Profile picture of ${user.name}`}
