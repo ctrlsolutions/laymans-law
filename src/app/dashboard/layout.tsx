@@ -9,8 +9,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     //handle active tab highlight
     const tabs = ['Home', 'Case', 'Forum', 'Wiki', 'Account', 'Settings'];
     const pathname = usePathname();
-    const formattab = pathname.split("/")[2].charAt(0).toUpperCase() + pathname.split("/")[2].slice(1);
-    const[ activeTab, setTab ] = useState( formattab || "Home"); // get default from url 
+    const formattab = pathname.split("/")[2]?.charAt(0).toUpperCase() + pathname.split("/")[2]?.slice(1) || "Home";
+    const[ activeTab, setTab ] = useState( formattab ); 
     const onNavClick = (tab: string) => {
         setTab(tab);
     }
