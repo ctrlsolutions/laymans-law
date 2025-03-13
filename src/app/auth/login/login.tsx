@@ -28,25 +28,23 @@ export default function Login() {
 
   const validateField = (name: string, value: string) => {
     const trimmedValue = value.trim();
-
+  
     if (name === "email") {
       if (!trimmedValue) {
         return "Email is required.";
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
-        return "Invalid email format.";
+      } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(trimmedValue)) {
+        return "Invalid email.";
       }
       return "";
     }
-
+  
     if (name === "password") {
       if (!trimmedValue) {
         return "Password is required.";
-      } else if (trimmedValue.length < 3) {
-        return "Password must be at least 3 characters.";
       }
       return "";
     }
-
+  
     return "";
   };
 

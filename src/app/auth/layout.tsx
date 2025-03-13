@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       >
         {/* Sidebar */}
         <div className="absolute left-[15vw] w-1/4 h-[75vh] bg-black/50 p-6 flex items-center justify-left rounded-xl">
-          <img src="/logo.png" alt="Logo" className="max-w-full h-auto" />
+          <img src="/logo.png" alt="Logo" className="max-w-full h-auto pl-4" />
         </div>
   
         {/* Main Content */}
