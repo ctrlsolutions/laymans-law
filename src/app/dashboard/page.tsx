@@ -1,7 +1,14 @@
-// this is used by layout.tsx
+"use client";
 
-const Home = () => {
-    return <h1>this is home</h1>
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function DashboardRedirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/dashboard/home"); // Redirect on mount
+  }, [router]);
+
+  return null; // No UI needed since it's an automatic redirect
 }
-
-export default Home;

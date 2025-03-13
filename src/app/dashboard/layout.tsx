@@ -26,7 +26,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col text-center">
             {tabs.map((tab, index) => (
               <Link 
-                href={`/${tab.toLowerCase()}`} 
+                href={`/dashboard/${tab.toLowerCase()}`}
                 key={index}
                 className={`w-full h-[5vh] p-5 hover:underline flex items-center justify-center ml-2 rounded-l-3xl ${activeTab === tab ? 'bg-white text-black' : 'bg-blue/30 text-white'}`}
                 onClick={() => onNavClick(tab)}
