@@ -114,9 +114,8 @@ export default function signupForm({fontColor = "black"}: props) {
             <BaseFormInput
               label="Roll No."
               id="roll-no"
-              type="text"
+              type="number"
               icon={Hash}
-              value={form.gender}
               onChange={handleChange}
             />
             <BaseFormInput
