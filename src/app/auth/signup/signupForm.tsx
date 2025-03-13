@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 interface props {
   fontColor?: string; 
 }
 
 export default function signupForm({fontColor = "black"}: props) {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const path = usePathname();
+  const lastParam = path.split('/').filter(Boolean).pop();
 
   const [form, setForm] = useState({
     first_name: "",
@@ -107,13 +109,25 @@ export default function signupForm({fontColor = "black"}: props) {
           <BaseFormInput label="Date of Birth" id="birth_date" type="date" icon={Calendar} value={form.birth_date || ""} onChange={handleChange} />
         </div>
 
-        
-
-        {form.userType === "Lawyer" && (
-          <>
-            <BaseFormInput label="Roll Number" id="rollNumber" type="text" value={form.rollNumber} onChange={handleChange} />
-            <BaseFormInput label="Roll Signed Date" id="rollSignedDate" type="date" value={form.rollSignedDate} onChange={handleChange} />
-          </>
+        {lastParam === 'lawyer' && (
+          <div className="grid grid-cols-2 gap-6 mb-2">
+            <BaseFormInput
+              label="Roll No."
+              id="roll-no"
+              type="text"
+              icon={Hash}
+              value={form.gender}
+              onChange={handleChange}
+            />
+            <BaseFormInput
+              label="Roll Signed Date"
+              id="roll-signed-date"
+              type="date"
+              icon={Calendar}
+              value={form.dob}
+              onChange={handleChange}
+            />
+          </div>
         )}
 
         <BaseFormInput label="Password" id="password" type="password" icon={Eye} value={form.password} onChange={handleChange} />
