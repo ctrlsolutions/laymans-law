@@ -11,7 +11,7 @@ const Layout = ({ children, bgColor = "black" }: LayoutProps) => {
       >
         {/* Logo on Side */}
         <div
-          className="absolute left-[15vw] w-[22vw] h-[75vh] p-6 flex items-center justify-left bg-black/50 rounded-2xl  overflow-hidden z-10"
+          className="absolute left-[15vw] w-[22vw] h-[75vh] p-6 flex items-center justify-left bg-black/50 rounded-2xl  overflow-hidden"
         >
           <div 
             className="absolute inset-0"
