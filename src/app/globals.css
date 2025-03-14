@@ -14,8 +14,44 @@
   }
 }
 
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: theme("colors.gray.100");
+  }
+  ::-webkit-scrollbar-thumb {
+    background: theme("colors.gray.400");
+    border-radius: theme("borderRadius.md");
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme("colors.gray.600");
+  }
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+input[type="date"]::-moz-calendar-picker-indicator {
+  display: none;
+}
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: hidden;
 }
