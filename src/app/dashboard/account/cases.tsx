@@ -6,7 +6,7 @@ const Cases: React.FC = () => {
 
     return (
         <>
-        <div className="w-[48%] flex-grow p-5 shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl h-[30%] text-black flex flex-col items-center">
+        <div className="w-[48%] flex-grow m-3 p-5 shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl h-[30%] text-black flex flex-col items-center">
             <div className="flex justify-between w-full mb-3">
                 <h1 className=" font-extrabold text-xl">Submitted Cases</h1> 
                 <p className="font-extrabold text-red text-2xl">142</p>
