@@ -10,7 +10,7 @@ const Home = () => {
         <div className="w-full h-full flex flex-col flex-wrap justify-between content-between">
             <UserProfile />
             <Notifications />
-            <Cases className="flex-grow"/>
+            <Cases />
         </div>
         </>
     );
