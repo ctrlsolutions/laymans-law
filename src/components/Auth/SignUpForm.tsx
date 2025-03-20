@@ -1,19 +1,21 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { User, Mail, Hash, Eye, Calendar } from "react-feather";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import BaseFormSelect from "@/components/Global/BaseFormSelect";
+import BaseButton from "@/components/BaseButton";
 
-interface props {
-  fontColor?: string; 
-}
+import { useRouter } from "next/navigation";
+import { SignupData } from "@/interface/AuthTypes";
+import { validateField } from "@/utils/AuthValidators";
+import { signupUser } from "@/services/AuthServices";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import { SignupFormProps } from "@/interface/AuthContainer";
 
-export default function signupForm({fontColor = "black"}: props) {
-  const searchParams = useSearchParams();
+export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const router = useRouter();
-  const path = usePathname();
-  const lastParam = path.split('/').filter(Boolean).pop();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SignupData>({
     first_name: "",
     last_name: "",
     email: "",
@@ -22,136 +24,178 @@ export default function signupForm({fontColor = "black"}: props) {
     birth_date: "",
     password: "",
     confirm_password: "",
-    userType: "", 
-    rollNumber: "",
-    rollSignedDate: "",
+    user_type: "",
+    roll_number: "",
+    roll_signed_date: "",
   });
 
-  const [errors, setErrors] = useState({
-    email: "",
-    passwordMatch: "",
-  });
+  const [errors, setErrors] = useState<Partial<SignupData>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [agree, setAgree] = useState(false);
+  // Handle Input Changes
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { id, value } = event.target;
 
-  useEffect(() => {
-    const userType = searchParams.get("userType");
-    if (userType) {
-      setForm(prevForm => ({
-        ...prevForm,
-        userType: userType.toLowerCase() 
+    setForm((prevForm) => {
+      const updatedForm = { ...prevForm, [id]: value };
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [id]: validateField(id, value, updatedForm),
       }));
-    }
-  }, [searchParams]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [event.target.id]: event.target.value });
-
-    if (event.target.id === "email") {
-      const emailPattern = /^[a-zA-Z0-9._%+-]+@up\.edu\.ph$/;
-      setErrors({
-        ...errors,
-        email: emailPattern.test(event.target.value) ? "" : "Invalid email.",
-      });
-    }
-
-    if (event.target.id === "confirm_password") {
-      setErrors({
-        ...errors,
-        passwordMatch: form.password === event.target.value ? "" : "Passwords do not match",
-      });
-    }
+      return updatedForm;
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log("Submitting form:", form);
-    console.log("Birth date before submit:", form.birth_date);
 
-
-    const filteredForm = Object.fromEntries(
-      Object.entries(form).map(([key, value]) => [key, value === "" ? null : value])
-    );
-
-    const response = await fetch("http://localhost:8000/api/users/signup/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
-
-    const data = await response.json();
-    if(response.ok) {
-      alert("Signup successful!");
-    } else {
-      alert(data.error || "Signup failed");
-    }
-  }
+    const newErrors: Partial<SignupData> = {
+      email: validateField("email", form.email, form),
+      confirm_password: validateField(
+        "confirm_password",
+        form.confirm_password,
+        form
+      ),
+    };
+    console.log("FORM DATA", form);
+    // const response = await signupUser(form);
+    // if (response.success) {
+    //   toast.success(response.message);
+    //   router.push("/auth/login");
+    // } else {
+    //   toast.error(response.message);
+    // }
+  };
 
   return (
-    <div className={`p-4 text-${fontColor} max-w-md mx-auto h-full flex flex-col`}>
+    <div className="p-4 text-black w-full mx-auto h-full flex flex-col">
+      <ToastContainer />
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
-      <div className="overflow-y-auto p-4 ">
+      <form className="overflow-y-auto p-4" onSubmit={handleSubmit}>
+        {/* First & Last Name */}
         <div className="grid grid-cols-2 gap-6 mb-2">
-          <BaseFormInput label="First Name" id="first_name" type="text" icon={User} value={form.first_name} onChange={handleChange} />
-          <BaseFormInput label="Last Name" id="last_name" type="text" icon={User} value={form.last_name} onChange={handleChange} />
+          <BaseFormInput
+            label="First Name"
+            name="first_name"
+            color={userType === "layman" ? "red" : "blue"}
+            type="text"
+            icon="user"
+            value={form.first_name}
+            onChange={handleChange}
+          />
+          <BaseFormInput
+            label="Last Name"
+            name="last_name"
+            type="text"
+            color={userType === "layman" ? "red" : "blue"}
+            icon="user"
+            value={form.last_name}
+            onChange={handleChange}
+          />
         </div>
 
-        <BaseFormInput label="Email" id="email" type="email" icon={Mail} value={form.email} onChange={handleChange} />
+        {/* Email */}
+        <BaseFormInput
+          label="Email"
+          name="email"
+          type="email"
+          color={userType === "layman" ? "red" : "blue"}
+          icon="email"
+          value={form.email}
+          onChange={handleChange}
+        />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-        <BaseFormInput label="Contact No." id="contact_number" type="tel" icon={Hash} value={form.contact_number} onChange={handleChange} />
+        {/* Contact No. */}
+        <BaseFormInput
+          label="Contact No."
+          name="contact_number"
+          color={userType === "layman" ? "red" : "blue"}
+          type="tel"
+          icon="hash"
+          value={form.contact_number}
+          onChange={handleChange}
+        />
 
+        {/* Gender & Birth Date */}
         <div className="grid grid-cols-2 gap-6 mb-2">
-          <BaseFormInput label="Gender" id="gender" type="select" options={["M", "F", "Other"]} value={form.gender} onChange={handleChange} />
-          <BaseFormInput label="Date of Birth" id="birth_date" type="date" icon={Calendar} value={form.birth_date || ""} onChange={handleChange} />
+          <BaseFormSelect
+            label="Select Gender"
+            name="gender"
+            value={form.gender}
+            choices={[
+              { label: "Male", value: "M" },
+              { label: "Female", value: "F" },
+              { label: "Other", value: "O" },
+            ]}
+            onChange={handleChange}
+          />
+
+          <BaseFormInput
+            label="Date of Birth"
+            name="birth_date"
+            type="date"
+            color={userType === "layman" ? "red" : "blue"}
+            icon="calendar"
+            value={form.birth_date}
+            onChange={handleChange}
+          />
         </div>
 
-        {lastParam === 'lawyer' && (
+        {/* Conditional Fields for Lawyers */}
+        {userType === "lawyer" && (
           <div className="grid grid-cols-2 gap-6 mb-2">
             <BaseFormInput
               label="Roll No."
-              id="roll-no"
+              name="roll_number"
               type="number"
-              icon={Hash}
+              color="blue"
+              icon="hash"
+              value={form.roll_number || ""}
               onChange={handleChange}
             />
             <BaseFormInput
               label="Roll Signed Date"
-              id="roll-signed-date"
+              name="roll_signed_date"
               type="date"
-              icon={Calendar}
-              value={form.dob}
+              color="blue"
+              icon="calendar"
+              value={form.roll_signed_date || ""}
               onChange={handleChange}
             />
           </div>
         )}
 
-        <BaseFormInput label="Password" id="password" type="password" icon={Eye} value={form.password} onChange={handleChange} />
-        <BaseFormInput label="Re-Type Password" id="confirm_password" type="password" icon={Eye} value={form.confirm_password} onChange={handleChange} />
-        {errors.passwordMatch && <p className="text-red-500 text-sm">{errors.passwordMatch}</p>}
-      </div>
-
-      <div className="flex flex-col justify-between m-4">
-        <div className="flex items-center mb-2">
-          <input type="checkbox" id="terms" className="mr-2" checked={agree} onChange={() => setAgree(!agree)} />
-          <label htmlFor="terms" className="text-sm text-red-700">
-            I agree with the <span className="font-bold underline">Terms & Conditions</span>
-          </label>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <button className={`bg-${fontColor} text-white font-semibold py-3 px-6 rounded-lg shadow-md self-center w-[100%] mb-2`} type="submit" >
-            CREATE ACCOUNT
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-red-700">
-          Already have an account? <span className="font-bold underline cursor-pointer" onClick={() => router.push("/auth/login")}>Login</span>
-        </p>
-      </div>
+        {/* Password Fields */}
+        <BaseFormInput
+          label="Password"
+          name="password"
+          type="password"
+          color={userType === "layman" ? "red" : "blue"}
+          icon={showPassword ? "passhide" : "pass"}
+          value={form.password}
+          onChange={handleChange}
+        />
+        <BaseFormInput
+          label="Re-Type Password"
+          name="confirm_password"
+          type="password"
+          color={userType === "layman" ? "red" : "blue"}
+          icon={showPassword ? "passhide" : "pass"}
+          value={form.confirm_password}
+          onChange={handleChange}
+        />
+        {errors.confirm_password && (
+          <p className="text-red-500 text-sm">{errors.confirm_password}</p>
+        )}
+        <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+      </form>
     </div>
   );
 }
