@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import BaseButton from "@/components/BaseButton";
+import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { LoginData } from "@/interface/AuthTypes";
 import { validateField } from "@/utils/AuthValidators";
