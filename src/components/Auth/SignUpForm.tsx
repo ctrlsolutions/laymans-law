@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import BaseButton from "@/components/BaseButton";
+import BaseButton from "@/components/Global/BaseButton";
 
 import { useRouter } from "next/navigation";
 import { SignupData } from "@/interface/AuthTypes";
