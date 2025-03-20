@@ -1,25 +1,18 @@
 "use client";
 
 import { FC, useMemo } from "react";
-import { FormInputProps } from "@/interface/ComponentTypes";
+import { FormSelectProps } from "@/interface/ComponentTypes";
 import { iconMapping } from "@/utils/IconMapping";
 
-const BaseFormInput: FC<FormInputProps> = ({
+const BaseFormSelect: FC<FormSelectProps> = ({
   label,
   name,
-  type,
   color = "black",
-  icon,
   width = "w-full",
   value,
+  choices,
   onChange,
-  onIconClick,
 }) => {
-  const IconComponent = useMemo(
-    () => (icon ? iconMapping[icon] : null),
-    [icon]
-  );
-
   return (
     <label
       htmlFor={name}
@@ -30,10 +23,9 @@ const BaseFormInput: FC<FormInputProps> = ({
       </span>
 
       <div className={`relative flex items-center ${width}`}>
-        <input
+        <select
           id={name}
           name={name}
-          type={type}
           value={value}
           onChange={onChange}
           className={`text-${color}
@@ -46,27 +38,17 @@ const BaseFormInput: FC<FormInputProps> = ({
                         sm:h-[2.5rem] sm:text-sm sm:rounded-[0.4375rem] sm:pl-3 sm:pr-10
                         md:h-[3.0rem] md:text-base md:rounded-[0.5rem] md:pl-4 md:pr-12
                         lg:h-[3.5rem] lg:text-lg lg:rounded-[0.5625rem] lg:pl-6 lg:pr-14
-                        xl:h-[4rem] xl:text-xl xl:rounded-[1rem] xl:pl-5 xl:pr-16
-                    `}
-        />
-
-        {IconComponent && (
-          <IconComponent
-            className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
-              icon === "pass" || icon === "passhide"
-                ? "text-gray-500"
-                : "text-gray-900"
-            }`}
-            onClick={onIconClick}
-            style={{
-              cursor: onIconClick ? "pointer" : "default",
-              fontSize: "1.3rem",
-            }}
-          />
-        )}
+                        xl:h-[4rem] xl:text-xl xl:rounded-[1rem] xl:pl-5 xl:pr-16`}
+        >
+          {choices.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
     </label>
   );
 };
 
-export default BaseFormInput;
+export default BaseFormSelect;
