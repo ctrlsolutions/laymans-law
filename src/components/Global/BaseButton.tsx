@@ -1,25 +1,18 @@
-interface ButtonProps {
-  text: string;
-  color?: string;
-  textColor?: string;
-  width?: string; 
-  onClick?: () => void;
-  type?: "button" | "submit" | "reset";
-}
+import { FormButtonProps } from "@/interface/ComponentTypes";
 
 export default function Button({
-  text,
+  children,
   color = "red",
   textColor = "white",
-  width, 
+  width,
   onClick,
   type = "button",
-}: ButtonProps) {
+}: FormButtonProps) {
   return (
     <button
       type={type}
       onClick={onClick}
-      style={width ? { width } : {}} 
+      style={width ? { width } : {}}
       className={`
         bg-${color} text-${textColor} font-semibold transition hover:opacity-80  
         h-[2rem] text-sm rounded-[0.375rem]  
@@ -29,7 +22,7 @@ export default function Button({
         xl:h-[4rem] xl:text-2xl xl:rounded-[0.625rem]  
       `}
     >
-      {text}
+      {children}
     </button>
   );
 }
