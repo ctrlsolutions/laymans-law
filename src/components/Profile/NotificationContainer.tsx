@@ -8,7 +8,7 @@ const NotificationContainer: React.FC<NotificationContainerProps> = ({ children,
     
     console.log("NotificationContainer rendered with count:", count);
     return (
-        <div className="w-full m-3 p-6 shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl bg-white">
+        <div className="w-full p-6 shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl bg-white">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-bold text-black">Notifications</h1>
                 <p className="text-rose-500 text-lg font-semibold">{count}</p>
