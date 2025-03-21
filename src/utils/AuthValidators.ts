@@ -17,8 +17,8 @@ export const validateField = (
   if (name === "password") {
     if (!trimmedValue) {
       return "Password is required.";
-    } else if (trimmedValue.length < 3) {
-      return "Password must be at least 3 characters.";
+    } else if (trimmedValue.length < 8) {
+      return "Password must be at least 8 characters.";
     }
     return "";
   }
