@@ -5,21 +5,23 @@ import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { LoginData } from "@/interface/AuthTypes";
 import { validateField } from "@/utils/AuthValidators";
-import { loginUser } from "@/services/AuthServices";
+import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
+import { UserLogin } from "@/services/AuthServices";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 
 export default function LoginForm() {
   const [form, setForm] = useState<LoginData>({ email: "", password: "" });
-  const [errors, setErrors] = useState<LoginData>({ email: "", password: "" });
+  const [errors, setErrors] = useState<Partial<LoginData>>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(event, setForm, setErrors, validateField);
+  };
 
-    const error = validateField(name, value, form);
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
+  const handleBlur = (
+    event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    handleInputBlur(event, setErrors, validateField, form);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,9 +36,7 @@ export default function LoginForm() {
 
     if (newErrors.email || newErrors.password) return;
 
-    setLoading(true);
-
-    const response = await loginUser(form.email, form.password);
+    const response = await UserLogin(form.email, form.password);
 
     if (response.success) {
       const notify = () =>
@@ -66,6 +66,7 @@ export default function LoginForm() {
           name="email"
           type="email"
           value={form.email}
+          onBlur={handleBlur}
           onChange={handleChange}
           icon="email"
           color="black"
@@ -84,6 +85,7 @@ export default function LoginForm() {
           icon={showPassword ? "passhide" : "pass"}
           color="black"
           width="100%"
+          onBlur={handleBlur}
           onIconClick={() => setShowPassword(!showPassword)}
         />
         {errors.password && <p className="text-gray-500">{errors.password}</p>}
