@@ -1,10 +1,12 @@
 "use client";
 
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import { FormInputProps } from "@/interface/ComponentTypes";
 import { iconMapping } from "@/utils/IconMapping";
 
-const BaseFormInput: FC<FormInputProps> = ({
+const BaseFormInput: FC<
+  FormInputProps & React.InputHTMLAttributes<HTMLInputElement>
+> = ({
   label,
   name,
   type,
@@ -14,11 +16,9 @@ const BaseFormInput: FC<FormInputProps> = ({
   value,
   onChange,
   onIconClick,
+  ...props
 }) => {
-  const IconComponent = useMemo(
-    () => (icon ? iconMapping[icon] : null),
-    [icon]
-  );
+  const IconComponent = icon ? iconMapping[icon] : null;
 
   return (
     <label
@@ -48,6 +48,7 @@ const BaseFormInput: FC<FormInputProps> = ({
                         lg:h-[3.5rem] lg:text-lg lg:rounded-[0.5625rem] lg:pl-6 lg:pr-14
                         xl:h-[4rem] xl:text-xl xl:rounded-[1rem] xl:pl-5 xl:pr-16
                     `}
+          {...props}
         />
 
         {IconComponent && (
