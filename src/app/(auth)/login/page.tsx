@@ -1,6 +1,5 @@
 import AuthContainer from "@/components/Auth/AuthContainer";
 import LoginForm from "@/components/Auth/LogInForm";
-import Login from "./login";
 
 export default function LoginPage() {
   return (
