@@ -2,7 +2,7 @@ import { ApiResponse, SignupData } from "@/interface/AuthTypes";
 
 const API_BASE_URL = "http://127.0.0.1:8000/api/user";
 
-export const loginUser = async (
+export const UserLogin = async (
   email: string,
   password: string
 ): Promise<ApiResponse> => {
@@ -30,7 +30,7 @@ export const loginUser = async (
   }
 };
 
-export const signupUser = async (
+export const UserSignup = async (
   formData: SignupData
 ): Promise<ApiResponse> => {
   try {
