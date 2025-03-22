@@ -23,11 +23,19 @@ export const UserLogin = async (
       };
     }
 
-    if (data.token) {
-      localStorage.setItem("authToken", data.token);
+    if (data.user_id) {
+      localStorage.setItem("user_id", data.user_id);
     }
 
-    return { success: true, message: "Login successful! Redirecting..." };
+    if (data.user_type) {
+      localStorage.setItem("user_type", data.user_type);
+    }
+
+    return {
+      success: true,
+      message: "Login successful! Redirecting...",
+      user_id: data.user_id,
+    };
   } catch (error) {
     console.error("Error during login:", error);
     return { success: false, message: "An error occurred. Please try again." };
