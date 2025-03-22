@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { LoginData } from "@/interface/AuthTypes";
@@ -10,6 +11,7 @@ import { UserLogin } from "@/services/AuthServices";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [form, setForm] = useState<LoginData>({ email: "", password: "" });
   const [errors, setErrors] = useState<Partial<LoginData>>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -52,7 +54,7 @@ export default function LoginForm() {
           transition: Bounce,
         });
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        router.push(`${response.user_id}`);
       }, 2000);
     }
   };
