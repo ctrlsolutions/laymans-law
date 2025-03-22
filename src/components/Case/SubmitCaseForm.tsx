@@ -69,13 +69,14 @@ export default function CaseSubmissionForm() {
             required
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-0 border rounded-md overflow-hidden">
             <BaseFormSelect
             label=" "
             name="legalTopic"
             value={formData.legalTopic}
             choices={legalTopicChoices}
             onChange={handleChange}
+            className="border-r"
             />
 
             <BaseFormSelect
@@ -97,7 +98,16 @@ export default function CaseSubmissionForm() {
             required
         />
 
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Insert File (if necessary):</label>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="mt-1 block w-full border-gray-300 shadow-sm rounded-md"
+          />
+        </div>
+
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <BaseButton
             color="red"
             textColor="gray-700"
