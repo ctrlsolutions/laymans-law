@@ -8,7 +8,8 @@ import BaseButton from "@/components/Global/BaseButton";
 import { useRouter } from "next/navigation";
 import { SignupData } from "@/interface/AuthTypes";
 import { validateField } from "@/utils/AuthValidators";
-import { signupUser } from "@/services/AuthServices";
+import { UserSignup } from "@/services/AuthServices";
+import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
 
@@ -32,22 +33,23 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const [errors, setErrors] = useState<Partial<SignupData>>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  // Handle Input Changes
+  useEffect(() => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      user_type: userType,
+    }));
+  }, [userType]);
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { id, value } = event.target;
+    handleInputChange<SignupData>(event, setForm, setErrors, validateField);
+  };
 
-    setForm((prevForm) => {
-      const updatedForm = { ...prevForm, [id]: value };
-
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [id]: validateField(id, value, updatedForm),
-      }));
-
-      return updatedForm;
-    });
+  const handleBlur = (
+    event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    handleInputBlur(event, setErrors, validateField, form);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -63,13 +65,23 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
       ),
     };
     console.log("FORM DATA", form);
-    // const response = await signupUser(form);
-    // if (response.success) {
-    //   toast.success(response.message);
-    //   router.push("/auth/login");
-    // } else {
-    //   toast.error(response.message);
-    // }
+    const response = await UserSignup(form);
+    if (response.success) {
+      toast("Signup successful. Welcome aboard!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      router.push("/login");
+    } else {
+      toast.error(response.message);
+    }
   };
 
   return (
@@ -88,6 +100,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             icon="user"
             value={form.first_name}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           <BaseFormInput
             label="Last Name"
@@ -97,6 +110,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             icon="user"
             value={form.last_name}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
 
@@ -109,6 +123,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           icon="email"
           value={form.email}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
@@ -121,6 +136,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           icon="hash"
           value={form.contact_number}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
 
         {/* Gender & Birth Date */}
@@ -145,6 +161,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             icon="calendar"
             value={form.birth_date}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
 
@@ -159,6 +176,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
               icon="hash"
               value={form.roll_number || ""}
               onChange={handleChange}
+              onBlur={handleBlur}
             />
             <BaseFormInput
               label="Roll Signed Date"
@@ -168,6 +186,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
               icon="calendar"
               value={form.roll_signed_date || ""}
               onChange={handleChange}
+              onBlur={handleBlur}
             />
           </div>
         )}
@@ -181,6 +200,8 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           icon={showPassword ? "passhide" : "pass"}
           value={form.password}
           onChange={handleChange}
+          onBlur={handleBlur}
+          onIconClick={() => setShowPassword(!showPassword)}
         />
         <BaseFormInput
           label="Re-Type Password"
@@ -190,6 +211,8 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           icon={showPassword ? "passhide" : "pass"}
           value={form.confirm_password}
           onChange={handleChange}
+          onBlur={handleBlur}
+          onIconClick={() => setShowPassword(!showPassword)}
         />
         {errors.confirm_password && (
           <p className="text-red-500 text-sm">{errors.confirm_password}</p>
