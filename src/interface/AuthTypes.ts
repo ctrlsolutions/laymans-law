@@ -21,4 +21,5 @@ export interface SignupData {
 export interface ApiResponse {
   success: boolean;
   message?: string;
+  [key: string]: any;
 }
