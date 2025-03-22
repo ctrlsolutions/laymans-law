@@ -23,6 +23,10 @@ export const UserLogin = async (
       };
     }
 
+    if (data.token) {
+      localStorage.setItem("authToken", data.token);
+    }
+
     return { success: true, message: "Login successful! Redirecting..." };
   } catch (error) {
     console.error("Error during login:", error);
