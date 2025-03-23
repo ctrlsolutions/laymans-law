@@ -1,45 +1,29 @@
 "use client";
 
 import React from "react";
-import ActiveCasesComponent from "./ActiveCasesComponent";
+import { BsFillBriefcaseFill } from "react-icons/bs";
 
 interface ActiveCasesContainerProps {
+    children: React.ReactNode;
     count: number;
 }
 
-const ActiveCasesContainer: React.FC<ActiveCasesContainerProps> = ({ count }) => {
+const ActiveCasesContainer: React.FC<ActiveCasesContainerProps> = ({ children, count }) => {
     return (
-        <div className="flex flex-col gap-4">
+        <div className="w-full h-full flex flex-col rounded-3xl p-[.25rem]">
             
-            {/* Header with Image and Text */}
+            {/* Header with Icon and Text */}
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <img 
-                        src="/ActiveCasesLogo.png" 
-                        alt="Active Cases Logo" 
-                        className="w-8 h-8 pb-[.1rem]"
-                    />
-                    <h1 className="text-xl font-bold">Active Cases</h1>
+                <div className="flex items-center gap-3 pl-[.75rem] pb-[1rem] pt-[1rem] pr-[.5rem]">
+                    <BsFillBriefcaseFill className="text-purple-950 w-7 h-7" />
+                    <h1 className="text-2xl font-bold">Active Cases</h1>
                 </div>
-                <p className="text-purple-950 font-bold text-2xl">{count}</p>
+                <p className="text-purple-950 font-bold text-4xl pr-[1rem]">{count}</p>
             </div>
 
-            {/* Active Cases Components */}
-            <div className="flex flex-col gap-4 mt-2">
-                <ActiveCasesComponent 
-                    title="Petition for Dissolution of Marriage"
-                    username="@chimichangas"
-                    time="30 minutes ago"
-                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non."
-                    caseType="Divorce Cases"
-                />
-                <ActiveCasesComponent 
-                    title="Petition for Dissolution of Marriage"
-                    username="@chimichangas"
-                    time="30 minutes ago"
-                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non."
-                    caseType="Divorce Cases"
-                />
+            {/* Cases Section */}
+            <div className="flex flex-col gap-0rem mt-1">
+                {children}
             </div>
         </div>
     );
