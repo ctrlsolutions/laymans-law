@@ -17,12 +17,12 @@ interface UserProfileProps {
 };
 
 const UserProfile: React.FC<{ userData: UserProfileProps}> = ({ userData }) => {
-  const defaultAvatar = "https://via.placeholder.com/150"; 
+  const defaultAvatar = "/blank-profile.svg"; 
 
   return (
 
       <div className="w-full relative bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl p-8 pt-[12%] mt-[16%] text-center flex flex-col items-center">
-        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-900">
+        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white">
           <img
             src={userData.avatar || defaultAvatar}
             alt={`Profile picture of ${userData.first_name}`}
