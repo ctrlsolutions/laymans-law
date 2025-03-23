@@ -1,9 +1,10 @@
 "use client";
 
 interface CaseItemProps {
-    caseItem?: {    // Made `caseItem` optional
+    caseItem?: {
         id: number;
         caseTitle: string;
+        username?: string;
         timeAgo: string;
         description: string;
         category: string;
@@ -13,21 +14,31 @@ interface CaseItemProps {
 
 const ActiveCasesComponent: React.FC<CaseItemProps> = ({ caseItem }) => {
     if (!caseItem) {
-        console.warn("Missing caseItem prop");  // Debugging hint
+        console.warn("Missing caseItem prop");  
     }
 
     return (
-        <div className="h-[10vh] bg-[#FBFBFB] shadow-md rounded-3xl m-2 p-6 flex items-center justify-between">
+        <div className="h-[20vh] bg-[#FBFBFB] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.2)] bg-white rounded-3xl m-[.5rem] p-4 flex items-center justify-between">
             
             {/* Case Details */}
-            <div className="flex-1 ml-4">
-                <h2 className="font-bold">{caseItem?.caseTitle || "N/A"}</h2>
-                <p className="text-sm">{caseItem?.timeAgo || "N/A"}</p>
-                <p className="text-sm">{caseItem?.description || "No description available"}</p>
-            </div>
+            <div className="flex-1 ml-[.750rem] mr-[1.9rem]">
 
-            {/* Category */}
-            <p className="text-sm text-gray-500">{caseItem?.category || "Uncategorized"}</p>
+
+                {/* Case Title with Violet Color */}
+                <h2 className="text-lg font-extrabold text-purple-950">{caseItem?.caseTitle || "No Title"}</h2>
+                <div className="text-sm text-gray-500">
+                    {caseItem?.username || "@Anonymous"} • {caseItem?.timeAgo || "N/A"} 
+                    <span className="w-3 h-3 rounded-full bg-green-500"></span>{caseItem?.category || "Uncategorized"}
+                </div>
+                <p className="text-sm pt-[.25rem] pl-[.25rem]">{caseItem?.description || "No description available"}</p>
+                
+                {/* Category */}
+                <div className="absolute -top-3 right-4 flex items-center gap-2 bg-white border border-gray-300 px-3 py-1 text-sm rounded-lg shadow-md">
+                    <span className="w-3 h-3 rounded-full bg-green-500"></span>
+                    {caseItem?.category || "Uncategorized"}
+                </div>
+
+            </div>
         </div>
     );
 };
