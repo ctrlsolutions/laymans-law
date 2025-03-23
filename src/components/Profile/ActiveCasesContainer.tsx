@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
+import ActiveCasesComponent from "./ActiveCasesComponent";
 
 interface ActiveCasesContainerProps {
-    children: React.ReactNode;
     count: number;
 }
 
-const ActiveCasesContainer: React.FC<ActiveCasesContainerProps> = ({ children, count }) => {
+const ActiveCasesContainer: React.FC<ActiveCasesContainerProps> = ({ count }) => {
     return (
-        <div className="w-full h-full flex flex-col bg-white shadow-[0px_10px_15px_0px_rgba(0,0,0,0.25)] rounded-3xl p-6">
+        <div className="flex flex-col gap-4">
             
             {/* Header with Image and Text */}
             <div className="flex justify-between items-center">
@@ -24,9 +24,22 @@ const ActiveCasesContainer: React.FC<ActiveCasesContainerProps> = ({ children, c
                 <p className="text-purple-950 font-bold text-2xl">{count}</p>
             </div>
 
-            {/* Cases Section */}
-            <div className="flex flex-col gap-0rem mt-1">
-                {children}
+            {/* Active Cases Components */}
+            <div className="flex flex-col gap-4 mt-2">
+                <ActiveCasesComponent 
+                    title="Petition for Dissolution of Marriage"
+                    username="@chimichangas"
+                    time="30 minutes ago"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non."
+                    caseType="Divorce Cases"
+                />
+                <ActiveCasesComponent 
+                    title="Petition for Dissolution of Marriage"
+                    username="@chimichangas"
+                    time="30 minutes ago"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non."
+                    caseType="Divorce Cases"
+                />
             </div>
         </div>
     );
