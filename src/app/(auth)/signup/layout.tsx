@@ -16,9 +16,9 @@ export default function SignUpLayout({
       {!userType ? (
         <SignUpPage onChoose={setUserType} />
       ) : userType === "layman" ? (
-        layman
+        <>{layman}</>
       ) : (
-        lawyer
+        <>{lawyer}</>
       )}
     </>
   );
