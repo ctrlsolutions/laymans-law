@@ -1,14 +1,23 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-export default function AuthenticatedLayout({
+export default function AccountLayout({
   lawyer,
   layman,
 }: {
   lawyer: React.ReactNode;
   layman: React.ReactNode;
 }) {
-  const user_type = localStorage.getItem("user_type");
+  const [userType, setUserType] = useState<string | null>(null);
 
-  return <>{user_type === "layman" ? layman : lawyer}</>;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUserType = localStorage.getItem("user_type");
+      setUserType(storedUserType);
+    }
+  }, []);
+
+  if (!userType) return null;
+
+  return <>{userType === "layman" ? layman : lawyer}</>;
 }
