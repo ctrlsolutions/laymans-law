@@ -1,11 +1,5 @@
+import { redirect } from "next/navigation";
 
-const Page: React.FC = () => {
-  return (
-    <div>
-      <h1>Home</h1>
-      <p>This is the home page</p>
-    </div>
-  );
+export default function SettingsHome() {
+  redirect("/dashboard/settings/profile");
 }
-
-export default Page;
