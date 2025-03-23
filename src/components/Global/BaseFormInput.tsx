@@ -12,7 +12,7 @@ const BaseFormInput: FC<
   type,
   color = "black",
   icon,
-  width = "w-full",
+  width,
   value,
   onChange,
   onIconClick,
