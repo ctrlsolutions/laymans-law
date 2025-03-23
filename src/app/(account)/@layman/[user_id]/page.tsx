@@ -1,12 +1,4 @@
-export default function LaymanHome() {
-  return (
-    <>
-      <div className="w-full h-full flex flex-col flex-wrap justify-between content-between">
-        {/* <UserProfile />
-            <Notifications />
-            <Cases /> */}
-        LAYMAN
-      </div>
-    </>
-  );
-}
+"use client";
+export default function LaymanUserPage({ children }: { children: React.ReactNode }) {
+    return <>{children}</>;
+  }
