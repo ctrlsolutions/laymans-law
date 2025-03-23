@@ -1,25 +1,23 @@
 "use client";
-import React, { useState } from "react";
-import LoginPage from "../(auth)/login/page";
+import React, { useState, useEffect } from "react";
 
-export default function ProfileLayout({
-    lawyer,
-    layman,
+export default function AccountLayout({
+  lawyer,
+  layman,
 }: {
     lawyer: React.ReactNode;
     layman: React.ReactNode;
 }) {
-  const [userType, setUserType] = useState<"lawyer" | "layman" | null>(null);
+  const [userType, setUserType] = useState<string | null>(null);
 
-  return (
-    <>
-      {!userType ? (
-        <LoginPage onChoose={setUserType} />
-      ) : userType === "layman" ? (
-        layman
-      ) : (
-        lawyer
-      )}
-    </>
-  );
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUserType = localStorage.getItem("user_type");
+      setUserType(storedUserType);
+    }
+  }, []);
+
+  if (!userType) return null;
+
+  return <>{userType === "layman" ? layman : lawyer}</>;
 }
