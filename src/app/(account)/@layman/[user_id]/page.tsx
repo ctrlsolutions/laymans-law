@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 export default function ProfileLayout({
     details,
@@ -18,3 +19,8 @@ export default function ProfileLayout({
     </>
   );
 }
+=======
+export default function LaymanUserPage({ children }: { children: React.ReactNode }) {
+    return <>{children}</>;
+  }
+>>>>>>> 4857682 ([feat][caleb] routing)

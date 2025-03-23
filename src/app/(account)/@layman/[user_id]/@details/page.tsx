@@ -1,10 +1,11 @@
 "use client";
-import UserProfile from "@/components/Profile/InformationComponent";
-
-export default function Home() {
-  return (
-    <>
-      <UserProfile/>
-    </>
-  );
-}
+export default function LaymanDetails() {
+    return (
+      <>
+        <div className="w-full bg-red-500 h-full flex flex-col flex-wrap justify-between content-between">
+          LAYMAN DETAILS
+        </div>
+      </>
+    );
+  }
+  

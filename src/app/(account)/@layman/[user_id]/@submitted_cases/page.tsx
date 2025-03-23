@@ -1,16 +1,13 @@
-"use client";
-import CaseContainer from "@/components/Profile/CaseContainer";
-import CaseComponent from "@/components/Profile/CaseComponent";
-
-export default function Home() {
-  return (
-    <>
-      <CaseContainer count={12}>
-        <div className="flex items-center justify-center h-full">
-          <CaseComponent />
+export default function LaymanCases() {
+    return (
+      <>
+        <div className="w-full h-full flex flex-col flex-wrap justify-between content-between">
+          {/* <UserProfile />
+              <Notifications />
+              <Cases /> */}
+          LAYMAN CASES
         </div>
-      </CaseContainer>
-    </>
-    
-  );
-}
+      </>
+    );
+  }
+  
