@@ -18,7 +18,7 @@ export default function SettingsLayout({
   const currentTab = pathname.split("/").pop(); // Get active tab from URL
 
   return (
-    <div className="p-6">
+    <div className="">
       {/* Tab Navigation */}
       <div className="relative flex ml-3 z-0">
         {tabs.map((tab, index) => (

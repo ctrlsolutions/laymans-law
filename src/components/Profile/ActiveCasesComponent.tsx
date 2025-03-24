@@ -18,7 +18,7 @@ const ActiveCasesComponent: React.FC<CaseItemProps> = ({ caseItem }) => {
     }
 
     return (
-        <div className="relative h-[20vh] bg-[#FBFBFB] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.2)] bg-white rounded-3xl m-[.5rem] p-8 flex items-center mt-[1.3rem]">
+        <div className="relative h-[20vh] bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.2)] rounded-3xl m-[.5rem] p-8 flex items-center mt-[1.3rem]">
             
             {/* Category in the upper right */}
             <div className="absolute -top-3 right-8 flex items-center gap-2 bg-white border border-gray-300 px-3 py-1 text-sm rounded-lg shadow-md">

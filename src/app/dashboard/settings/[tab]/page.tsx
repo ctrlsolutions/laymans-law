@@ -3,7 +3,7 @@ import SettingsForm from "@/components/Profile/SettingsForm";
 import ComingSoon from "@/components/Global/ComingSoon";
 
 const settingsComponents: Record<string, React.FC> = {
-  profile: (props) => <SettingsForm {...props} />,
+  profile: (props) => <SettingsForm userType="layman" {...props} />,
   security: ComingSoon,
   notifications: ComingSoon,
 };

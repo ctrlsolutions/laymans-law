@@ -18,14 +18,14 @@ export default function SettingsLayout({
   const currentTab = pathname.split("/").pop(); // Get active tab from URL
 
   return (
-    <div className="p-6">
+    <>
       {/* Tab Navigation */}
       <div className="relative flex ml-3 z-0">
         {tabs.map((tab, index) => (
           <Link
             key={tab.path}
             href={`/dashboard/settings/${tab.path}`}
-            className={`px-8 py-3 font-semibold z-0 -ml-3 transition-all rounded-t-xl ${
+            className={`font-semibold z-0 -ml-3 transition-all rounded-t-xl ${
               currentTab === tab.path
                 ? "bg-[#120a3a] text-white"
                 : "bg-white text-black border"
@@ -45,6 +45,6 @@ export default function SettingsLayout({
       <div className="relative z-1 -mt-1 border-2 bg-white p-6 rounded-b-3xl rounded-tr-3xl">
         {children}
       </div>
-    </div>
+    </>
   );
 }
