@@ -3,25 +3,29 @@ import * as React from "react";
 import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
 
 interface UserProfileProps {
-  name: string;
+  first_name: string;
+  last_name: string;
   avatar: string;
   role: string;
   email: string;
-  phone: string;
+  contact_number: string;
   gender: string;
-  birthdate: string;
-}
 
-const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => {
-  const defaultAvatar = "/DefaultProfile.png";  // Updated to local image path
+  birth_date: string;
+  occupation: string;
+};
+
+const UserProfile: React.FC<{ userData: UserProfileProps}> = ({ userData }) => {
+  const defaultAvatar = "/blank-profile.svg"; 
 
   return (
-    <div className="w-full pt-[3rem] pl-[3rem] bg-white shadow-lg rounded-3xl p-8 border flex flex-col items-start">
-      <div className="flex items-center gap-6">
-        <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-purple-950">
+
+      <div className="w-full relative bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.25)] rounded-3xl p-8 pt-[12%] mt-[16%] text-center flex flex-col items-center">
+        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white">
+
           <img
             src={userData.avatar || defaultAvatar}
-            alt={`Profile picture of ${userData.name}`}
+            alt={`Profile picture of ${userData.first_name}`}
             className="w-full h-full object-cover"
           />
         </div>
