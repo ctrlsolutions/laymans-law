@@ -17,7 +17,7 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
     birthday: "",
     address: "",
     occupation: "",
-    gender: "male",
+    gender: "",
     rollNumber: "",
     rolldate: "",
   });
@@ -37,19 +37,19 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
   };
 
   return (
-    <div className="max-w-3xl mx-2 sm:mx-auto p-6 sm:p-8 flex flex-col">
+    <div className="max-w-3xl mx-2 sm:mx-auto sm:p-8 flex flex-col">
       {/* Scrollable Inputs Container */}
       <div className="flex flex-row gap-5">
         <div className="relative">
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">
             <img
-              src="https://i.pinimg.com/736x/93/dd/a6/93dda651f941477847f7f74835f67288.jpg"
+              src="/blank-profile.svg"
               alt="Profile"
               className="w-full h-full object-cover"
             />
           </div>
         </div>
-        <div className="max-h-[60vh] overflow-y-auto p-4 border rounded-lg shadow">
+        <div className="max-h-[60vh] overflow-y-auto p-2 scrollbar-hide">
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <div className="flex-1">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -57,6 +57,7 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
               </h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <BaseFormInput
+                  icon="edit"
                   label="First Name"
                   name="firstName"
                   type="text"
@@ -64,6 +65,7 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
                   onChange={handleChange}
                 />
                 <BaseFormInput
+                  icon="edit"
                   label="Last Name"
                   name="lastName"
                   type="text"
@@ -72,6 +74,7 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
                 />
               </div>
               <BaseFormInput
+                icon="edit"
                 label="Contact Number"
                 name="contactNumber"
                 type="tel"
@@ -79,27 +82,25 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
                 onChange={handleChange}
               />
               <div className="grid grid-cols-2 gap-4 mt-2">
-                <BaseFormSelect
+                <BaseFormInput
+                  icon="edit"
                   label="Gender"
                   name="gender"
+                  type="text"
                   value={formData.gender}
-                  choices={[
-                    { label: "Male", value: "male" },
-                    { label: "Female", value: "female" },
-                    { label: "Other", value: "other" },
-                  ]}
                   onChange={handleChange}
                 />
                 <BaseFormInput
+                  icon="edit"
                   label="Birthday"
                   name="birthday"
                   type="date"
                   value={formData.birthday}
                   onChange={handleChange}
-                  className="appearance-none px-4 py-2 border border-gray-300 rounded-lg text-gray-900 w-full h-11"
                 />
               </div>
               <BaseFormInput
+                icon="edit"
                 label="Occupation"
                 name="occupation"
                 type="text"
