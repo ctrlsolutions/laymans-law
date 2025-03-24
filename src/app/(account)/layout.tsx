@@ -31,6 +31,7 @@ export default function AccountLayout({
       const storedUserId = localStorage.getItem("user_id");
       setUserType(storedUserType);
       setUserId(storedUserId);
+      console.log(userType)
     }
   }, []);
 

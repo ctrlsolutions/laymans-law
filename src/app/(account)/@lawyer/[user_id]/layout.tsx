@@ -2,35 +2,38 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import LawyerDetails from "@/app/(account)/@lawyer/[user_id]/@details/page";
+import LawyerNotifs from "@/app/(account)/@lawyer/[user_id]/@notifications/page";
+import LawyerCases from "@/app/(account)/@lawyer/[user_id]/@active_cases/page";
+import LawyerStats from "@/app/(account)/@lawyer/[user_id]/@stats/page";
 
-export default function LaymanHomePage({
+export default function LawyerHomePage({
   children,
   details,
   notifications,
-  submitted_cases,
+  active_cases,
+  stats,
 }: {
   children: React.ReactNode;
   details: React.ReactNode;
   notifications: React.ReactNode;
-  submitted_cases: React.ReactNode;
+  active_cases: React.ReactNode;
+  stats: React.ReactNode;
 }) {
   const pathName = usePathname();
 
   const isSettingsPage = pathName.includes("settings");
-  const isCasesPage = pathName.includes("case");
   console.log("Current Path:", usePathname());
+  console.log("Details Component:", details);
+
 
   return (
     <div>
       {!isSettingsPage ? (
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col space-y-4">
-            {details}
-            {notifications}
-          </div>
-        
-          <div className="row-span-2 h-full">
-            {submitted_cases}
+          <LawyerDetails />
+          <LawyerNotifs/>
           </div>
         </div>
       ) : ( 

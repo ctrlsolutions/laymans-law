@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
+import { getProfile } from "@/services/ProfileServices";
 import InformationContainer from "@/components/Profile/InformationContainer";
 import InformationComponent from "@/components/Profile/InformationComponent";
-import { getProfile } from "@/services/ProfileServices";
 import Card from "@/components/Profile/Card";
 
-export default function LaymanDetails() {
+
+export default function LawyerDetails() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
