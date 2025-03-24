@@ -82,8 +82,57 @@ const cases = [
         description: "A spouse filed for divorce citing infidelity and emotional abuse. The case involves disputes over child custody and asset division. Mediation attempts have failed, escalating the case to court.", 
         category: "Family", 
         link: "/cases/2" 
+    },
+    { 
+        id: 3, 
+        caseTitle: "Contract Breach", 
+        timeAgo: "1 day ago", 
+        description: "A company is suing a former partner for breaching a service contract. The plaintiff claims financial losses due to unfulfilled obligations, while the defendant argues that the terms were unfair.", 
+        category: "Commercial", 
+        link: "/cases/3" 
+    },
+    { 
+        id: 4, 
+        caseTitle: "Land Dispute", 
+        timeAgo: "3 days ago", 
+        description: "Two families are in a legal battle over land ownership. The case involves conflicting land titles and decades-old claims. The court is reviewing historical records and conducting surveys.", 
+        category: "Property", 
+        link: "/cases/4" 
+    },
+    { 
+        id: 5, 
+        caseTitle: "Cybercrime", 
+        timeAgo: "4 days ago", 
+        description: "A hacker is facing charges for unauthorized access and data theft from a financial institution. The prosecution has presented evidence of multiple security breaches.", 
+        category: "Criminal", 
+        link: "/cases/5" 
+    },
+    { 
+        id: 6, 
+        caseTitle: "Tax Evasion", 
+        timeAgo: "6 days ago", 
+        description: "A business owner is under investigation for allegedly evading taxes by underreporting income. The Bureau of Internal Revenue has filed charges for tax fraud.", 
+        category: "Financial", 
+        link: "/cases/6" 
+    },
+    { 
+        id: 7, 
+        caseTitle: "Labor Dispute", 
+        timeAgo: "1 week ago", 
+        description: "Employees have filed a lawsuit against their employer for unfair labor practices, including unpaid overtime and unsafe working conditions.", 
+        category: "Labor", 
+        link: "/cases/7" 
+    },
+    { 
+        id: 8, 
+        caseTitle: "Defamation", 
+        timeAgo: "2 weeks ago", 
+        description: "A public figure is suing a media company for defamation over false allegations published in an article. The plaintiff is seeking damages for reputational harm.", 
+        category: "Civil", 
+        link: "/cases/8" 
     }
 ];
+
 
 const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,7 +151,7 @@ const Home = () => {
                 <div className="row-span-1 flex flex-col gap-3">
 
                     {/* Notifications Section */}
-                    <Card className="w-[42.5vw] h-[34vh] overflow-hidden">
+                    <Card className="w-[42.5vw] h-[33.5vh] overflow-hidden">
                         {/* Make the whole container clickable */}
                         <div 
                             className="w-full h-full cursor-pointer"
@@ -122,7 +171,7 @@ const Home = () => {
                     </Card>
 
                     {/* Active Cases Section */}
-                    <Card className="w-[42.5vw] h-[55.75vh] overflow-hidden">
+                    <Card className="w-[42.5vw] h-[56vh] overflow-hidden">
                         <ActiveCasesContainer count={cases.length}>
                             <div className="overflow-y-auto max-h-[45vh] pr-2">
                                 {cases.map((item) => (
@@ -146,7 +195,6 @@ const Home = () => {
             )}
         </>
     );
-    
-}
+};
 
 export default Home;
