@@ -6,7 +6,7 @@ import Card from "@/components/Profile/Card";
 export default function LawyerActiveCases() {
     return (
       <>
-        <Card className="h-[90vh]">
+        <Card className="h-[61.5vh]">
           <ActiveCasesContainer count={5}>
             <ActiveCasesComponent />
           </ActiveCasesContainer>
