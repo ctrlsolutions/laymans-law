@@ -1,12 +1,12 @@
-"use client";
-import Container from "@/components/Auth/AuthContainer";
-
-export default function Home() {
+export default function LawyerSettings() {
   return (
-    <Container bgColor="red">
-      <div className="flex items-center justify-center h-full">
-        <SignupForm fontColor="red" />
+    <>
+      <div className="w-full h-full flex flex-col flex-wrap justify-between content-between">
+        {/* <UserProfile />
+            <Notifications />
+            <Cases /> */}
+        LAWYER SETTINGS
       </div>
-    </Container>
+    </>
   );
 }

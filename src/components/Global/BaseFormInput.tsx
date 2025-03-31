@@ -42,11 +42,11 @@ const BaseFormInput: FC<
                         font-semibold 
                         focus:outline-none 
                         focus:ring-0
-                        h-[2rem] text-sm rounded-[0.375rem] pl-4 pr-10
-                        sm:h-[2.5rem] sm:text-sm sm:rounded-[0.4375rem] sm:pl-3 sm:pr-10
-                        md:h-[3.0rem] md:text-base md:rounded-[0.5rem] md:pl-4 md:pr-12
-                        lg:h-[3.5rem] lg:text-lg lg:rounded-[0.5625rem] lg:pl-6 lg:pr-14
-                        xl:h-[4rem] xl:text-xl xl:rounded-[1rem] xl:pl-5 xl:pr-16
+                        h-[1rem] text-xs rounded-[0.375rem] pl-4 pr-10
+                        sm:h-[1.5rem] sm:text-xs sm:rounded-[0.4375rem] sm:pl-3 sm:pr-10
+                        md:h-[2.0rem] md:text-sm md:rounded-[0.5rem] md:pl-4 md:pr-12
+                        lg:h-[2.5rem] lg:text-base lg:rounded-[0.5625rem] lg:pl-6 lg:pr-14
+                        xl:h-[3rem] xl:text-md xl:rounded-[1rem] xl:pl-5 xl:pr-16
                     `}
           {...props}
         />
@@ -57,10 +57,9 @@ const BaseFormInput: FC<
               icon === "pass" || icon === "passhide"
                 ? "text-gray-500"
                 : "text-gray-900"
-            }`}
+            } cursor-pointer`}
             onClick={onIconClick}
             style={{
-              cursor: onIconClick ? "pointer" : "default",
               fontSize: "1.3rem",
             }}
           />
