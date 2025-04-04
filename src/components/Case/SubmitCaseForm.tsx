@@ -124,7 +124,6 @@ export default function CaseSubmissionForm() {
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <BaseButton
             color="red"
-            textColor="gray-700"
             onClick={handleCancel}
             width="150px"
             >
