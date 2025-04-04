@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -12,6 +11,7 @@ export default function CaseSubmissionForm() {
     legalTopic: '',
     caseType: '',
     details: '',
+    file: null, // Add a field for the file
   });
 
   const legalTopicChoices = [
@@ -36,6 +36,11 @@ export default function CaseSubmissionForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null; // Get the selected file
+    setFormData(prev => ({ ...prev, file })); // Update the file in the state
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
@@ -48,12 +53,13 @@ export default function CaseSubmissionForm() {
       legalTopic: '',
       caseType: '',
       details: '',
+      file: null, // Reset the file field
     });
   };
 
   return (
     <div className="bg-white rounded-lg p-6 sm:p-8">
-        <h1 className="text-md font-bold text-gray-900 sm:text-2xl mb-8">
+        <h1 className="text-md font-extrabold text-gray-900 sm:text-2xl mb-4">
         Submit Case
         </h1>
         <hr className="mb-9" />
@@ -66,6 +72,7 @@ export default function CaseSubmissionForm() {
             value={formData.title}
             onChange={handleChange}
             placeholder="Enter Case Title"
+            className="px-4 py-0 border border-gray-500 rounded-xl text-xl text-black-900 w-full h-40 leading-none"
             required
         />
 
@@ -76,7 +83,7 @@ export default function CaseSubmissionForm() {
             value={formData.legalTopic}
             choices={legalTopicChoices}
             onChange={handleChange}
-            className="border-r"
+            className="border-r w-48" // Reduced width
             />
 
             <BaseFormSelect
@@ -85,6 +92,7 @@ export default function CaseSubmissionForm() {
             value={formData.caseType}
             choices={caseTypeChoices}
             onChange={handleChange}
+            className="w-48 h-12" // Reduced width
             />
         </div>
 
@@ -95,16 +103,22 @@ export default function CaseSubmissionForm() {
             value={formData.details}
             onChange={handleChange}
             placeholder="Enter Case Details"
+            className="px-4 py-0 border border-gray-500 rounded-xl text-xl text-black-900 w-full h-60 leading-none"
             required
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Insert File (if necessary):</label>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="mt-1 block w-full border-gray-300 shadow-sm rounded-md"
-          />
+          <label className="block text-lg font-medium text-gray-700 mb-4">Insert File (if necessary):</label>
+          <div className="mt-1 border border-gray-300 shadow-sm rounded-md p-4 flex items-center justify-center cursor-pointer hover:border-gray-400 h-40 mb-4">
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="absolute opacity-0 w-full h-full cursor-pointer"
+            />
+            <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-md flex items-center justify-center">
+              <span className="text-gray-500 text-sm text-xl">+</span>
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
