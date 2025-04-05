@@ -28,3 +28,11 @@ export interface FormButtonProps {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
 }
+
+export interface SubmitCaseFormData {
+  title: string;
+  legalTopic: string;
+  caseType: string;
+  details: string;
+  file: File | null;
+}
