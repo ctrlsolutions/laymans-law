@@ -1,48 +1,18 @@
 "use client";
 import * as React from "react";
+import { IoMdCheckmark } from "react-icons/io";
 import { CiBellOn, CiSearch } from "react-icons/ci";
-import { GoDotFill } from "react-icons/go";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import { useEffect, useRef, useState } from "react";
+import { Case, Category } from "@/interface/CaseTypes";
+import CaseCard from "@/app/dashboard/case/CaseCard";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-
-interface Case {
-  id: string;
-  title: string;
-  category: {
-    name: string;
-    color: string;
-  };
-  status: {
-    isOpen: boolean;
-    color: string;
-  };
-  avatar: string;
-  lastUpdate: {
-    user: string;
-    time: string;
-  };
-  description: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  color: string;
-  icon?: string;
-}
 
 const sortingOptions = [
   { label: "Latest first", value: "latest" },
   { label: "Oldest first", value: "oldest" },
 ];
-
-const StatusIndicator: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
-  const color = isOpen ? "bg-[#4BB328]" : "bg-[#B32828]";
-
-  return <span className={`flex self-center shrink-0 w-2 h-2 ${color} rounded-full`} aria-hidden="true" />;
-};
 
 const cases: Case[] = [
   {
@@ -78,11 +48,6 @@ const categories: Category[] = [
   { id: "human", name: "Human Rights", color: "bg-pink-600" },
 ];
 
-const getCategoryColor = (categoryName: string) => {
-  const category = categories.find((c) => c.name === categoryName);
-  return category ? category.color : "bg-gray-300";
-};
-
 const SearchBar: React.FC<{ searchQuery: string; setSearchQuery: React.Dispatch<React.SetStateAction<string>> }> = ({
   searchQuery,
   setSearchQuery,
@@ -96,6 +61,7 @@ const SearchBar: React.FC<{ searchQuery: string; setSearchQuery: React.Dispatch<
       xl:max-w-xl"
     >
       <BaseFormInput
+        label=""
         name="search"
         type="text"
         placeholder="Search"
@@ -163,45 +129,21 @@ const NotificationIcon: React.FC<{ notificationCount: number; isOpen: boolean; s
   );
 };
 
-const CaseCard: React.FC<{ caseItem: Case }> = ({ caseItem }) => (
-  <article className="mt-8 z-0">
-    <div className="relative ml-[580px] flex justify-center items-center px-1.5 py-1 bg-white border border-gray-300 rounded-lg shadow-sm w-fit z-0">
-      <span className={`mr-2 flex shrink-0 w-2 h-2 ${getCategoryColor(caseItem.category.name)} rounded-full`} aria-hidden="true"></span>
-      <span className="mr-2 text-[9.8px] font-bold">{caseItem.category.name}</span>
-    </div>
-    <div className="flex z-0 gap-5 justify-between items-start px-9 py-7 mt-[-10px] w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90">
-      <img src={caseItem.avatar} alt="" className="w-[70px] rounded-full" />
-      <div className="flex flex-col text-xs">
-        <h2 className="text-xl font-bold">{caseItem.title}</h2>
-        <div className="flex gap-1 mt-3 font-light">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/f62326b4ac842495a4827f224d60986da492d5c8?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
-            alt=""
-            className="w-2"
-            aria-hidden="true"
-          />
-          <p>
-            Latest update from <strong className="font-bold">{caseItem.lastUpdate.user}</strong> {caseItem.lastUpdate.time}
-          </p>
-        </div>
-        <p className="mt-4 font-[275]">{caseItem.description}</p>
-      </div>
-      <div className="flex gap-2 px-2.5 py-2.5 text-base font-bold bg-white rounded-xl shadow-[0px_0px_4px_rgba(0,0,0,0.25)] hover:bg-blue-700">
-        <StatusIndicator isOpen={caseItem.status.isOpen} />
-        <span className="pl-1 pr-4  text-base font-extrabold">{caseItem.status.isOpen ? "Open" : "Close"}</span>
-      </div>
-    </div>
-  </article>
-);
-
-const Sidebar: React.FC = () => (
+const Sidebar: React.FC<{
+  selectedCaseType: string;
+  setSelectedCaseType: (type: string) => void;
+}> = ({ selectedCaseType, setSelectedCaseType }) => (
   <aside
     className="ml-5 w-[23%] max-md:ml-0 max-md:w-full"
     role="complementary"
   >
     <nav className="flex flex-col mt-3 w-full text-xs font-medium">
-      <div className="flex justify-between w-full text-blue-700">
-        <button className="flex gap-1 mt-1.5 items-center hover:underline">
+        <button 
+          onClick={() => setSelectedCaseType("all")}
+          className={`flex gap-1 mt-1.5 items-center hover:underline ${
+            selectedCaseType === "all" ? "text-[#0838E5] font-bold" : "text-black"
+          }`}
+        >
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/89e03529fdda8df1e9cb5db7f312b9b67dd7af7e?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
             alt=""
@@ -209,19 +151,29 @@ const Sidebar: React.FC = () => (
             aria-hidden="true"
           />
           <span className="font-bold">All Cases</span>
+          {selectedCaseType === "all" && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
         </button>
-      </div>
-      <button className="flex gap-2 mt-1.5 items-center hover:underline">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/336295d086557bc98363f10135593159985ebaf5?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
-          alt=""
-          className="w-[35px]"
-          aria-hidden="true"
-        />
-        <span className="font-bold">Open Cases</span>
-      </button>
-      <div className="mt-2 px-0.5 w-full">
-        <button className="flex gap-1.5 items-center hover:underline">
+        <button 
+          onClick={() => setSelectedCaseType("open")}
+          className={`flex gap-2 mt-1 items-center hover:underline ${
+            selectedCaseType === "open" ? "text-[#0838E5] font-bold" : "text-black"
+          }`}
+        >
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/336295d086557bc98363f10135593159985ebaf5?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
+            alt=""
+            className="w-[35px]"
+            aria-hidden="true"
+          />
+          <span className="font-bold">Open Cases</span>
+          {selectedCaseType === "open" && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
+        </button>
+        <button 
+          onClick={() => setSelectedCaseType("closed")}
+          className={`flex gap-1.5 mt-1.5 items-center hover:underline ${
+            selectedCaseType === "closed" ? "text-[#0838E5] font-bold" : "text-black"
+          }`}        
+        >
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/484d9451c2db607d65c70da6fcf0bfd683cf8ee8?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
             alt=""
@@ -229,6 +181,7 @@ const Sidebar: React.FC = () => (
             aria-hidden="true"
           />
           <span className="font-bold">Closed Cases</span>
+          {selectedCaseType === "closed" && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
         </button>
         <hr className="mt-3 border-black border-opacity-30" />
         <ul className="mt-5" role="list">
@@ -239,7 +192,6 @@ const Sidebar: React.FC = () => (
             </li>
           ))}
         </ul>
-      </div>
     </nav>
   </aside>
 );
@@ -249,6 +201,7 @@ const InputDesign: React.FC = () => {
   const [sortOrder, setSortOrder] = React.useState("latest");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedCaseType, setSelectedCaseType] = React.useState("all");
   // const [username, setUsername] = useState<string | null>(null); //needed for the real-time username fetching commented out only kay temp ra ang data
   const openCaseCount = cases.filter((c) => c.status.isOpen).length;
 
@@ -287,7 +240,7 @@ const InputDesign: React.FC = () => {
 
   return (
     <main className="flex flex-col text-black w-full max:w-100vw font-[Poppins]" role="main">
-      <header className="pt-2.5 pr-2.5 pb-px pl-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
+      <header className="p-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
         <div className="flex max-md:flex-col">
           <div className="w-[77%] max-md:w-full">
             <div className="flex flex-wrap gap-6 text-xs">
@@ -300,12 +253,12 @@ const InputDesign: React.FC = () => {
               <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
             </div>
           </div>
-          <div className="flex">
+          <div className="flex gap-5">
             <div className={`relative transition-transform duration-100 ${isOpen ? '' : 'hover:scale-90'}`}>
               <NotificationIcon notificationCount={openCaseCount} isOpen={isOpen} setIsOpen={setIsOpen} />
             </div>
             <div
-              className="z-0 flex position-fixed gap-3 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105"
+              className="z-0 flex position-fixed gap-4 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105"
               onClick={() => router.push("/dashboard/account")}
               >
               <img
@@ -333,13 +286,13 @@ const InputDesign: React.FC = () => {
                 width="130px"
               />
               {sortedCases.length > 0 ? (
-                sortedCases.map((caseItem) => <CaseCard key={caseItem.id} caseItem={caseItem} />)
+                sortedCases.map((caseItem) => <CaseCard key={caseItem.id} caseItem={caseItem} categories={categories} />)
               ) : (
                 <p className="text-center text-gray-500 mt-20">No cases found</p>
               )}
             </div>
           </div>
-          <Sidebar />
+          <Sidebar selectedCaseType={selectedCaseType} setSelectedCaseType={setSelectedCaseType} />
         </div>
       </section>
     </main>
