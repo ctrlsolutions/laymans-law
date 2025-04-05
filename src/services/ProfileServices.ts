@@ -4,7 +4,7 @@ const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/user`;
 
 export const getProfile = async (): Promise<ApiResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/profile/`, {
+    const response = await fetch(`${API_BASE_URL}/get_profile/`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -18,6 +18,27 @@ export const getProfile = async (): Promise<ApiResponse> => {
     return { success: true, message: "Profile fetched successfully!", data };
   } catch (error) {
     console.error("Error fetching profile:", error);
+    return { success: false, message: "An error occurred. Please try again." };
+  }
+};
+
+export const updateProfile = async (profileData: any): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/update_profile/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(profileData),
+    });
+
+    if (!response.ok) {
+      return { success: false, message: "Failed to update profile data." };
+    }
+
+    const data = await response.json();
+    return { success: true, message: "Profile updated successfully!", data };
+  } catch (error) {
+    console.error("Error updating profile:", error);
     return { success: false, message: "An error occurred. Please try again." };
   }
 };
