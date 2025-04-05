@@ -4,14 +4,15 @@ import { useState } from 'react';
 import BaseButton from '@/components/Global/BaseButton';
 import BaseFormInput from '@/components/Global/BaseFormInput';
 import BaseFormSelect from '@/components/Global/BaseFormSelect';
+import { SubmitCaseFormData } from '@/interface/ComponentTypes';
 
 export default function CaseSubmissionForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SubmitCaseFormData>({
     title: '',
     legalTopic: '',
     caseType: '',
     details: '',
-    file: null, // Add a field for the file
+    file: null,
   });
 
   const legalTopicChoices = [
@@ -37,14 +38,13 @@ export default function CaseSubmissionForm() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null; // Get the selected file
-    setFormData(prev => ({ ...prev, file })); // Update the file in the state
+    const file = e.target.files?.[0] || null; 
+    setFormData(prev => ({ ...prev, file }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Handle form submission here
   };
 
   const handleCancel = () => {
@@ -53,7 +53,7 @@ export default function CaseSubmissionForm() {
       legalTopic: '',
       caseType: '',
       details: '',
-      file: null, // Reset the file field
+      file: null,
     });
   };
 
@@ -76,7 +76,7 @@ export default function CaseSubmissionForm() {
             required
         />
 
-        <div className="grid grid-cols-2 gap-0 border rounded-md overflow-hidden">
+        <div className="grid grid-cols-2 gap-3 overflow-hidden">
             <BaseFormSelect
             label=" "
             name="legalTopic"
