@@ -74,7 +74,11 @@ export const UserSignup = async (
 
 export const UserLogout = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/signup/`);
+    const response = await fetch(`${API_BASE_URL}/logout/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
     return response;
   } catch (error) {
     console.error("Logout failed:", error);
