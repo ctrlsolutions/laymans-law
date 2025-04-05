@@ -83,7 +83,7 @@ export default function CaseSubmissionForm() {
             value={formData.legalTopic}
             choices={legalTopicChoices}
             onChange={handleChange}
-            className="border-r w-48" // Reduced width
+            className="border-r w-48"
             />
 
             <BaseFormSelect
@@ -92,7 +92,7 @@ export default function CaseSubmissionForm() {
             value={formData.caseType}
             choices={caseTypeChoices}
             onChange={handleChange}
-            className="w-48 h-12" // Reduced width
+            className="w-48 h-12"
             />
         </div>
 
