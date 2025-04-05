@@ -11,8 +11,8 @@ export default function LawyerCasesPage({ children }: { children: React.ReactNod
 
     return (
         <>
-            {lastSegment === "browse" ? (
-                <h1> BROWSE CASES</h1>
+            {lastSegment === "active-cases" ? (
+                <h1>CASES</h1>
             ) : (
                 children
             )}

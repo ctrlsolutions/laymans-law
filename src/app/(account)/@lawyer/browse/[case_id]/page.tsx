@@ -1,5 +1,5 @@
 "use client";
 
-export default function CasesHome() {
+export default function Case() {
   return <div>CASES</div>;
 }
