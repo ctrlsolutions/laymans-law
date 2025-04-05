@@ -7,7 +7,7 @@ interface LeftPanelProps {
 
 export default function LeftPanel({ selectedChapter, setSelectedChapter }: LeftPanelProps) {
   return (
-    <div className="md:w-1/3 space-y-5 max-h-[calc(100vh-250px)] overflow-y-auto relative">
+    <div className="md:w-1/3 space-y-5 max-h-[calc(100vh-250px)]">
       {[1, 2, 3].map((num) => (
         <div
           key={num}
