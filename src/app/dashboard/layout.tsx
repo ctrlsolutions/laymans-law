@@ -7,7 +7,15 @@ import { usePathname } from "next/navigation";
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
     //handle active tab highlight
-    const tabs = ['Home', 'Case', 'Forum', 'Wiki', 'Account', 'Settings'];
+    const tabs = {
+        HOME: '/home',
+        'BROWSE CASE': '/browse-case',
+        'ACTIVE CASES': '/active-cases',
+        FORUM: '/forum',
+        WIKI: '/wiki',
+        ACCOUNT: '/account',
+        SETTINGS: '/settings',
+    };
     const pathname = usePathname();
     const formattab = pathname.split("/")[2]?.charAt(0).toUpperCase() + pathname.split("/")[2]?.slice(1) || "Home";
     const[ activeTab, setTab ] = useState( formattab ); 
@@ -26,15 +34,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[22vw] bg-blue/30 ml-8 p-6 pl-0 rounded-3xl flex flex-col justify-between font-extrabold">
           <img src="/logo.png" alt="Logo" className="max-w-full h-auto m-10" />
           {/* navlinks */}
-          <div className="flex flex-col text-center pb-[10vh] text-[1.1rem]">
-            {tabs.map((tab, index) => (
+          <div className="flex flex-col text-center pb-[10vh] text-[1.1rem] font-black">
+              {Object.entries(tabs).map(([key, value]) => (
               <Link 
-                href={`/dashboard/${tab.toLowerCase()}`}
-                key={index}
-                className={`w-full h-[5vh] p-7 hover:text-2xl transition-all duration-350 ease-in-out flex items-center justify-center ml-4 rounded-l-3xl ${activeTab === tab ? 'bg-white text-black text-[1.3rem]' : 'bg-blue/30 text-white'}`}
-                onClick={() => onNavClick(tab)}
+                href={`/dashboard/${value}`}
+                key={key}
+                className={`w-full h-[5vh] p-7 hover:text-2xl transition-all duration-350 ease-in-out flex items-center justify-center ml-4 rounded-l-3xl ${activeTab === key ? 'bg-white text-black text-[1.3rem]' : 'bg-blue/30 text-white'}`}
+                onClick={() => onNavClick(key)}
               >
-                {tab}
+                {key}
               </Link>
             ))}
           </div>
