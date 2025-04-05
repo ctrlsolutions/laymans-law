@@ -27,19 +27,8 @@ export default function AccountLayout({
       toast.error("Failed to lsog out. Please try again.");
     }
   };
-
-  //handle active tab highlight
-  const tabs = [
-    { name: "Home", path: (id: string) => `/${id}` },
-    { name: "Case", path: () => `/dashboard/case` },
-    { name: "Forum", path: () => `/dashboard/forum` },
-    { name: "Wiki", path: () => `/dashboard/wiki` },
-    { name: "Settings", path: (id: string) => `/${id}/settings` },
-  ];
+  
   const pathname = usePathname();
-  const activeTab =
-    tabs.find((tab) => pathname.includes(tab.name.toLowerCase()))?.name ||
-    "Home";
 
   const [userType, setUserType] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -50,12 +39,34 @@ export default function AccountLayout({
       const storedUserId = localStorage.getItem("user_id");
       setUserType(storedUserType);
       setUserId(storedUserId);
-      console.log(userType);
     }
   }, []);
+  
+  //handle active tab highlight
+  if (!userType || !userId) return null;
+  const tabs =
+  userType === "layman"
+    ? [
+        { key: "home", name: "Home", path: (id: string) => `/${id}` },
+        { key: "submit", name: "Submit Case", path: (id: string) => `/${id}` },
+        { key: "submitted", name: "Submitted Cases", path: (id: string) => `/${id}` },
+        { key: "wiki", name: "Wiki", path: (id: string) => `/${id}` },
+        { key: "forum", name: "Forum", path: (id: string) => `/${id}` },
+        { key: "settings", name: "Settings", path: (id: string) => `/${id}/settings` },
+      ]
+    : [
+        { key: "home", name: "Home", path: (id: string) => `/${id}` },
+        { key: "browse", name: "Browse Cases", path: () => `/browse` },
+        { key: "active", name: "Active Cases", path: (id: string) => `/${id}/active-cases` },
+        { key: "wiki", name: "Wiki", path: (id: string) => `/wiki` },
+        { key: "forum", name: "Forum", path: (id: string) => `/forum` },
+        { key: "settings", name: "Settings", path: (id: string) => `/${id}/settings` },
+      ];
 
-  if (!userType) return null;
-  if (!userId) return null;
+// Now match using `pathname` and `path()`
+const activeTab =
+  tabs.find((tab) => pathname === tab.path(userId))?.name || "";
+
 
   const sidebarBg = userType === "lawyer" ? "bg-blue/60" : "bg-red/60";
 
@@ -79,7 +90,7 @@ export default function AccountLayout({
               className={`w-full h-[5vh] p-7 hover:text-2xl transition-all duration-350 ease-in-out flex items-center justify-center ml-4 rounded-l-3xl ${
                 activeTab === tab.name
                   ? "bg-white text-black text-[1.3rem]"
-                  : "bg-blue/30 text-white"
+                  : "bg-transparent text-white"
               }`}
             >
               {tab.name}
