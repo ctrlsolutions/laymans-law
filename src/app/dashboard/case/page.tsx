@@ -204,8 +204,8 @@ const InputDesign: React.FC = () => {
         user={user} 
       />
       <section className="self-center mt-10 pb-10 w-full max-w-[976px] h-[calc(100vh-40px)] max-h-[65vh] flex flex-col" aria-label="Case listings">
-        <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden">
-          <div className="w-[77%] max-md:w-full">
+        <div className="flex gap-5 max-md:flex-col pb-5">
+          <div className="w-[77%] max-md:w-full overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col">
               <BaseFormSelect
                 label=""

@@ -17,7 +17,7 @@ const SearchBar: React.FC<{ searchQuery: string; setSearchQuery: React.Dispatch<
   setSearchQuery,
 }) => {
   return (
-    <div className="relative flex items-center border border-black rounded-[40px] mt-7 px-5 py-2.5 w-full h-10 max-w-2lg sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+    <div className="relative flex items-center border border-black rounded-[40px] px-5 py-2.5 w-full h-10 max-w-2lg sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
       <BaseFormInput
         label=""
         name="search"
@@ -55,7 +55,7 @@ const NotificationIcon: React.FC<{
   return (
     <div className="relative inline-block select-none" ref={notificationRef}>
       <div onClick={togglePreview} className="relative cursor-pointer">
-        <CiBellOn size={28} className="text-black mt-8" />
+        <CiBellOn size={28} className="text-black mt-2" />
         {notificationCount > 0 && (
           <span className="z-10 absolute w-2 h-2 top-1 right-1 bg-[#B32828] rounded-full"></span>
         )}
@@ -103,33 +103,36 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCo
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <header className="p-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
-      <div className="flex max-md:flex-col">
-        <div className="w-[77%] max-md:w-full">
-          <div className="flex flex-wrap gap-6 text-xs">
+    <header className="p-2.5 w-full bg-white rounded-t-[30px] shadow-md">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div className="w-full md:w-3/4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/5676b5cbc1d09b6b170298efcc84d833fd17cbb2?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
               alt="Logo"
-              className="w-[139px] object-contain cursor-pointer"
+              className="w-[120px] sm:w-[139px] object-contain cursor-pointer"
               onClick={() => router.push("/dashboard/home")}
             />
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <div className="w-full">
+              <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            </div>
           </div>
         </div>
-        <div className="flex gap-5">
+
+        <div className="flex items-center gap-5 mt-5 md:mt-0">
           <div className={`relative transition-transform duration-100 ${isOpen ? "" : "hover:scale-90"}`}>
             <NotificationIcon notificationCount={openCaseCount} isOpen={isOpen} setIsOpen={setIsOpen} />
           </div>
           <div
-            className="z-0 flex gap-4 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105"
+            className="flex items-center gap-4 cursor-pointer transition-transform duration-200 hover:scale-105 mr-5"
             onClick={() => router.push("/dashboard/account")}
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/e5990c8fddf80298658964bf5d965e28f274456d?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
               alt="Profile"
-              className="z-10 w-[60px] rounded-full mt-3"
+              className="w-10 sm:w-[60px] rounded-full"
             />
-            <span className="my-auto">{user?.first_name || "Guest"}</span>
+            <span className="text-sm font-medium">{user?.firstName || "Guest"}</span>
           </div>
         </div>
       </div>
