@@ -31,11 +31,11 @@ const SearchBar: React.FC<{ searchQuery: string; setSearchQuery: React.Dispatch<
   );
 };
 
-const NotificationIcon: React.FC<{ notificationCount: number; isOpen: boolean; setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }> = ({
-  notificationCount,
-  isOpen,
-  setIsOpen,
-}) => {
+const NotificationIcon: React.FC<{
+  notificationCount: number;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ notificationCount, isOpen, setIsOpen }) => {
   const router = useRouter();
   const notificationRef = useRef<HTMLDivElement>(null);
 
@@ -62,17 +62,35 @@ const NotificationIcon: React.FC<{ notificationCount: number; isOpen: boolean; s
       {isOpen && (
         <div className="absolute right-0 mt-2 w-64 bg-white shadow-md rounded-lg p-3 border border-gray-200 z-[9999]">
           <p className="text-sm font-semibold">Notifications</p>
-          <ul className="mt-2">
-            {cases.map((c) => (
-              <li key={c.id} className="flex items-center space-x-3 text-xs text-gray-700 py-2 border-b last:border-b-0">
-                <img src={c.avatar} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
-                <div>
-                  <p className="font-semibold cursor-pointer" onClick={() => router.push("/dashboard/home")}>{c.title}</p> {/* sa expanding nga part na ata ni i change nlang ang route */}
-                  <p className="text-gray-500 text-[10px]">{c.lastUpdate.user} • {c.lastUpdate.time}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {notificationCount > 0 ? (
+            <ul className="mt-2">
+              {cases.map((c) => (
+                <li
+                  key={c.id}
+                  className="flex items-center space-x-3 text-xs text-gray-700 py-2 border-b last:border-b-0"
+                >
+                  <img
+                    src={c.avatar}
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div>
+                    <p
+                      className="font-semibold cursor-pointer"
+                      onClick={() => router.push("/dashboard/home")}
+                    >
+                      {c.title}
+                    </p>
+                    <p className="text-gray-500 text-[10px]">
+                      {c.lastUpdate.user} • {c.lastUpdate.time}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-gray-500 text-sm mt-5 p-2 pb-6">No Notifications</p>
+          )}
         </div>
       )}
     </div>
