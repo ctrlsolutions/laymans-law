@@ -1,10 +1,13 @@
 "use client";
 import * as React from "react";
 import { IoMdCheckmark } from "react-icons/io";
-import { cases, Category } from "@/interface/CaseTypes";
-import CaseCard from "@/app/dashboard/case/CaseCard";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import Header from "@/components//Profile/Header";
+import { Case, Category } from "@/interface/CaseTypes";
+import CaseCard from "@/components/Cases/CaseCard";
+import { useEffect, useRef ,useState } from "react";
+import { getProfile } from "@/services/ProfileServices";
+import Header from "@/components/Profile/Header";
+import { fetchCases } from "@/services/CaseService";
 
 const sortingOptions = [
   { label: "Latest first", value: "latest" },
@@ -96,60 +99,110 @@ const Sidebar: React.FC<{
   </aside>
 );
 
+
 const InputDesign: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("latest");
   const [selectedCaseType, setSelectedCaseType] = React.useState("all");
-  const openCaseCount = cases.filter((c) => c.status.isOpen).length;
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
 
-  // const [username, setUsername] = useState<string | null>(null); //needed for the real-time username fetching commented out only kay temp ra ang data
-
-  // useEffect(() => { 
-  //   const fetchUser = async () => {
-  //     try {
-  //       const response = await fetch("/api/user"); // Replace with the actual API endpoint soon
-  //       const data = await response.json();
-  //       setUsername(data.name);
-  //     } catch (error) {
-  //       console.error("Failed to fetch user", error);
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, []);
+  const [cases, setCases] = useState<Case[]>([]);
+  const [casesLoading, setCasesLoading] = useState(true);
+  const [casesError, setCasesError] = useState("");
 
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
+    
+    // Log the selectedCaseType and caseItem.status for debugging
+    console.log('Selected Case Type:', selectedCaseType);
+    console.log('Case Status:', caseItem.status);  // Make sure this matches the expected value (closed or open)
   
-    const matchesCaseType =
-      selectedCaseType === "all"
-        ? true
-        : selectedCaseType === "open"
-        ? caseItem.status.isOpen
-        : !caseItem.status.isOpen;
+    // Check if the case type matches the selected type
+    const matchesCaseType = selectedCaseType === "all"
+      ? true
+      : selectedCaseType === "open"
+      ? caseItem.status.toLowerCase() === "open"
+      : selectedCaseType === "closed"
+      ? caseItem.status.toLowerCase() === "closed"  // Ensure caseItem.status is exactly "closed"
+      : false;
   
-    const matchesCategory =
-      selectedCategory === null || caseItem.category.name === selectedCategory;
+    // Check if the case category matches
+    const matchesCategory = selectedCategory === null || caseItem.category.name === selectedCategory;
   
-    const matchesSearch =
-      caseItem.title.toLowerCase().includes(query) ||
-      caseItem.category.name.toLowerCase().includes(query);
+    // Search query check (title or category name)
+    const matchesSearch = caseItem.title.toLowerCase().includes(query) || caseItem.category.name.toLowerCase().includes(query);
   
+    // Return true only if all conditions match
     return matchesCaseType && matchesCategory && matchesSearch;
-  });  
+  });
+  
 
   const sortedCases = [...filteredCases].sort((a, b) => {
-      if (sortOrder === "latest") {
-        return b.lastUpdate.time.localeCompare(a.lastUpdate.time); 
-      } else {
-        return a.lastUpdate.time.localeCompare(b.lastUpdate.time); 
-      }
+    if (sortOrder === "latest") {
+      return new Date(b.created_date).getTime() - new Date(a.created_date).getTime();
+    } else {
+      return new Date(a.created_date).getTime() - new Date(b.created_date).getTime();
+    }
   });
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true; // Flag to track mount status
+  
+    const loadCases = async () => {
+      const response = await fetchCases();
+      if (isMounted) {  // Only update if still mounted
+        if (response.success && response.data) {
+          setCases(response.data);
+        } else {
+          setCasesError(response.message || "Failed to load cases");
+        }
+        setCasesLoading(false);
+      }
+    };
+  
+    loadCases();
+  
+    return () => {
+      isMounted = false; // Cleanup on unmount
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true; // Flag to track mount status
+
+    const fetchUserProfile = async () => {
+      const response = await getProfile();
+      if (isMounted) {  // Only update if still mounted
+        if (response.success && response.data) {
+          setUser(response.data);
+        } else {
+          console.error("Error fetching user data:", response.message);
+        }
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+
+    return () => {
+      isMounted = false; // Cleanup on unmount
+    };
+  }, []);
+
+
+  const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
 
   return (
     <main className="flex flex-col text-black w-full max:w-100vw font-[Poppins]" role="main">
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} openCaseCount={openCaseCount} />
+      <Header 
+        searchQuery={searchQuery} 
+        setSearchQuery={setSearchQuery} 
+        openCaseCount={openCaseCount} 
+        user={user} 
+      />
       <section className="self-center mt-10 pb-10 w-full max-w-[976px] h-[calc(100vh-40px)] max-h-[65vh] flex flex-col" aria-label="Case listings">
         <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden">
           <div className="w-[77%] max-md:w-full">
@@ -162,8 +215,14 @@ const InputDesign: React.FC = () => {
                 onChange={(e) => setSortOrder(e.target.value)}
                 width="130px"
               />
-              {sortedCases.length > 0 ? (
-                sortedCases.map((caseItem) => <CaseCard key={caseItem.id} caseItem={caseItem} categories={categories} />)
+              {casesLoading ? (
+                <p className="text-center text-gray-500 mt-20">Loading cases...</p>
+              ) : casesError ? (
+                <p className="text-center text-red-500 mt-20">{casesError}</p>
+              ) : sortedCases.length > 0 ? (
+                sortedCases.map((caseItem) => (
+                  <CaseCard key={caseItem.id} caseItem={caseItem} categories={categories} />
+                ))
               ) : (
                 <p className="text-center text-gray-500 mt-20">No cases found</p>
               )}
@@ -175,6 +234,7 @@ const InputDesign: React.FC = () => {
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
           />
+
         </div>
       </section>
     </main>

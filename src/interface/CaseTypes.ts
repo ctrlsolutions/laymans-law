@@ -1,4 +1,3 @@
-// Existing interfaces
 export interface Case {
     id: string;
     title: string;
@@ -42,6 +41,7 @@ export interface SidebarProps {
     setSelectedCategory: (category: string | null) => void;
     categories: Category[];
 }
+
 
 export const categories: Category[] = [];
 
