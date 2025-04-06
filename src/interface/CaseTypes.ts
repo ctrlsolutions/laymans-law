@@ -23,3 +23,7 @@ name: string;
 color: string;
 icon?: string;
 }
+
+export const categories: Category[] = [];
+
+export const cases: Case[] = [];
