@@ -31,11 +31,15 @@ export default function LawyerHomePage({
     <div>
       {!lastSegment ? (
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col space-y-4">
-          <LawyerDetails />
-          <LawyerNotifs/>
+          <div className="flex flex-col gap-4">
+            <LawyerDetails />
+            <LawyerStats/>
           </div>
-        </div>
+          <div className="flex flex-col gap-4">
+            <LawyerNotifs/>
+            <LawyerCases/>
+          </div>
+        </div> 
       ) : ( 
         children
       )
