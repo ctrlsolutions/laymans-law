@@ -9,6 +9,7 @@ interface HeaderProps {
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   openCaseCount: number;
+  user: { firstName: string } | null; 
 }
 
 const SearchBar: React.FC<{ searchQuery: string; setSearchQuery: React.Dispatch<React.SetStateAction<string>> }> = ({
@@ -97,7 +98,7 @@ const NotificationIcon: React.FC<{
   );
 };
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCount }) => {
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCount, user }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -128,8 +129,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCo
               alt="Profile"
               className="z-10 w-[60px] rounded-full mt-3"
             />
-            {/* <span className="my-auto">{username || "Guest"}</span> */}
-            <span className="my-auto">rexhermoso</span> {/*this is temporary */}
+            <span className="my-auto">{user?.first_name || "Guest"}</span>
           </div>
         </div>
       </div>
