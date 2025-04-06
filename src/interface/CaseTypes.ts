@@ -1,20 +1,13 @@
 export interface Case {
     id: string;
     title: string;
-    category: {
-    name: string;
-    color: string;
-};
-status: {
-    isOpen: boolean;
-    color: string;
-};
-avatar: string;
-lastUpdate: {
-    user: string;
-    time: string;
-};
-description: string;
+    category: Category; // Change from { name: string; color: string } to Category
+    status: string;
+    avatar: string;
+    description: string;
+    case_type: string;
+    created_date: string;
+    created_by: string;
 }
 
 export interface Category {
@@ -23,6 +16,7 @@ name: string;
 color: string;
 icon?: string;
 }
+
 
 export const categories: Category[] = [];
 
