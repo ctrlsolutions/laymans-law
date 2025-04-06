@@ -1,4 +1,5 @@
 import React from 'react';
+import CustomTextarea from '../../Global/BaseTextArea'; // Import the CustomTextarea component
 
 interface RightPanelProps {
   selectedChapter: string;
@@ -11,11 +12,11 @@ export default function RightPanel({ selectedChapter }: RightPanelProps) {
         <h2 className="text-2xl font-bold mb-10 mt-5 ml-6">R.A. Title of Law of the Philippines</h2>
         <p className="text-gray-800 mb-9 ml-6">Chapter {selectedChapter}</p>
 
-          <textarea
-            className="w-full h-full p-4 bg-white resize-none placeholder-gray-500 text-black"
-            placeholder="Enter your summary here..."
-            style={{ textIndent: '1rem' }}
-          />
+        <CustomTextarea
+          placeholder="Enter your summary here..."
+          className="h-96 border-none focus:border-white focus:ring-white ml-3"
+          style={{ textIndent: '2rem' }}
+        />
       </div>
     </div>
   );
