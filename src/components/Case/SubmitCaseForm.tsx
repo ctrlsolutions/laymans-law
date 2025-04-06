@@ -72,12 +72,12 @@ export default function CaseSubmissionForm() {
 
   return (
     <div className=" rounded-lg p-6 sm:p-8">
-        <h1 className="text-md font-extrabold text-gray-900 sm:text-2xl mb-4">
+        <h1 className="text-md font-extrabold text-gray-900 mb-2">
         Submit Case
         </h1>
-        <hr className="mb-9" />
+        <hr className="mb-3" />
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-2">
         <BaseFormInput
             label=" "
             name="title"
@@ -85,7 +85,7 @@ export default function CaseSubmissionForm() {
             value={formData.title}
             onChange={handleChange}
             placeholder="Enter Case Title"
-            className="px-4 py-0 border border-gray-500 rounded-xl text-xl text-black-900 w-full h-20 leading-none"
+            className="px-4 py-0 -mb-3 border border-gray-500 rounded-xl text-md text-black-900 w-full h-10 leading-none"
             required
         />
 
@@ -112,12 +112,12 @@ export default function CaseSubmissionForm() {
             value={formData.details}
             onChange={handleChange}
             placeholder="Enter Case Details"
-            className="h-80"
+            className="h-60"
             required
         />
 
-        <div className="relative border border-gray-300 rounded-lg p-4 h-60">
-            <div className="absolute inset-20 w-22 h-25">
+        <div className="relative border border-gray-300 rounded-lg p-4 h-30">
+            <div className="absolute inset-10 w-15 h-10">
                 <input
                 type="file"
                 multiple
@@ -142,7 +142,7 @@ export default function CaseSubmissionForm() {
                     ))}
                 </ul>
                 ) : (
-                <span className="text-gray-500 text-4xl mt-20">+</span>
+                <span className="text-gray-500 text-2xl mt-7 mb-7">+</span>
                 )}
             </div>
         </div>
