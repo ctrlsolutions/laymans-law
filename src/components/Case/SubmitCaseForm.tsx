@@ -4,10 +4,10 @@ import { useState } from "react";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { SubmitCaseFormData } from "@/interface/ComponentTypes";
+import { SubmitCaseFormData } from "@/interface/CaseTypes";
 import Textarea from "@/components/Global/BaseTextArea";
 import { toast, ToastContainer } from "react-toastify";
-import { submitCase } from "@/services/ProfileServices";
+import { submitCase } from "@/services/CaseServices";
 
 export default function CaseSubmissionForm() {
   const [formData, setFormData] = useState<SubmitCaseFormData>({
