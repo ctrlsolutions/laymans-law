@@ -5,6 +5,7 @@ import BaseButton from '@/components/Global/BaseButton';
 import BaseFormInput from '@/components/Global/BaseFormInput';
 import BaseFormSelect from '@/components/Global/BaseFormSelect';
 import { SubmitCaseFormData } from '@/interface/ComponentTypes';
+import Textarea from '@/components/Global/BaseTextArea';
 
 export default function CaseSubmissionForm() {
   const [formData, setFormData] = useState<SubmitCaseFormData>({
@@ -38,8 +39,20 @@ export default function CaseSubmissionForm() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null; 
-    setFormData(prev => ({ ...prev, file }));
+    const files = e.target.files;
+    if (files) {
+      setFormData((prev) => ({
+        ...prev,
+        files: [...(prev.files || []), ...Array.from(files)], // Append new files to the existing list
+      }));
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: prev.files.filter((_, i) => i !== index), // Remove the file at the specified index
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -58,7 +71,7 @@ export default function CaseSubmissionForm() {
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 sm:p-8">
+    <div className=" rounded-lg p-6 sm:p-8">
         <h1 className="text-md font-extrabold text-gray-900 sm:text-2xl mb-4">
         Submit Case
         </h1>
@@ -72,18 +85,17 @@ export default function CaseSubmissionForm() {
             value={formData.title}
             onChange={handleChange}
             placeholder="Enter Case Title"
-            className="px-4 py-0 border border-gray-500 rounded-xl text-xl text-black-900 w-full h-40 leading-none"
+            className="px-4 py-0 border border-gray-500 rounded-xl text-xl text-black-900 w-full h-20 leading-none"
             required
         />
 
-        <div className="grid grid-cols-2 gap-3 overflow-hidden">
+        <div className="grid grid-cols-2 gap-3 overflow-hidden z-0">
             <BaseFormSelect
             label=" "
             name="legalTopic"
             value={formData.legalTopic}
             choices={legalTopicChoices}
             onChange={handleChange}
-            className="border-r w-48"
             />
 
             <BaseFormSelect
@@ -92,33 +104,47 @@ export default function CaseSubmissionForm() {
             value={formData.caseType}
             choices={caseTypeChoices}
             onChange={handleChange}
-            className="w-48 h-12"
             />
         </div>
 
-        <BaseFormInput
-            label=" "
+        <Textarea
             name="details"
-            type="text"
             value={formData.details}
             onChange={handleChange}
             placeholder="Enter Case Details"
-            className="px-4 py-0 border border-gray-500 rounded-xl text-xl text-black-900 w-full h-60 leading-none"
+            className="h-80"
             required
         />
 
-        <div>
-          <label className="block text-lg font-medium text-gray-700 mb-4">Insert File (if necessary):</label>
-          <div className="mt-1 border border-gray-300 shadow-sm rounded-md p-4 flex items-center justify-center cursor-pointer hover:border-gray-400 h-40 mb-4">
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="absolute opacity-0 w-full h-full cursor-pointer"
-            />
-            <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-md flex items-center justify-center">
-              <span className="text-gray-500 text-sm text-xl">+</span>
+        <div className="relative border border-gray-300 rounded-lg p-4 h-60">
+            <div className="absolute inset-20 w-22 h-25">
+                <input
+                type="file"
+                multiple
+                onChange={handleFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
             </div>
-          </div>
+            <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto">
+                {formData.files && formData.files.length > 0 ? (
+                <ul className="text-md text-gray-700 text-center space-y-1 w-full mt-3 px-8 py-2">
+                    {formData.files.map((file, index) => (
+                    <li key={index} className="flex justify-between items-center bg-gray-100">
+                        <strong className="truncate">{file.name}</strong>
+                        <button
+                        type="button"
+                        onClick={() => handleRemoveFile(index)}
+                        className="text-red-500 hover:text-red-700 text-sm ml-4 mr-2 mb-1 pointer-events-auto"
+                        >
+                        x
+                        </button>
+                    </li>
+                    ))}
+                </ul>
+                ) : (
+                <span className="text-gray-500 text-4xl mt-20">+</span>
+                )}
+            </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
