@@ -83,7 +83,7 @@ const NotificationIcon: React.FC<{
                       {c.title}
                     </p>
                     <p className="text-gray-500 text-[10px]">
-                      {c.lastUpdate.user} • {c.lastUpdate.time}
+                      {c.created_by} • {c.created_by}
                     </p>
                   </div>
                 </li>
