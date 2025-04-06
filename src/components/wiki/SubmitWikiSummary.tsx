@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import LeftPanel from '@/components/wiki/LeftPanelSummary';
-import RightPanel from '@/components/wiki/RightPanelSummary';
+import LeftPanel from '@/components/wiki/component/LeftPanelSummary';
+import RightPanel from '@/components/wiki/component/RightPanelSummary';
 import Button from '@/components/Global/BaseButton';
 import BaseFormSelect from '@/components/Global/BaseFormSelect';
 
@@ -22,7 +22,7 @@ function App() {
   return (
     <div className="w-full h-full flex flex-col p-6 sm:p-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-medium text-black">Submit Summarization</h1>
+        <h1 className="text-lg font-medium text-black -mb-9">Submit Summarization</h1>
         <BaseFormSelect
           label=" "
           name="submissionType"
