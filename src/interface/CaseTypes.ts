@@ -42,3 +42,7 @@ export interface SidebarProps {
     setSelectedCategory: (category: string | null) => void;
     categories: Category[];
 }
+
+export const categories: Category[] = [];
+
+export const cases: Case[] = [];
