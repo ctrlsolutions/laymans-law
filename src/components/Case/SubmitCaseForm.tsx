@@ -116,16 +116,16 @@ export default function CaseSubmissionForm() {
             required
         />
 
-        <div className="relative border border-gray-300 rounded-lg p-4 h-30">
-            <div className="absolute inset-10 w-15 h-10">
-                <input
-                type="file"
-                multiple
-                onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-            </div>
-            <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto">
+          <div className="relative border border-gray-300 rounded-lg p-4 h-30">
+              <div className="absolute inset-20 w-15 h-10 bg-red">
+                  <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+              </div>
+            <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto" style={{ maxHeight: '7.5rem' }}>
                 {formData.files && formData.files.length > 0 ? (
                 <ul className="text-md text-gray-700 text-center space-y-1 w-full mt-3 px-8 py-2">
                     {formData.files.map((file, index) => (
@@ -134,7 +134,7 @@ export default function CaseSubmissionForm() {
                         <button
                         type="button"
                         onClick={() => handleRemoveFile(index)}
-                        className="text-red-500 hover:text-red-700 text-sm ml-4 mr-2 mb-1 pointer-events-auto"
+                        className="text-red-900 hover:text-red-700 text-sm ml-4 mr-2 mb-1 pointer-events-auto"
                         >
                         x
                         </button>
@@ -147,7 +147,7 @@ export default function CaseSubmissionForm() {
             </div>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
             <BaseButton
             color="red"
             onClick={handleCancel}
