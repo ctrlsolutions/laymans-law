@@ -117,7 +117,7 @@ export default function CaseSubmissionForm() {
         />
 
           <div className="relative border border-gray-300 rounded-lg p-4 h-30">
-              <div className="absolute inset-20 w-15 h-10 bg-red">
+              <div className="absolute inset-20 w-15 h-10">
                   <input
                   type="file"
                   multiple
