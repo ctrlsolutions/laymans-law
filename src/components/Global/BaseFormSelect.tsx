@@ -18,7 +18,7 @@ const BaseFormSelect: FC<FormSelectProps> = ({
   return (
     <label
       htmlFor={name}
-      className={`flex flex-col space-y-1 mt-4 text-${color}`}
+      className={`flex flex-col space-y-1 text-${color}`}
     >
       <span className={`font-extrabold ${textSize || 'text-sm'} sm:text-sm md:text-base lg:text-lg xl:text-xl`}>
         {label}
