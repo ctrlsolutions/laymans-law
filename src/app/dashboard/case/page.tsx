@@ -8,6 +8,7 @@ import { useEffect, useRef ,useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchCases } from "@/services/CaseService";
+import AcceptCaseModal from "@/components/Case/AcceptCaseModal";
 
 const sortingOptions = [
   { label: "Latest first", value: "latest" },
@@ -105,11 +106,20 @@ const InputDesign: React.FC = () => {
   const [sortOrder, setSortOrder] = React.useState("latest");
   const [selectedCaseType, setSelectedCaseType] = React.useState("all");
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
+  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
 
   const [cases, setCases] = useState<Case[]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const openModal = (caseItem: Case) => {
+    setSelectedCase(caseItem);
+    setIsModalOpen(true);
+  };
+
+
+  
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
     
@@ -128,6 +138,7 @@ const InputDesign: React.FC = () => {
   
     // Check if the case category matches
     const matchesCategory = selectedCategory === null || caseItem.category.name === selectedCategory;
+
   
     // Search query check (title or category name)
     const matchesSearch = caseItem.title.toLowerCase().includes(query) || caseItem.category.name.toLowerCase().includes(query);
@@ -194,7 +205,7 @@ const InputDesign: React.FC = () => {
 
 
   const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
-
+ 
   return (
     <main className="flex flex-col text-black w-full max:w-100vw font-[Poppins]" role="main">
       <Header 
@@ -206,28 +217,50 @@ const InputDesign: React.FC = () => {
       <section className="self-center mt-10 pb-10 w-full max-w-[976px] h-[calc(100vh-40px)] max-h-[65vh] flex flex-col" aria-label="Case listings">
         <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden">
           <div className="w-[77%] max-md:w-full">
-            <div className="flex flex-col">
-              <BaseFormSelect
-                label=""
-                name="sortOrder"
-                value={sortOrder}
-                choices={sortingOptions}
-                onChange={(e) => setSortOrder(e.target.value)}
-                width="130px"
-              />
-              {casesLoading ? (
-                <p className="text-center text-gray-500 mt-20">Loading cases...</p>
-              ) : casesError ? (
-                <p className="text-center text-red-500 mt-20">{casesError}</p>
-              ) : sortedCases.length > 0 ? (
-                sortedCases.map((caseItem) => (
-                  <CaseCard key={caseItem.id} caseItem={caseItem} categories={categories} />
-                ))
-              ) : (
-                <p className="text-center text-gray-500 mt-20">No cases found</p>
-              )}
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex flex-col justify-start">
+                <BaseFormSelect
+                  label=""
+                  name="sortOrder"
+                  value={sortOrder}
+                  choices={sortingOptions}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  width="130px"
+                />
+                {isModalOpen && (
+                  <AcceptCaseModal
+                    onClose={() => setIsModalOpen(false)}
+                    caseData={selectedCase}
+                  />
+
+                )}
+                {casesLoading ? (
+                  <p className="text-center text-gray-500 mt-20">Loading cases...</p>
+                ) : casesError ? (
+                  <p className="text-center text-red-500 mt-20">{casesError}</p>
+                ) : sortedCases.length > 0 ? (
+                  sortedCases.map((caseItem) => (
+                    <CaseCard
+                      key={caseItem.id}
+                      caseItem={caseItem}
+                      categories={categories}
+                      onClick={() => openModal(caseItem)} // This will now fire properly
+                    />
+
+                  ))                  
+                ) : (
+                  <p className="text-center text-gray-500 mt-20">No cases found</p>
+                )}
+              </div>
             </div>
+
+
+            
           </div>
+
+
+
+
           <Sidebar 
             selectedCaseType={selectedCaseType} 
             setSelectedCaseType={setSelectedCaseType} 
