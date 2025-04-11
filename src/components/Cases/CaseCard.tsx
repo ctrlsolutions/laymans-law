@@ -2,7 +2,7 @@ import React from "react";
 import { Case, Category } from "@/interface/CaseTypes";
 import Card from "@/components/Profile/Card";
 
-const CaseCard: React.FC<{ caseItem: Case; categories: Category[] }> = ({ caseItem, categories }) => {
+const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () => void }> = ({ caseItem, categories, onClick }) => {
   const getCategoryColor = (categoryName: string) => {
     const category = categories.find((c) => c.name === categoryName);
     return category ? category.color : "bg-gray-300";
@@ -25,9 +25,8 @@ const CaseCard: React.FC<{ caseItem: Case; categories: Category[] }> = ({ caseIt
           <span className="mr-2 text-[9.8px] font-bold">{caseItem.case_type}</span>
         </div>
 
-        {/* Main Content */}
-        <div className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90">
-          {/* Avatar */}
+        <div className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-xl" onClick={onClick}>
+
           <img
             src={caseItem.avatar || "https://www.w3schools.com/howto/img_avatar.png"}
             alt="Avatar"
