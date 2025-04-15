@@ -24,6 +24,15 @@ color: string;
 icon?: string;
 }
 
+export type LawData = {
+  id: number;
+  title: string;
+  chapter: string;
+  tags: string[];
+  content: string;
+  translation: string;
+};
+
 export const categories: Category[] = [];
 
 export const cases: Case[] = [];

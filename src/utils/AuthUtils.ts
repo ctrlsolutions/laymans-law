@@ -1,4 +1,4 @@
-const isCheckboxOrRadio = (
+export const isCheckboxOrRadio = (
   element: EventTarget
 ): element is HTMLInputElement => {
   return (
