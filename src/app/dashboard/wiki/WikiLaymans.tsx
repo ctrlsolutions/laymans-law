@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { cases } from "@/interface/CaseTypes";
+import { cases, LawData } from "@/interface/CaseTypes";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
@@ -68,15 +68,6 @@ const TagChip: React.FC<{ label: string }> = ({ label }) => (
     <span>{label}</span>
   </div>
 );
-
-type LawData = {
-  id: number;
-  title: string;
-  chapter: string;
-  tags: string[];
-  content: string;
-  translation: string;
-};
 
 const LawCard: React.FC<{
   law: LawData;
