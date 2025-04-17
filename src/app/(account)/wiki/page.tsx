@@ -4,19 +4,27 @@ import { cases, LawData } from "@/interface/CaseTypes";
 import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import BaseFormInput from "@/components/Global/BaseFormInput";
+import BaseButton from "@/components/Global/BaseButton";
+import { useRouter } from "next/navigation";
 
 type WikiHeaderProps = {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
+  userType: 'lawyer' | 'layman';
 };
 
-const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery }) => {
+const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery, userType }) => {
+  const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("Summary"); 
 
   const handleSelectChange = (value: string) => {
     setSelectedOption(value); 
     console.log("Selected option:", value);
   };
+
+  const handleButtonClick = () => {
+    router.push("/wiki/vote-summary"); 
+  }
 
   return (
     <>
@@ -28,32 +36,62 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery }) 
           Wiki
         </h1>
 
-        <div className="flex text-sm content-center items-baseline gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-          <BaseFormSelect
-            label=""
-            name="Submit"
-            color="[#0D0330]"
-            width="w-35"
-            value={selectedOption} 
-            choices={[
-              { label: "Submit", value: "Submit" },
-              { label: "Summary", value: "Summary" },
-            ]}
-            onChange={(e) => handleSelectChange(e.target.value)}
-          />
-          <BaseFormInput
-            label=""
-            name="Search"
-            type="text"
-            color="black"
-            width="w-[260px]"
-            height="h-[2.5rem]"
-            value={searchQuery}
-            icon="search"
-            placeholder="Search in Wiki"
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        {userType === 'lawyer' ? (
+          // Render this div if userType is 'lawyer'
+          <div className="flex text-sm content-center items-baseline gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
+            <BaseFormSelect
+              label=""
+              name="Submit"
+              color="[#0D0330]"
+              width="w-35" // Consider using w-[8.75rem] for more standard Tailwind if w-35 isn't custom
+              value={selectedOption}
+              choices={[
+                { label: "Submit", value: "Submit" },
+                { label: "Summary", value: "Summary" },
+              ]}
+              onChange={(e) => handleSelectChange(e.target.value)}
+            />
+            <BaseFormInput
+              label=""
+              name="Search"
+              type="text"
+              color="black"
+              width="w-[260px]"
+              height="h-[2.5rem]"
+              value={searchQuery}
+              icon="search"
+              placeholder="Search in Wiki"
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        ) : (
+          // Render this div if userType is 'layman' (or anything else)
+          <div className="flex text-sm content-center items-end gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
+            <BaseButton
+              textColor="white"
+              width="125px"
+              // height="40px"
+              // textSize="text-sm"
+              onClick={handleButtonClick}
+              // You might want to add a background color prop or class here
+              // e.g., className="bg-blue-600 hover:bg-blue-700 ..."
+            >
+              Vote Summary
+            </BaseButton>
+            <BaseFormInput
+              label=""
+              name="Search"
+              type="text"
+              color="black"
+              width="w-[260px]"
+              height="h-[2.5rem]"
+              value={searchQuery}
+              icon="search"
+              placeholder="Search in Wiki"
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        )}
       </nav>
       <div
         className="mx-auto my-0 mt-1.5 w-full h-px bg-black bg-opacity-60 max-w-[1002px]"
@@ -183,6 +221,7 @@ const Page: React.FC = () => {
       <WikiHeader
         searchQuery={wikiSearchQuery}
         setSearchQuery={setWikiSearchQuery}
+        userType="layman" // Change this to 'lawyer' or 'layman' based on your logic
       />
 
       <section
