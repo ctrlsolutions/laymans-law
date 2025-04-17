@@ -13,16 +13,16 @@ const StatisticsInfoComponent: React.FC<StatisticsInfoComponentProps> = ({
         <>
             <div className="w-full flex flex-col items-start text-start gap-3">
                 <div className="w-full">
-                    <p className="text-2xl font-black text-purple-900">{wikiContributions}</p>
-                    <p className="text-lg font-bold text-black">Wiki Contributions</p>
+                    <p className="text-xl font-black text-purple-900">{wikiContributions}</p>
+                    <p className="text-base font-bold text-black">Wiki Contributions</p>
                 </div>
                 <div className="w-full">
-                    <p className="text-2xl font-black text-purple-900">{totalCasesFinished}</p>
-                    <p className="text-lg font-bold text-black">Total Cases Finished</p>
+                    <p className="text-xl font-black text-purple-900">{totalCasesFinished}</p>
+                    <p className="text-base font-bold text-black">Total Cases Finished</p>
                 </div>
                 <div className="w-full">
-                    <p className="text-2xl font-black text-purple-900">{totalActiveCases}</p>
-                    <p className="text-lg font-bold text-black">Total Active Cases</p>
+                    <p className="text-xl font-black text-purple-900">{totalActiveCases}</p>
+                    <p className="text-base font-bold text-black">Total Active Cases</p>
                 </div>
             </div>
         </>

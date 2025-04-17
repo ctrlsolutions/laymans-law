@@ -22,7 +22,7 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
   return (
     <>
       <div className="flex flex-col items-center gap-4">
-        <div className="w-40 h-40 rounded-full overflow-hidden">
+        <div className="w-28 h-28 rounded-full overflow-hidden">
           <img
             src={userData.avatar || defaultAvatar}
             alt={`Profile picture of ${userData.first_name}`}

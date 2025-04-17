@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
+import { toast, ToastContainer } from "react-toastify";
 import Button from "@/components/Global/BaseButton";
+import { getProfile, updateProfile } from "@/services/ProfileServices";
 
 interface SettingsFormProps {
   userType: "layman" | "lawyer";
@@ -11,34 +13,74 @@ interface SettingsFormProps {
 
 export default function SettingsForm({ userType }: SettingsFormProps) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    contactNumber: "",
-    birthday: "",
+    first_name: "",
+    last_name: "",
+    contact_number: "",
+    birth_date: "",
     address: "",
     occupation: "",
     gender: "",
-    rollNumber: "",
-    rolldate: "",
+    roll_number: "",
+    roll_sign_date: "",
   });
+
+  const [editableFields, setEditableFields] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [updatedFields, setUpdatedFields] = useState<Record<string, any>>({});
+
+  const toggleEditable = (field: string) => {
+    if (!(field in editableFields)) {
+      setEditableFields((prev) => ({ ...prev, [field]: true }));
+    }
+  };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Track only changed fields
+    setUpdatedFields((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveChanges = () => {
-    console.log("Saving changes:", formData);
+  const handleSaveChanges = async () => {
+    if (Object.keys(updatedFields).length === 0) {
+      console.log("No changes detected");
+      return;
+    }
+
+    const response = await updateProfile(updatedFields);
+
+    if (response.success) {
+      toast.success("Profile updated successfully!");
+      console.log(response.message);
+      setUpdatedFields({}); // Reset changed fields after save
+    } else {
+      console.error(response.message);
+    }
   };
 
   const handleDeleteAccount = () => {
     console.log("Deleting account");
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await getProfile();
+      if (response.success && response.data) {
+        setFormData(response.data);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <div className="max-w-3xl mx-2 sm:mx-auto sm:p-8 flex flex-col">
-      {/* Scrollable Inputs Container */}
+      <ToastContainer />
       <div className="flex flex-row gap-5">
         <div className="relative">
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">
@@ -59,27 +101,33 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
                 <BaseFormInput
                   icon="edit"
                   label="First Name"
-                  name="firstName"
+                  name="first_name"
                   type="text"
-                  value={formData.firstName}
+                  value={formData.first_name}
                   onChange={handleChange}
+                  disabled={!editableFields.first_name}
+                  onIconClick={() => toggleEditable("first_name")}
                 />
                 <BaseFormInput
                   icon="edit"
                   label="Last Name"
-                  name="lastName"
+                  name="last_name"
                   type="text"
-                  value={formData.lastName}
+                  value={formData.last_name}
                   onChange={handleChange}
+                  disabled={!editableFields.last_name}
+                  onIconClick={() => toggleEditable("last_name")}
                 />
               </div>
               <BaseFormInput
                 icon="edit"
                 label="Contact Number"
-                name="contactNumber"
+                name="contact_number"
                 type="tel"
-                value={formData.contactNumber}
+                value={formData.contact_number}
                 onChange={handleChange}
+                disabled={!editableFields.contact_number}
+                onIconClick={() => toggleEditable("contact_number")}
               />
               <div className="grid grid-cols-2 gap-4 mt-2">
                 <BaseFormInput
@@ -89,41 +137,39 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
                   type="text"
                   value={formData.gender}
                   onChange={handleChange}
+                  disabled={!editableFields.gender}
+                  onIconClick={() => toggleEditable("gender")}
                 />
                 <BaseFormInput
                   icon="edit"
                   label="Birthday"
-                  name="birthday"
+                  name="birth_date"
                   type="date"
-                  value={formData.birthday}
+                  value={formData.birth_date}
                   onChange={handleChange}
+                  disabled={!editableFields.birth_date}
+                  onIconClick={() => toggleEditable("birth_date")}
                 />
               </div>
-              <BaseFormInput
-                icon="edit"
-                label="Occupation"
-                name="occupation"
-                type="text"
-                value={formData.occupation}
-                onChange={handleChange}
-              />
               {userType === "lawyer" && (
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <BaseFormInput
                     label="Roll Number:"
-                    name="rollNumber"
+                    name="roll_number"
                     type="text"
-                    value={formData.rollNumber}
+                    value={formData.roll_number}
                     onChange={handleChange}
-                    className="font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 w-full"
+                    disabled={!editableFields.roll_number}
+                    onIconClick={() => toggleEditable("roll_number")}
                   />
                   <BaseFormInput
                     label="Roll Signed Date:"
-                    name="rolldate"
+                    name="roll_sign_date"
                     type="date"
-                    value={formData.rolldate}
+                    value={formData.roll_sign_date}
                     onChange={handleChange}
-                    className="font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 w-full h-full"
+                    disabled={!editableFields.roll_sign_date}
+                    onIconClick={() => toggleEditable("roll_sign_date")}
                   />
                 </div>
               )}
@@ -132,7 +178,6 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
         </div>
       </div>
 
-      {/* Buttons Outside Scroll Container */}
       <div className="flex justify-between text-sm mt-4">
         <Button color="red" onClick={handleDeleteAccount}>
           Delete Account

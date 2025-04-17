@@ -22,20 +22,24 @@ export default function LawyerHomePage({
 }) {
   const pathName = usePathname();
 
-  const isSettingsPage = pathName.includes("settings");
-  console.log("Current Path:", usePathname());
+  const lastSegment = ["settings", "active-cases"].some(segment => pathName.includes(segment));
+  console.log("Current Path:", lastSegment);
   console.log("Details Component:", details);
 
 
   return (
     <div>
-      {!isSettingsPage ? (
+      {!lastSegment ? (
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col space-y-4">
-          <LawyerDetails />
-          <LawyerNotifs/>
+          <div className="flex flex-col gap-4">
+            <LawyerDetails />
+            <LawyerStats/>
           </div>
-        </div>
+          <div className="flex flex-col gap-4">
+            <LawyerNotifs/>
+            <LawyerCases/>
+          </div>
+        </div> 
       ) : ( 
         children
       )

@@ -71,3 +71,17 @@ export const UserSignup = async (
     return { success: false, message: "An error occurred. Please try again." };
   }
 };
+
+export const UserLogout = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/logout/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    return response;
+  } catch (error) {
+    console.error("Logout failed:", error);
+    throw error;
+  }
+};
