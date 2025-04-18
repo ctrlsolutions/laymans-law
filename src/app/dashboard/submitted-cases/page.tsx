@@ -75,7 +75,8 @@ const InputDesign: React.FC = () => {
 
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
-    const matchesCategory = selectedCategory === null || caseItem.category.name === selectedCategory;
+    const matchesCategory =
+      selectedCategory === null || caseItem.category.name === selectedCategory;
     const matchesSearch =
       caseItem.title.toLowerCase().includes(query) ||
       caseItem.category.name.toLowerCase().includes(query);
@@ -138,47 +139,66 @@ const InputDesign: React.FC = () => {
   }, []);
 
   return (
-    <main className="flex flex-col text-black w-full max:w-100vw font-[Poppins]" role="main">
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} openCaseCount={cases.length} user={user} />
-      <section className="self-center mt-10 pb-10 w-full h-[60vh] max-w-[976px] flex gap-5 max-md:flex-col" aria-label="Case listings">
-        <div className="flex gap-5 max-md:flex-col pb-5">
-          {/* Scrollable Cases Area */}
-          <div className="w-[77%] max-md:w-full max-h-[calc(100vh-60px)] overflow-y-auto pr-2">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex flex-col justify-start">
-                <BaseFormSelect
-                  label=""
-                  name="sortOrder"
-                  value={sortOrder}
-                  choices={sortingOptions}
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  width="130px"
+    <main className="flex flex-col text-black w-full font-[Poppins]" role="main">
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        openCaseCount={cases.length}
+        user={user}
+      />
+
+      <section
+        className="self-center mt-10 pb-10 w-full h-[75vh] max-w-[976px] flex gap-5 max-md:flex-col"
+        aria-label="Case listings"
+      >
+        {/* Main Content */}
+        <div className="flex gap-5 max-md:flex-col pb-5 w-full">
+          {/* Left Section (Cases + Sort Dropdown) */}
+          <div className="w-[77%] max-md:w-full flex flex-col pr-2">
+            {/* Sort Dropdown (static) */}
+            <div className="mb-4">
+              <BaseFormSelect
+                label=""
+                name="sortOrder"
+                value={sortOrder}
+                choices={sortingOptions}
+                onChange={(e) => setSortOrder(e.target.value)}
+                width="130px"
+              />
+            </div>
+
+            {/* Scrollable Cases List */}
+            <div className="overflow-y-auto max-h-[calc(75vh-3rem)] pr-1">
+              {isModalOpen && selectedCase && (
+                <SubmittedCaseModal
+                  onClose={() => setIsModalOpen(false)}
+                  caseData={selectedCase}
                 />
-                {isModalOpen && (
-                  <SubmittedCaseModal onClose={() => setIsModalOpen(false)} caseData={selectedCase} />
-                )}
-                {casesLoading ? (
-                  <p className="text-center text-gray-500 mt-20">Loading cases...</p>
-                ) : casesError ? (
-                  <p className="text-center text-red-500 mt-20">{casesError}</p>
-                ) : sortedCases.length > 0 ? (
-                  sortedCases.map((caseItem) => (
-                    <LaymanCaseCard
-                      key={caseItem.id}
-                      caseItem={caseItem}
-                      categories={categories}
-                      onClick={() => openModal(caseItem)}
-                    />
-                  ))
-                ) : (
-                  <p className="text-center text-gray-500 mt-20">No cases found</p>
-                )}
-              </div>
+              )}
+              {casesLoading ? (
+                <p className="text-center text-gray-500 mt-20">Loading cases...</p>
+              ) : casesError ? (
+                <p className="text-center text-red-500 mt-20">{casesError}</p>
+              ) : sortedCases.length > 0 ? (
+                sortedCases.map((caseItem) => (
+                  <LaymanCaseCard
+                    key={caseItem.id}
+                    caseItem={caseItem}
+                    categories={categories}
+                    onClick={() => openModal(caseItem)}
+                  />
+                ))
+              ) : (
+                <p className="text-center text-gray-500 mt-20">No cases found</p>
+              )}
             </div>
           </div>
 
-          {/* Static Sidebar */}
-          <Sidebar selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+          {/* Right Section (Sidebar) */}
+          <Sidebar
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
         </div>
       </section>
     </main>
