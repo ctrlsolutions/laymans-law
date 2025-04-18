@@ -246,12 +246,11 @@ const Page: React.FC = () => {
     loadLaws();
   }, []);
   
-  
 
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
-        firstName={profile.first_name} 
+        firstName={profile ? profile.first_name : ''} 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
