@@ -24,15 +24,18 @@ color: string;
 icon?: string;
 }
 
-export type LawData = {
-  id: number;
-  title: string;
-  chapter: string;
-  tags: string[];
-  content: string;
-  translation: string;
+export interface LawData {
+    id: number;
+    title: string;
+    chapter: string;
+    tags: string[];
+    content: string;
+    translation: {
+    language_tagalog: string;
+    language_bisaya: string;
+    language_waray: string;
 };
-
+}
 export const categories: Category[] = [];
 
 export const cases: Case[] = [];
