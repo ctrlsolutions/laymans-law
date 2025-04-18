@@ -5,6 +5,7 @@ import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { fetchAllLaws } from "@/services/WikiServices";
+import { getProfile } from "@/services/ProfileServices";
 import BaseButton from "@/components/Global/BaseButton";
 import { useRouter } from "next/navigation";
 
@@ -181,7 +182,22 @@ const Page: React.FC = () => {
 
   const [selectedLanguage, setSelectedLanguage] = useState("Tagalog"); 
   const [userType, setUserType] = useState<"layman" | "lawyer">("layman");
+  const [profile, setProfile] = useState<any>(null); 
   
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await getProfile();
+      if (response.success) {
+        setProfile(response.data); // Set the profile data
+      } else {
+        console.error("Error fetching profile:", response.message);
+      }
+    };
+
+    fetchProfile(); // Fetch the profile when the component mounts
+  }, []);
+  
+
   useEffect(() => {
     const storedUserType = localStorage.getItem("user_type");
     if (storedUserType === "layman" || storedUserType === "lawyer") {
@@ -235,6 +251,7 @@ const Page: React.FC = () => {
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
+        firstName={profile.first_name} 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
