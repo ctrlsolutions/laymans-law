@@ -4,6 +4,7 @@ import { cases, LawData } from "@/interface/CaseTypes";
 import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import BaseFormInput from "@/components/Global/BaseFormInput";
+import { fetchAllLaws } from "@/services/WikiServices";
 import BaseButton from "@/components/Global/BaseButton";
 import { useRouter } from "next/navigation";
 
@@ -12,6 +13,7 @@ type WikiHeaderProps = {
   setSearchQuery: (value: string) => void;
   userType: 'lawyer' | 'layman';
 };
+
 
 const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery, userType }) => {
   const router = useRouter();
@@ -48,6 +50,7 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery, us
               choices={[
                 { label: "Submit", value: "Submit" },
                 { label: "Summary", value: "Summary" },
+                { label: "Translation", value: "Translation" },
               ]}
               onChange={(e) => handleSelectChange(e.target.value)}
             />
@@ -130,34 +133,43 @@ const LawCard: React.FC<{
   </article>
 );
 
-const MainContent: React.FC<LawData> = ({ title, chapter, content, translation }) => (
+const MainContent: React.FC<LawData & {
+  selectedLanguage: string;
+  setSelectedLanguage: (lang: string) => void;
+}> = ({ title, chapter, content, translation, selectedLanguage, setSelectedLanguage }) => (
   <article className="h-100% flex-1 p-10 bg-white border border-gray rounded-2xl overflow-y-auto shadow-sm max-sm:hidden">
-      <h1 className="mb-5 text-xl font-semibold">{title}</h1>
-      <p className="mb-5 text-xs">{chapter}</p>
-      <div className="mb-8 text-xs px-1.5 leading-relaxed h-[calc(36vh-70px)] overflow-y-auto">{content}</div>
-      <hr className="my-8 h-px bg-black bg-opacity-60" />
-      <div className="flex justify-between items-center">
-        <h2 className="mb-5 text-base items-start">Translation</h2>
-        <BaseFormSelect
-            label=""
-            name="Language"
-            color="[#0D0330]"
-            width="w-30"
-            value="Language"
-            choices={[
-              { label: "Language", value: "" },
-              { label: "Tagalog", value: "Tagalog" },
-              { label: "Cebuano", value: "Cebuano" },
-              { label: "English", value: "English" }, 
-              { label: "Ilocano", value: "Ilocano" },
-              { label: "Waray", value: "Waray" },
-            ]}
-            onChange={() => {}}
-          />
-      </div>
-      <div className="text-xs leading-relaxed">{translation}</div>
+    <h1 className="mb-5 text-xl font-semibold">{title}</h1>
+    <p className="mb-5 text-xs">{chapter}</p>
+    <div className="mb-8 text-xs px-1.5 leading-relaxed h-[calc(36vh-70px)] overflow-y-auto">{content}</div>
+    <hr className="my-8 h-px bg-black bg-opacity-60" />
+    <div className="flex justify-between items-center">
+      <h2 className="mb-5 text-base items-start">Translation</h2>
+      <BaseFormSelect
+        label=""
+        name="Language"
+        color="[#0D0330]"
+        width="w-30"
+        value={selectedLanguage}
+        choices={[
+          { label: "Tagalog", value: "Tagalog" },
+          { label: "Cebuano", value: "Cebuano" },
+          { label: "Waray", value: "Waray" },
+        ]}
+        onChange={(e) => setSelectedLanguage(e.target.value)}
+      />
+    </div>
+    <div className="text-xs leading-relaxed mt-4">
+      {selectedLanguage === "Tagalog"
+        ? translation.language_tagalog
+        : selectedLanguage === "Cebuano"
+        ? translation.language_bisaya
+        : selectedLanguage === "Waray"
+        ? translation.language_waray
+        : "No translation available"}
+    </div>
   </article>
 );
+
 
 const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState(""); 
@@ -167,35 +179,19 @@ const Page: React.FC = () => {
 
   const sectionRef = useRef<HTMLDivElement>(null); 
 
-  const openCaseCount = cases.filter((c) => c.status === "open").length;
+  const [selectedLanguage, setSelectedLanguage] = useState("Tagalog"); 
+  const [userType, setUserType] = useState<"layman" | "lawyer">("layman");
+  
+  useEffect(() => {
+    const storedUserType = localStorage.getItem("user_type");
+    if (storedUserType === "layman" || storedUserType === "lawyer") {
+      setUserType(storedUserType);
+    }
+  }, []);
 
-  // Sample laws
-  const laws: LawData[] = [
-    {
-      id: 1,
-      title: "R.A. Title of Law One",
-      chapter: "Chapter 1",
-      tags: ["divorce", "family"],
-      content: "Law One content about divorce and legal aspects...",
-      translation: "Translation for Law One goes here...",
-    },
-    {
-      id: 2,
-      title: "R.A. Title of Law Two",
-      chapter: "Chapter 2",
-      tags: ["property", "land"],
-      content: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum..    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum...    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum...    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum...    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum...",
-      translation: "Translation for Law Two goes here...",
-    },
-    {
-      id: 3,
-      title: "R.A. Title of Law Three",
-      chapter: "Chapter 3",
-      tags: ["labor", "wages"],
-      content: "Law Three is focused on fair labor practices...",
-      translation: "Translation for Law Three goes here...",
-    },
-  ];
+  const openCaseCount = cases.filter((c) => c.status.isOpen).length;
+
+  const [laws, setLaws] = useState<LawData[]>([]);
 
   const filteredLaws = laws.filter(
     (law) =>
@@ -210,6 +206,32 @@ const Page: React.FC = () => {
     }
   }, [filteredLaws, selectedLaw]);
 
+  useEffect(() => {
+    const loadLaws = async () => {
+      const result = await fetchAllLaws();
+      if (result) {
+        setLaws(
+          result.map((law) => ({
+            id: law.id,
+            title: law.title,
+            chapter: law.code,
+            tags: law.tags || [],
+            content: law.full_law || law.summary?.summary || "",
+            translation: {
+              language_tagalog: law.translation?.language_tagalog || "Walang Tagalog na salin.",
+              language_bisaya: law.translation?.language_bisaya || "Walay Bisaya nga hubad.",
+              language_waray: law.translation?.language_waray || "Waray hin Waray nga hubad.",
+            },
+          }))
+        );
+      }
+    };
+  
+    loadLaws();
+  }, []);
+  
+  
+
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
@@ -221,7 +243,7 @@ const Page: React.FC = () => {
       <WikiHeader
         searchQuery={wikiSearchQuery}
         setSearchQuery={setWikiSearchQuery}
-        userType="layman" // Change this to 'lawyer' or 'layman' based on your logic
+        userType={userType} // Change this to 'lawyer' or 'layman' based on your logic
       />
 
       <section
@@ -243,7 +265,11 @@ const Page: React.FC = () => {
 
         {selectedLaw ? (
           <div className="flex-1 overflow-y-hidden max-h-full rounded-lg">
-            <MainContent {...selectedLaw} />
+            <MainContent
+              {...selectedLaw}
+              selectedLanguage={selectedLanguage}
+              setSelectedLanguage={setSelectedLanguage}
+            />
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400 italic">
