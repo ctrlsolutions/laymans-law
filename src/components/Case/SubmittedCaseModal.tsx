@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import Button from "@/components/Global/BaseButton";
+import { useRouter } from "next/navigation";
+import { Pen } from "lucide-react";
+import BaseButton from "@/components/Global/BaseButton";
+import EditCaseModal from "@/components/Case/EditCaseModal";
+
+
 
 interface Case {
   id: string;
@@ -24,6 +29,11 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
   const [showAllMedia, setShowAllMedia] = useState(false);
   const [showAllFiles, setShowAllFiles] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const router = useRouter();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+
+  
 
   const mediaImages = caseData.media ?? [
     "/defaultphoto.jpg",
@@ -43,6 +53,49 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
     "court_documents.pdf",
     "photos.zip",
   ];
+
+  // Commented-out real API calls for now
+  /*
+  const handleAccept = async () => {
+    try {
+      const response = await fetch(`/api/cases/${caseData.id}/accept`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("Case accepted successfully");
+        onClose();
+      } else {
+        console.error("Failed to accept case:", result.message);
+      }
+    } catch (error) {
+      console.error("Error during accept:", error);
+    }
+  };
+
+  const handleDecline = async () => {
+    try {
+      const response = await fetch(`/api/cases/${caseData.id}/decline`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("Case declined successfully");
+        onClose();
+      } else {
+        console.error("Failed to decline case:", result.message);
+      }
+    } catch (error) {
+      console.error("Error during decline:", error);
+    }
+  };
+  */
 
   const handleAccept = () => {
     alert("Case accepted (mock)");
@@ -73,7 +126,6 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
     link.click();
   };
 
-  const isCaseClosed = caseData.status.toLowerCase() === "closed";
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -83,26 +135,35 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
             {/* Top Panel */}
             <div className="mb-4">
               <button onClick={onClose} className="text-gray-500 hover:text-black mb-4">
-                ← Back
+                ← Back to Submitted Cases
               </button>
               <h2 className="text-3xl font-bold mb-2">{caseData.title}</h2>
               <div className="flex items-center gap-2 mb-2">
-                <span className="inline-block bg-gray-200 text-gray-800 text-xs px-3 py-1 rounded-full">
-                  {caseData.category} Case
-                </span>
-                <span
-                  className={`inline-block text-xs px-3 py-1 rounded-full font-medium ${
-                    caseData.status.toLowerCase() === "open"
-                      ? "bg-green-800 text-white"
-                      : "bg-red text-white"
-                  }`}
+                <p className="text-sm text-gray-500">
+                  Submitted: <strong>{new Date(caseData.createdAt).toLocaleDateString()}</strong>
+                </p>
+                <button
+                  onClick={() => 
+                    setIsEditModalOpen(true)}
+                    // Commented-out logic for real fetch
+                    /*
+                    fetch(`/api/cases/${caseData.id}`)
+                      .then(res => res.json())
+                      .then(data => {
+                        navigate(`/edit-case/${caseData.id}`, { state: { case: data } });
+                      })
+                      .catch(err => console.error("Failed to fetch case before editing", err));
+                    */
+
+                    // Temporary mock navigation
+    
+                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-black hover:underline transition-colors"
                 >
-                  {caseData.status.charAt(0).toUpperCase() + caseData.status.slice(1)}
-                </span>
+                  <span>Edit</span>
+                  <Pen className="w-3 h-3" />
+                </button>
+                
               </div>
-              <p className="text-sm text-gray-500">
-                Submitted: <strong>{new Date(caseData.createdAt).toLocaleDateString()}</strong>
-              </p>
             </div>
 
             {/* Middle Scrollable Panel */}
@@ -141,34 +202,26 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
             )}
 
             </div>
-
-
             {/* Bottom Buttons */}
             <div className="pt-4 border-t">
-              <div className="flex justify-between">
-                <Button
-                  color="violet"
-                  textColor="white"
-                  onClick={handleAccept}
-                  disabled={isCaseClosed}
-                >
-                  Accept
-                </Button>
-                <Button
+              <div className="flex justify-end">
+                <BaseButton
                   color="red"
                   textColor="white"
-                  onClick={handleDecline}
-                  disabled={isCaseClosed}
+                  onClick={() => {
+                    alert("Case cancelled (mock)");
+                    onClose();
+                  }}
                 >
-                  Decline
-                </Button>
+                  Cancel Case
+                </BaseButton>
               </div>
             </div>
           </div>
 
           {/* Right Panel */}
           <div className="w-1/3 bg-gray-100 p-6 border-l border-gray-200 flex flex-col">
-            {/* Fixed Profile Info */}
+            {/*  Profile Info */}
             <div className="flex-shrink-0 mb-4 text-center">
               <img
                 src="/defaultphoto.jpg"
@@ -189,7 +242,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
 
             <hr className="w-full border-gray-300 mb-2" />
 
-            {/* Scrollable Media + Files */}
+            {/* Media + Files */}
             <div className="overflow-y-auto space-y-4 flex-grow">
               {/* Media Section */}
               <div>
@@ -259,7 +312,6 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
         </div>
       </div>
 
-      {/* Image Modal Overlay */}
       {selectedImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
@@ -273,15 +325,27 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
             />
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute top-2 right-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded hover:bg-opacity-75"
+              className="absolute top-2 right-3 text-white bg-black bg-opacity-50 px-2 py-1 rounded hover:bg-opacity-75"
             >
               ✕
             </button>
           </div>
         </div>
       )}
+
+      {isEditModalOpen && (
+        <EditCaseModal
+          caseData={caseData}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </>
+    
   );
+
+
+  
+
 };
 
 export default CaseModal;
