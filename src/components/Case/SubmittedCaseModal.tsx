@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pen } from "lucide-react";
+import { FaPen } from "react-icons/fa";
 import BaseButton from "@/components/Global/BaseButton";
 import EditCaseModal from "@/components/Case/EditCaseModal";
 
@@ -160,7 +160,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
                   className="flex items-center gap-1 text-sm text-gray-500 hover:text-black hover:underline transition-colors"
                 >
                   <span>Edit</span>
-                  <Pen className="w-3 h-3" />
+                  <FaPen className="w-3 h-3" />
                 </button>
                 
               </div>
