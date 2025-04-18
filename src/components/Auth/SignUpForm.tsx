@@ -32,6 +32,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
   const [errors, setErrors] = useState<Partial<SignupData>>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     setForm((prevForm) => ({
@@ -141,17 +142,18 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
         {/* Gender & Birth Date */}
         <div className="grid grid-cols-2 gap-6 mb-2">
-          <BaseFormSelect
-            label="Select Gender"
-            name="gender"
-            value={form.gender}
-            choices={[
-              { label: "Male", value: "M" },
-              { label: "Female", value: "F" },
-              { label: "Other", value: "O" },
-            ]}
-            onChange={handleChange}
-          />
+        <BaseFormSelect
+          label="Select Gender"
+          name="gender"
+          value={form.gender}
+          choices={[
+            { label: "Select", value: "" }, 
+            { label: "Male", value: "M" },
+            { label: "Female", value: "F" },
+            { label: "Other", value: "O" },
+          ]}
+          onChange={handleChange}
+        />
 
           <BaseFormInput
             label="Date of Birth"
@@ -195,7 +197,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <BaseFormInput
           label="Password"
           name="password"
-          type="password"
+          type={showPassword ? "text" : "password"} 
           color={userType === "layman" ? "red" : "blue"}
           icon={showPassword ? "passhide" : "pass"}
           value={form.password}
@@ -206,18 +208,20 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <BaseFormInput
           label="Re-Type Password"
           name="confirm_password"
-          type="password"
+          type={showConfirmPassword ? "text" : "password"} 
           color={userType === "layman" ? "red" : "blue"}
-          icon={showPassword ? "passhide" : "pass"}
+          icon={showConfirmPassword ? "passhide" : "pass"}
           value={form.confirm_password}
           onChange={handleChange}
           onBlur={handleBlur}
-          onIconClick={() => setShowPassword(!showPassword)}
+          onIconClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword
         />
         {errors.confirm_password && (
           <p className="text-red-500 text-sm">{errors.confirm_password}</p>
         )}
-        <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+        <div className="mt-6">
+          <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+        </div>
       </form>
     </div>
   );
