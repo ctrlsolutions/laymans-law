@@ -8,9 +8,11 @@ import { toast } from "react-toastify";
 export default function AccountLayout({
   lawyer,
   layman,
+  children,
 }: {
   lawyer: React.ReactNode;
   layman: React.ReactNode;
+  children: React.ReactNode;
 }) {
   const handleLogout = async () => {
     try {
@@ -52,8 +54,8 @@ export default function AccountLayout({
             name: "Submitted Cases",
             path: (id: string) => `/${id}`,
           },
-          { key: "wiki", name: "Wiki", path: (id: string) => `/${id}` },
-          { key: "forum", name: "Forum", path: (id: string) => `/${id}` },
+          { key: "wiki", name: "Wiki", path: () => `/wiki` },
+          { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "settings",
             name: "Settings",
@@ -68,8 +70,8 @@ export default function AccountLayout({
             name: "Active Cases",
             path: (id: string) => `/${id}/active-cases`,
           },
-          { key: "wiki", name: "Wiki", path: (id: string) => `/wiki` },
-          { key: "forum", name: "Forum", path: (id: string) => `/forum` },
+          { key: "wiki", name: "Wiki", path: () => `/wiki` },
+          { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "settings",
             name: "Settings",
