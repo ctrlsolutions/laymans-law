@@ -55,11 +55,7 @@ export default function AccountLayout({
             path: (id: string) => `/${id}`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
-<<<<<<< HEAD
-          { key: "forum", name: "Forum", path: () => `/forum` },
-=======
           { key: "forum", name: "Forum", path: (id: string) => `/${id}` },
->>>>>>> 014d5e4 ([feat][caleb] adds routing for wiki page)
           {
             key: "settings",
             name: "Settings",
@@ -75,11 +71,7 @@ export default function AccountLayout({
             path: (id: string) => `/${id}/active-cases`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
-<<<<<<< HEAD
-          { key: "forum", name: "Forum", path: () => `/forum` },
-=======
           { key: "forum", name: "Forum", path: (id: string) => `/forum` },
->>>>>>> 014d5e4 ([feat][caleb] adds routing for wiki page)
           {
             key: "settings",
             name: "Settings",
