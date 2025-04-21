@@ -40,13 +40,12 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery, us
         </h1>
 
         {userType === 'lawyer' ? (
-          // Render this div if userType is 'lawyer'
           <div className="flex text-sm content-center items-baseline gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
             <BaseFormSelect
               label=""
               name="Submit"
               color="[#0D0330]"
-              width="w-35" // Consider using w-[8.75rem] for more standard Tailwind if w-35 isn't custom
+              width="w-[8.75rem]"
               value={selectedOption}
               choices={[
                 { label: "Submit", value: "Submit" },
@@ -69,16 +68,13 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({ searchQuery, setSearchQuery, us
             />
           </div>
         ) : (
-          // Render this div if userType is 'layman' (or anything else)
           <div className="flex text-sm content-center items-end gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
             <BaseButton
               textColor="white"
               width="125px"
-              // height="40px"
-              // textSize="text-sm"
+              height="40px"
+              textSize="text-sm"
               onClick={handleButtonClick}
-              // You might want to add a background color prop or class here
-              // e.g., className="bg-blue-600 hover:bg-blue-700 ..."
             >
               Vote Summary
             </BaseButton>
@@ -138,13 +134,13 @@ const MainContent: React.FC<LawData & {
   selectedLanguage: string;
   setSelectedLanguage: (lang: string) => void;
 }> = ({ title, chapter, content, translation, selectedLanguage, setSelectedLanguage }) => (
-  <article className="h-100% flex-1 p-10 bg-white border border-gray rounded-2xl overflow-y-auto shadow-sm max-sm:hidden">
-    <h1 className="mb-5 text-xl font-semibold">{title}</h1>
-    <p className="mb-5 text-xs">{chapter}</p>
-    <div className="mb-8 text-xs px-1.5 leading-relaxed h-[calc(36vh-70px)] overflow-y-auto">{content}</div>
-    <hr className="my-8 h-px bg-black bg-opacity-60" />
-    <div className="flex justify-between items-center">
-      <h2 className="mb-5 text-base items-start">Translation</h2>
+  <article className="h-full flex-1 p-10 bg-white border border-gray rounded-2xl shadow-sm overflow-y-auto max-h-[calc(72vh-156px)] shadow-sm max-sm:hidden">
+      <h1 className="mb-5 text-xl font-semibold">{title}</h1>
+      <p className="mb-5 text-xs">{chapter}</p>
+      <div className="mb-20 text-xs px-1.5 leading-relaxed overflow-y-auto">{content}</div>
+      <hr className="my-8 h-px bg-black bg-opacity-60" />
+      <div className="flex justify-between items-center">
+        <h2 className="text-base items-start">Translation</h2>
       <BaseFormSelect
         label=""
         name="Language"
@@ -188,13 +184,13 @@ const Page: React.FC = () => {
     const fetchProfile = async () => {
       const response = await getProfile();
       if (response.success) {
-        setProfile(response.data); // Set the profile data
+        setProfile(response.data);
       } else {
         console.error("Error fetching profile:", response.message);
       }
     };
 
-    fetchProfile(); // Fetch the profile when the component mounts
+    fetchProfile(); 
   }, []);
   
 
@@ -259,12 +255,12 @@ const Page: React.FC = () => {
       <WikiHeader
         searchQuery={wikiSearchQuery}
         setSearchQuery={setWikiSearchQuery}
-        userType={userType} // Change this to 'lawyer' or 'layman' based on your logic
+        userType={userType}
       />
 
       <section
         ref={sectionRef}
-        className={`flex gap-20 p-10 mx-20 max-w-none max-md:flex-col max-sm:p-2.5 h-[calc(78vh-100px)] ${
+        className={`flex gap-10 p-10 mx-20 max-w-none max-md:flex-col max-sm:p-2.5 h-[calc(74vh-100px)] ${
           isOverflowing ? "overflow-y-auto" : "overflow-hidden"
         }`}
       >
