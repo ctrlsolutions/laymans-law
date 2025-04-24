@@ -55,7 +55,7 @@ export default function AccountLayout({
             path: (id: string) => `/${id}`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
-          { key: "forum", name: "Forum", path: (id: string) => `/${id}` },
+          { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "settings",
             name: "Settings",
@@ -71,7 +71,7 @@ export default function AccountLayout({
             path: (id: string) => `/${id}/active-cases`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
-          { key: "forum", name: "Forum", path: (id: string) => `/forum` },
+          { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "settings",
             name: "Settings",
@@ -87,7 +87,8 @@ export default function AccountLayout({
   let contentToShow;
   if (isWikiPage ) {
     contentToShow = children;
-  } else {
+  }
+  else {
     contentToShow = userType === 'layman' ? layman : lawyer;
   }
 
