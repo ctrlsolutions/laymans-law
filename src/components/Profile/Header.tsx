@@ -68,7 +68,7 @@ const NotificationIcon: React.FC<{
               {cases.map((c) => (
                 <li
                   key={c.id}
-                  className="flex items-center space-x-3 text-xs text-gray-700 py-2 border-b last:border-b-0"
+                  className="flex items-center space-x-3 text-xs text-black py-2 border-b last:border-b-0"
                 >
                   <img
                     src={c.avatar}
@@ -82,7 +82,7 @@ const NotificationIcon: React.FC<{
                     >
                       {c.title}
                     </p>
-                    <p className="text-gray-500 text-[10px]">
+                    <p className="text-black text-[10px]">
                       {c.created_by} • {c.created_by}
                     </p>
                   </div>
@@ -90,7 +90,7 @@ const NotificationIcon: React.FC<{
               ))}
             </ul>
           ) : (
-            <p className="text-center text-gray-500 text-sm mt-5 p-2 pb-6">No Notifications</p>
+            <p className="text-center text-black text-sm mt-5 p-2 pb-6">No Notifications</p>
           )}
         </div>
       )}
@@ -103,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCo
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <header className="p-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
+    <header className="pr-20 w-[77vw] justify-start bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
       <div className="flex max-md:flex-col">
         <div className="w-[77%] max-md:w-full">
           <div className="flex flex-wrap gap-6 text-xs">
@@ -129,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCo
               alt="Profile"
               className="z-10 w-[60px] rounded-full mt-3"
             />
-            <span className="my-auto">{user?.first_name || "Guest"}</span>
+            <span className="my-auto text-black">{user?.first_name || "Guest"}</span>
           </div>
         </div>
       </div>

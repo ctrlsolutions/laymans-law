@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchCases } from "@/services/CaseService";
-import SubmittedCaseModal from "@/components/Case/SubmittedCaseModal";
+import { useRouter } from "next/navigation";
 
 const sortingOptions = [
   { label: "Latest first", value: "latest" },
@@ -58,20 +58,18 @@ const Sidebar: React.FC<{
 );
 
 const InputDesign: React.FC = () => {
+  const router = useRouter();
+
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("latest");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
 
   const [cases, setCases] = useState<Case[]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = (caseItem: Case) => {
-    setSelectedCase(caseItem);
-    setIsModalOpen(true);
-  };
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
@@ -90,9 +88,6 @@ const InputDesign: React.FC = () => {
       return new Date(a.created_date).getTime() - new Date(b.created_date).getTime();
     }
   });
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -151,11 +146,8 @@ const InputDesign: React.FC = () => {
         className="self-center mt-10 pb-10 w-full h-[75vh] max-w-[976px] flex gap-5 max-md:flex-col"
         aria-label="Case listings"
       >
-        {/* Main Content */}
         <div className="flex gap-5 max-md:flex-col pb-5 w-full">
-          {/* Left Section (Cases + Sort Dropdown) */}
-          <div className="w-[77%] max-md:w-full flex flex-col pr-2">
-            {/* Sort Dropdown (static) */}
+          <div className="w-[90%] max-md:w-full flex flex-col p-0">
             <div className="mb-4">
               <BaseFormSelect
                 label=""
@@ -167,14 +159,7 @@ const InputDesign: React.FC = () => {
               />
             </div>
 
-            {/* Scrollable Cases List */}
             <div className="overflow-y-auto max-h-[calc(75vh-3rem)] pr-1">
-              {isModalOpen && selectedCase && (
-                <SubmittedCaseModal
-                  onClose={() => setIsModalOpen(false)}
-                  caseData={selectedCase}
-                />
-              )}
               {casesLoading ? (
                 <p className="text-center text-gray-500 mt-20">Loading cases...</p>
               ) : casesError ? (
@@ -185,7 +170,7 @@ const InputDesign: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() => openModal(caseItem)}
+                    onClick={() => router.push(`/dashboard/submitted-cases/${caseItem.id}`)}
                   />
                 ))
               ) : (
@@ -194,7 +179,6 @@ const InputDesign: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Section (Sidebar) */}
           <Sidebar
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}

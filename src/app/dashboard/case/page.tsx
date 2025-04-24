@@ -8,7 +8,7 @@ import { useEffect, useRef ,useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchCases } from "@/services/CaseService";
-import AcceptCaseModal from "@/components/Case/AcceptCaseModal";
+import { useRouter } from "next/navigation";
 
 const sortingOptions = [
   { label: "Latest first", value: "latest" },
@@ -112,6 +112,7 @@ const InputDesign: React.FC = () => {
   const [casesLoading, setCasesLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   const openModal = (caseItem: Case) => {
     setSelectedCase(caseItem);
@@ -244,7 +245,7 @@ const InputDesign: React.FC = () => {
                       key={caseItem.id}
                       caseItem={caseItem}
                       categories={categories}
-                      onClick={() => openModal(caseItem)} // This will now fire properly
+                      onClick={() => router.push(`/dashboard/case/${caseItem.id}`)}
                     />
 
                   ))                  
