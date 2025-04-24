@@ -55,7 +55,7 @@ export default function AccountLayout({
             path: (id: string) => `/${id}`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
-          { key: "forum", name: "Forum", path: () => `/forum` },
+          { key: "forum", name: "Forum", path: (id: string) => `/${id}` },
           {
             key: "settings",
             name: "Settings",
@@ -71,7 +71,7 @@ export default function AccountLayout({
             path: (id: string) => `/${id}/active-cases`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
-          { key: "forum", name: "Forum", path: () => `/forum` },
+          { key: "forum", name: "Forum", path: (id: string) => `/forum` },
           {
             key: "settings",
             name: "Settings",
@@ -81,6 +81,15 @@ export default function AccountLayout({
 
   const activeTab =
     tabs.find((tab) => pathname === tab.path(userId))?.name || "";
+  
+  const isWikiPage = pathname === '/wiki';
+
+  let contentToShow;
+  if (isWikiPage ) {
+    contentToShow = children;
+  } else {
+    contentToShow = userType === 'layman' ? layman : lawyer;
+  }
 
   const sidebarBg = userType === "lawyer" ? "bg-blue/60" : "bg-red/60";
 
@@ -117,7 +126,7 @@ export default function AccountLayout({
         </button>
       </div>
       <div className="h-[95vh] w-[90vw] bg-white p-10 pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
-        {userType === "layman" ? layman : lawyer}
+        {contentToShow}
       </div>
     </div>
   );

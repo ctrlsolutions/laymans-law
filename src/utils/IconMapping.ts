@@ -10,6 +10,7 @@ import {
 import { IconType } from "react-icons";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineModeEdit } from "react-icons/md";
+import { CiSearch } from "react-icons/ci";
 
 export const iconMapping: Record<string, IconType> = {
   email: FiMail,
@@ -20,4 +21,5 @@ export const iconMapping: Record<string, IconType> = {
   hash: FiHash,
   calendar: FiCalendar,
   edit: MdOutlineModeEdit,
+  search: CiSearch,
 };
