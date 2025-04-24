@@ -2,20 +2,18 @@
 
 import { usePathname } from "next/navigation";
 import React from "react";
+import CasePage from "@/components/Cases/BrowseCaseComponent";
+
 //import BrowseCasesComponent from "@/components/Lawyer/BrowseCasesComponent";
 
-export default function LawyerCasesPage({ children }: { children: React.ReactNode }) {
-    const pathname = usePathname();
-    const pathSegments = pathname.split("/").filter(Boolean);
-    const lastSegment = pathSegments[pathSegments.length - 1];
+export default function LawyerCasesPage({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const lastSegment = pathSegments[pathSegments.length - 1];
 
-    return (
-        <>
-            {lastSegment === "browse" ? (
-                <h1> BROWSE CASES</h1>
-            ) : (
-                children
-            )}
-        </>
-    );
+  return <>{lastSegment === "browse" ? <CasePage /> : children}</>;
 }

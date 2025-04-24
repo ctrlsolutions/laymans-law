@@ -45,7 +45,7 @@ export default function AccountLayout({
           {
             key: "submit",
             name: "Submit Case",
-            path: (id: string) => `/${id}`,
+            path: () => `/submit-case`,
           },
           {
             key: "submitted",
