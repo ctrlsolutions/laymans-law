@@ -32,6 +32,15 @@ export const CasePage: React.FC = () => {
     selectedCategory
   );
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+
+  const openModal = (caseItem: Case) => {
+    setSelectedCase(caseItem);
+    setIsModalOpen(true);
+  };
+
+
   const openCaseCount = filteredAndSortedCases.filter(
     (c) => c.status === "open"
   ).length;
@@ -117,6 +126,7 @@ export const CasePage: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
+                    onClick={() => openModal(caseItem)}
                   />
                 ))
               ) : (
