@@ -19,8 +19,4 @@ export interface Category {
 
 export const categories: Category[] = [];
 
-<<<<<<< HEAD
 export const cases: Case[] = [];
-=======
-export const cases: Case[] = [];
->>>>>>> a4beffd ([feat][lanie] added casetypes.ts)
