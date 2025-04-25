@@ -4,13 +4,7 @@ import { CiBellOn, CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { cases } from "@/interface/CaseTypes";
-
-interface HeaderProps {
-    searchQuery: string;
-    setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-    openCaseCount: number;
-    user: { firstName: string } | null; 
-}
+import { HeaderProps } from "@/interface/CaseTypes";
 
 const SearchBar: React.FC<{ searchQuery: string; setSearchQuery: React.Dispatch<React.SetStateAction<string>> }> = ({
     searchQuery,

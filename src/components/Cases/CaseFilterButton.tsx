@@ -1,11 +1,5 @@
 import { IoMdCheckmark } from "react-icons/io";
-
-interface CaseFilterButtonProps {
-  caseType: string;
-  selectedCaseType: string;
-  setSelectedCaseType: (caseType: string) => void;
-  label: string;
-}
+import { CaseFilterButtonProps } from "@/interface/CaseTypes";
 
 export const CaseFilterButton: React.FC<CaseFilterButtonProps> = ({
   caseType,

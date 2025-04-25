@@ -2,15 +2,8 @@
 import { IoMdCheckmark } from "react-icons/io";
 import { Category } from "@/interface/CaseTypes";
 import { CaseFilterButton } from "./CaseFilterButton";
+import { SidebarProps } from "@/interface/CaseTypes";
 import React from "react";
-
-interface SidebarProps {
-    selectedCaseType: string;
-    setSelectedCaseType: (type: string) => void;
-    selectedCategory: string | null;
-    setSelectedCategory: (category: string | null) => void;
-    categories: Category[];
-}
 
 const Sidebar: React.FC<SidebarProps> = ({
     selectedCaseType,
