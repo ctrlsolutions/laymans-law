@@ -4,6 +4,7 @@ import Card from "@/components/Profile/Card";
 
 const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () => void }> = ({ caseItem, categories, onClick }) => {
   const getCategoryColor = (category: Category) => {
+    console.log(`Category color: ${category.color}, Tailwind class: ${colorMap[category.color]}`);
     return colorMap[category.color] || "bg-gray-300";
   };
 
@@ -11,6 +12,7 @@ const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () =
     const color = isOpen ? "bg-[#4BB328]" : "bg-[#B32828]";
     return <span className={`flex self-center shrink-0 w-2 h-2 ${color} rounded-full`} aria-hidden="true" />;
   };
+  
 
   const category = categories.find((cat) => cat.id === caseItem.case_type);
   const categoryColor = category ? getCategoryColor(category) : "bg-gray-300";
@@ -18,12 +20,11 @@ const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () =
   return (
     <Card className="bg-transparent shadow-none">
       <article className="mt-8 relative z-0">
-        {/* Case Type badge */}
         <div className="absolute top-[-15px] right-2 flex justify-center items-center px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm z-10">
-          <span
-            className={`mr-2 flex shrink-0 w-2 h-2 ${categoryColor} rounded-full`}
-            aria-hidden="true"
-          ></span>
+            <span
+              className={`mr-2 flex shrink-0 w-2 h-2 ${categoryColor} rounded-full`}
+              aria-hidden="true"
+            ></span>
           <span className="mr-2 text-[9.8px] font-bold">
             {category?.name ?? caseItem.case_type}
           </span>
@@ -56,8 +57,6 @@ const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () =
                 </p>
               </div>
             </div>
-
-            {/* Status */}
             <div className="flex items-center gap-2 px-2.5 py-2.5 bg-white rounded-xl shadow-[0px_0px_4px_rgba(0,0,0,0.25)] hover:bg-blue-700 text-base font-bold">
               <StatusIndicator isOpen={caseItem.status === "open"} />
               <span className="pl-1 pr-4 text-base font-extrabold">

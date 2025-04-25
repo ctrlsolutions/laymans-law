@@ -1,8 +1,7 @@
 "use client";
 import { IoMdCheckmark } from "react-icons/io";
-import { colorMap } from "@/interface/CaseTypes";
 import { CaseFilterButton } from "./CaseFilterButton";
-import { SidebarProps } from "@/interface/CaseTypes";
+import { SidebarProps , colorMap} from "@/interface/CaseTypes";
 import React from "react";
 
 const Sidebar: React.FC<SidebarProps> = ({

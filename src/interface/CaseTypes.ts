@@ -14,7 +14,6 @@ export interface Category {
     id: string;
     name: string;
     color: string;
-    icon?: string;
 }
 
 export const colorMap: Record<string, string> = {
@@ -25,7 +24,6 @@ export const colorMap: Record<string, string> = {
     fuchsia: "bg-fuchsia-600",
     pink: "bg-pink-600",
 };
-
 
 export const categories: Category[] = [];
 export const cases: Case[] = [];
