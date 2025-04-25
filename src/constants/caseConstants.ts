@@ -1,4 +1,3 @@
-// constants/caseConstants.ts
 import { Category } from "@/interface/CaseTypes";
 
 export const sortingOptions = [
@@ -7,10 +6,11 @@ export const sortingOptions = [
 ];
 
 export const categories: Category[] = [
-  { id: "faq", name: "FAQ's", color: "bg-yellow-400" },
-  { id: "divorce", name: "Divorce Cases", color: "bg-lime-800" },
-  { id: "land", name: "Land Ownership", color: "bg-teal-400" },
-  { id: "civil", name: "Civil Rights", color: "bg-blue" },
-  { id: "environmental", name: "Environmental Law", color: "bg-fuchsia-600" },
-  { id: "human", name: "Human Rights", color: "bg-pink-600" },
+  { id: "family", name: "Family Law", color: "yellow" },
+  { id: "criminal", name: "Criminal Law", color: "lime" },
+  { id: "labor", name: "Labor Law", color: "teal" },
+  { id: "civil", name: "Civil Law", color: "blue" },
+  { id: "commercial", name: "Commercial and Business Law", color: "fuchsia" },
+  { id: "other", name: "Others", color: "pink" },
 ];
+

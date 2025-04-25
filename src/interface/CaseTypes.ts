@@ -17,6 +17,16 @@ export interface Category {
     icon?: string;
 }
 
+export const colorMap: Record<string, string> = {
+    yellow: "bg-yellow-400",
+    lime: "bg-lime-800",
+    teal: "bg-teal-400",
+    blue: "bg-blue",
+    fuchsia: "bg-fuchsia-600",
+    pink: "bg-pink-600",
+};
+
+
 export const categories: Category[] = [];
 export const cases: Case[] = [];
 
@@ -43,6 +53,3 @@ export interface SidebarProps {
 }
 
 
-export const categories: Category[] = [];
-
-export const cases: Case[] = [];

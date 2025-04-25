@@ -1,6 +1,6 @@
 "use client";
 import { IoMdCheckmark } from "react-icons/io";
-import { Category } from "@/interface/CaseTypes";
+import { colorMap } from "@/interface/CaseTypes";
 import { CaseFilterButton } from "./CaseFilterButton";
 import { SidebarProps } from "@/interface/CaseTypes";
 import React from "react";
@@ -56,8 +56,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                 }
             >
                 <span
-                className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`}
-                aria-hidden="true"
+                    className={`flex self-center shrink-0 w-2 h-2 ${colorMap[category.color] || "bg-gray-300"} rounded-full`}
+                    aria-hidden="true"
                 />
                 <span>{category.name}</span>
                 {selectedCategory === category.name && (
