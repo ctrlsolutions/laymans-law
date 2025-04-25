@@ -66,6 +66,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             ))}
         </ul>
         </nav>
+
+        <div className="hidden">
+            <span className="bg-yellow-400" />
+            <span className="bg-lime-800" />
+            <span className="bg-teal-400" />
+            <span className="bg-blue" />
+            <span className="bg-fuchsia-600" />
+            <span className="bg-pink-600" />
+        </div>
+
     </aside>
 );
 
