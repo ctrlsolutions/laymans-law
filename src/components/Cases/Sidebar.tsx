@@ -38,8 +38,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             label="Closed Cases"
         />
 
-        {/* open and closed buttons ... same pattern */}
-
         <hr className="mt-3 border-black border-opacity-30" />
 
         <ul className="mt-5" role="list">
