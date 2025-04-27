@@ -144,6 +144,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           <BaseFormSelect
             label="Select Gender"
             name="gender"
+            color="blue"
             value={form.gender}
             choices={[
               { label: "Male", value: "M" },
@@ -217,7 +218,9 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         {errors.confirm_password && (
           <p className="text-red-500 text-sm">{errors.confirm_password}</p>
         )}
-        <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+        <div className="mt-5">
+          <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+        </div>
       </form>
     </div>
   );
