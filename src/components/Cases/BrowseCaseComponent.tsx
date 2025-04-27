@@ -118,7 +118,7 @@ export const CasePage: React.FC = () => {
             onChange={(e) => setSortOrder(e.target.value)}
             width="130px"
           />
-          <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden scrollbar-hide shadow-inner">
+          <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden scrollbar-hide">
             <div className="w-full max-md:w-full">
               {casesLoading ? (
                 <p className="text-center text-gray-500 mt-20">
