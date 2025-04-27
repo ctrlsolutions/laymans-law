@@ -144,6 +144,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           <BaseFormSelect
             label="Select Gender"
             name="gender"
+            color="blue"
             value={form.gender}
             choices={[
               { label: "Male", value: "M" },
