@@ -28,7 +28,7 @@ const BaseFormSelect: FC<FormSelectProps> = ({
           name={name}
           value={value}
           onChange={onChange}
-          className={`text-${color}
+          className={`text-${color} border-${color}
                         p-2 w-full text-ellipsis
                         border border-gray-300
                         font-semibold 
