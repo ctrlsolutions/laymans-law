@@ -2,17 +2,45 @@ import React from "react";
 import { Case, Category, colorMap } from "@/interface/CaseTypes";
 import Card from "@/components/Profile/Card";
 
-const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () => void }> = ({ caseItem, categories, onClick }) => {
+const CaseCard: React.FC<{
+  caseItem: Case;
+  categories: Category[];
+  onClick: () => void;
+}> = ({ caseItem, categories, onClick }) => {
   const getCategoryColor = (category: Category) => {
-    console.log(`Category color: ${category.color}, Tailwind class: ${colorMap[category.color]}`);
+    console.log(
+      `Category color: ${category.color}, Tailwind class: ${
+        colorMap[category.color]
+      }`
+    );
     return colorMap[category.color] || "bg-gray-300";
   };
 
-  const StatusIndicator: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
-    const color = isOpen ? "bg-[#4BB328]" : "bg-[#B32828]";
-    return <span className={`flex self-center shrink-0 w-2 h-2 ${color} rounded-full`} aria-hidden="true" />;
+  const StatusIndicator: React.FC<{ status: string }> = ({ status }) => {
+    let color = "bg-gray-300";
+    switch (status) {
+      case "open":
+        color = "bg-[#4BB328]";
+        break;
+      case "ongoing":
+        color = "bg-[#FFD700]";
+        break;
+      case "discarded":
+        color = "bg-[#747474]";
+        break;
+      case "closed":
+        color = "bg-[#B32828]";
+        break;
+      default:
+        break;
+    }
+    return (
+      <span
+        className={`flex self-center shrink-0 w-2 h-2 ${color} rounded-full`}
+        aria-hidden="true"
+      />
+    );
   };
-  
 
   const category = categories.find((cat) => cat.id === caseItem.case_type);
   const categoryColor = category ? getCategoryColor(category) : "bg-gray-300";
@@ -21,10 +49,10 @@ const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () =
     <Card className="bg-transparent shadow-none">
       <article className="mt-8 relative z-0">
         <div className="absolute top-[-15px] right-2 flex justify-center items-center px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm z-10">
-            <span
-              className={`mr-2 flex shrink-0 w-2 h-2 ${categoryColor} rounded-full`}
-              aria-hidden="true"
-            ></span>
+          <span
+            className={`mr-2 flex shrink-0 w-2 h-2 ${categoryColor} rounded-full`}
+            aria-hidden="true"
+          ></span>
           <span className="mr-2 text-[9.8px] font-bold">
             {category?.name ?? caseItem.case_type}
           </span>
@@ -35,32 +63,41 @@ const CaseCard: React.FC<{ caseItem: Case; categories: Category[]; onClick: () =
           onClick={onClick}
         >
           <img
-            src={caseItem.avatar || "https://www.w3schools.com/howto/img_avatar.png"}
+            src={
+              caseItem.avatar ||
+              "https://www.w3schools.com/howto/img_avatar.png"
+            }
             alt="Avatar"
             className="w-[70px] rounded-full"
           />
 
           <div className="flex justify-between items-start w-full">
             <div className="flex flex-col text-sm max-w-[80%]">
-              <h2 className="text-xl font-bold">{caseItem.title}</h2>
+              <h2 className="text-xl font-bold mb-3  pr-8">{caseItem.title}</h2>{" "}
               <div className="mt-3 font-light">
                 <p className="text-xs mb-2">{caseItem.description}</p>
                 <p className="text-xs">
                   Last updated on{" "}
                   <strong className="font-bold">
-                    {new Date(caseItem.created_date).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {new Date(caseItem.created_date).toLocaleDateString(
+                      undefined,
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </strong>
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 px-2.5 py-2.5 bg-white rounded-xl shadow-[0px_0px_4px_rgba(0,0,0,0.25)] hover:bg-blue-700 text-base font-bold">
-              <StatusIndicator isOpen={caseItem.status === "open"} />
-              <span className="pl-1 pr-4 text-base font-extrabold">
-                {caseItem.status === "open" ? "Open" : "Closed"}
+            <div className="flex items-center gap-1 px-4 py-2 bg-white rounded-xl shadow-[0px_0px_4px_rgba(0,0,0,0.25)] hover:bg-blue-700 text-base font-bold">
+              <StatusIndicator status={caseItem.status} />
+              <span className="pl-2 pr-4 text-base font-extrabold">
+                {" "}
+                {/* Adjusted padding */}
+                {caseItem.status.charAt(0).toUpperCase() +
+                  caseItem.status.slice(1)}
               </span>
             </div>
           </div>

@@ -1,32 +1,33 @@
-// constants/caseFilters.ts
 import { Case } from "@/interface/CaseTypes";
 
-export function filterAndSortCases(
+export function filterCases(
   cases: Case[],
   searchQuery: string,
   sortOrder: string,
   selectedCaseType: string,
-  selectedCategory: string | null
+  status: string | ""
 ): Case[] {
   return cases
     .filter((caseItem) => {
       const query = searchQuery.toLowerCase();
-      return (
+      const matchesQuery =
         caseItem.title.toLowerCase().includes(query) ||
-        caseItem.description.toLowerCase().includes(query)
-      );
-    })
-    .filter((caseItem) =>
-      selectedCaseType === "all"
-        ? true
-        : caseItem.case_type === selectedCaseType
-    )
-    .filter((caseItem) =>
-      selectedCategory === null
-        ? true
-        : caseItem.category.name === selectedCategory
-    )
+        caseItem.description.toLowerCase().includes(query) ||
+        caseItem.case_type.toLowerCase().includes(query) ||
+        caseItem.status.toLowerCase().includes(query);
 
+      const matchesCaseType =
+        !selectedCaseType || selectedCaseType === "all"
+          ? true
+          : caseItem.case_type.toLowerCase() === selectedCaseType.toLowerCase();
+
+      const matchesStatus =
+        !status || status === "all"
+          ? true
+          : caseItem.status.toLowerCase() === status.toLowerCase();
+
+      return matchesQuery && matchesCaseType && matchesStatus;
+    })
     .sort((a, b) => {
       if (sortOrder === "latest") {
         return (

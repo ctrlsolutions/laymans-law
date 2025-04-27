@@ -13,4 +13,3 @@ export const categories: Category[] = [
   { id: "commercial", name: "Commercial and Business Law", color: "fuchsia" },
   { id: "other", name: "Others", color: "pink" },
 ];
-

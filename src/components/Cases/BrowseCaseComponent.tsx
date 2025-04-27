@@ -9,13 +9,12 @@ import Sidebar from "@/components/Cases/Sidebar";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
-import { filterAndSortCases } from "@/constants/caseFilters";
+import { filterCases } from "../../utils/caseFilters";
 
 export const CasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const [cases, setCases] = useState<Case[]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
@@ -24,26 +23,24 @@ export const CasePage: React.FC = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const filteredAndSortedCases = filterAndSortCases(
-    cases,
-    searchQuery,
-    sortOrder,
-    selectedCaseType,
-    selectedCategory
-  );
+  const [filteredCases, setFilteredCases] = useState<Case[]>([]);
+  const [status, setStatus] = useState<string | "">("all");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+  useEffect(() => {
+    if (cases.length > 0) {
+      const filtered = filterCases(
+        cases,
+        searchQuery,
+        sortOrder,
+        selectedCaseType,
+        status
+      );
+      console.log("Filtered cases:", filtered);
+      setFilteredCases(filtered);
+    }
+  }, [cases, searchQuery, selectedCaseType, sortOrder, status]);
 
-  const openModal = (caseItem: Case) => {
-    setSelectedCase(caseItem);
-    setIsModalOpen(true);
-  };
-
-
-  const openCaseCount = filteredAndSortedCases.filter(
-    (c) => c.status === "open"
-  ).length;
+  const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
 
   useEffect(() => {
     let isMounted = true;
@@ -52,6 +49,7 @@ export const CasePage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
+          console.log("Fetched pisti cases:", response.data);
           setCases(response.data);
         } else {
           setCasesError(response.message || "Failed to load cases");
@@ -87,6 +85,14 @@ export const CasePage: React.FC = () => {
     };
   }, []);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+
+  const openModal = (caseItem: Case) => {
+    setSelectedCase(caseItem);
+    setIsModalOpen(true);
+  };
+
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
@@ -120,8 +126,8 @@ export const CasePage: React.FC = () => {
                 </p>
               ) : casesError ? (
                 <p className="text-center text-red-500 mt-20">{casesError}</p>
-              ) : filteredAndSortedCases.length > 0 ? (
-                filteredAndSortedCases.map((caseItem) => (
+              ) : filteredCases.length > 0 ? (
+                filteredCases.map((caseItem) => (
                   <CaseCard
                     key={caseItem.id}
                     caseItem={caseItem}
@@ -140,9 +146,9 @@ export const CasePage: React.FC = () => {
         <Sidebar
           selectedCaseType={selectedCaseType}
           setSelectedCaseType={setSelectedCaseType}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
           categories={categories}
+          selectedStatus={status}
+          setSelectedStatus={setStatus}
         />
       </section>
     </main>
