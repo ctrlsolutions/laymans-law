@@ -27,16 +27,18 @@ export default function CaseSubmissionForm() {
   });
 
   const caseTypeChoices = [
-    { value: "", label: "Select Legal Topic" },
-    { value: "civil", label: "Civil Law" },
-    { value: "criminal", label: "Criminal Law" },
-    { value: "corporate", label: "Corporate Law" },
+    { value: "", label: "Case Type" },
     { value: "family", label: "Family Law" },
-    { value: "immigration", label: "Immigration Law" },
+    { value: "criminal", label: "Criminal Law" },
+    { value: "civil", label: "Civil Law" },
+    { value: "labor", label: "Labor Law" },
+    { value: "commercial", label: "Commercial and Business Law" },
+    { value: "other", label: "Others" },
+    
   ];
 
   const legalTopicChoices = [
-    { value: "", label: "Select Case Type" },
+    { value: "", label: "Case Type" },
     { value: "litigation", label: "Litigation" },
     { value: "consultation", label: "Consultation" },
     { value: "document_review", label: "Document Review" },
@@ -101,6 +103,7 @@ export default function CaseSubmissionForm() {
 
         <BaseFormInput
           label=" "
+
           name="title"
           type="text"
           value={formData.title}
@@ -111,17 +114,11 @@ export default function CaseSubmissionForm() {
         />
 
         <div className="grid grid-cols-2 gap-3 overflow-hidden z-0">
-          {/* <BaseFormSelect
-            label=" "
-            name="legalTopic"
-            value={formData.caseType}
-            choices={legalTopicChoices}
-            onChange={handleChange}
-          /> */}
 
           <BaseFormSelect
             label=" "
             name="caseType"
+            width="w-1/2"
             value={formData.caseType}
             choices={caseTypeChoices}
             onChange={handleChange}
