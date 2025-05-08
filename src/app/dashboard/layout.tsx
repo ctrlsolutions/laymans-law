@@ -48,7 +48,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
           <button className="text-[1.1rem] ml-4"> Logout</button>
         </div>
-        <div className="h-[95vh] w-[90vw] bg-white p-10 pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">{children}</div>
+        <div className="h-[95vh] w-[90vw] bg-white p-0 pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">{children}</div>
       </div>
     );
   };

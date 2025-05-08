@@ -116,7 +116,7 @@ export default function AccountLayout({
           Logout
         </button>
       </div>
-      <div className="h-[95vh] w-[90vw] bg-white p-10 pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
+      <div className="h-[95vh] w-[90vw] bg-white pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
         {userType === "layman" ? layman : lawyer}
       </div>
     </div>

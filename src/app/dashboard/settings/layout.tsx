@@ -42,7 +42,7 @@ export default function SettingsLayout({
       </div>
 
       {/* Render active tab content */}
-      <div className="relative z-1 -mt-1 border-2 bg-white p-6 rounded-b-3xl rounded-tr-3xl">
+      <div className="relative z-1 -mt-1 border-2 bg-white p-0 rounded-b-3xl rounded-tr-3xl">
         {children}
       </div>
     </div>
