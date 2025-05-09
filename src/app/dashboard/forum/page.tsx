@@ -70,7 +70,7 @@ const DiscussionForm: React.FC<{
             value={forumDetails}
             onChange={(e) => setForumDetails(e.target.value)}
             placeholder="Enter Forum Details"
-            className="w-full h-[30dvh] border border-gray rounded-lg mt-2 p-4 text-[14px] text-black text-start align-text-top
+            className="w-full h-[30dvh] border border-gray rounded-lg mt-2.5 p-4 text-[14px] text-black text-start align-text-top
                         md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw]
                         focus:outline-none focus:ring-0 focus:border-gray-300"
             aria-label="Forum Details"
@@ -135,7 +135,7 @@ const DiscussionForm: React.FC<{
             color="red" 
             textColor="white" 
             type="submit" 
-            width="250px"
+            width="200px"
           >
             Cancel
           </Button>
@@ -143,7 +143,7 @@ const DiscussionForm: React.FC<{
             color="blue" 
             textColor="white" 
             type="submit" 
-            width="250px"
+            width="200px"
           >
             Submit
           </Button>
