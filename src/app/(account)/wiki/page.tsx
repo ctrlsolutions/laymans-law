@@ -44,7 +44,7 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({
 
         {userType === "lawyer" ? (
           <div className="flex text-sm content-center items-center gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-            <div className="mt-5 flex">
+            <div className="mt-5 flex gap-4">
               <BaseButton
                 color="blue"
                 textColor="white"
