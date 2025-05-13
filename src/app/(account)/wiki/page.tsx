@@ -43,26 +43,28 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({
         </h1>
 
         {userType === "lawyer" ? (
-          <div className="flex text-sm content-center items-baseline gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-            <BaseButton
-              color="blue"
-              textColor="white"
-              width="125px"
-              height="40px"
-              textSize="text-sm"
-              onClick={handleButtonClick}
-            >
-              Summary
-            </BaseButton>
-            <BaseButton
-              textColor="white"
-              width="125px"
-              height="40px"
-              textSize="text-sm"
-              onClick={handleButtonClick}
-            >
-              Translation
-            </BaseButton>
+          <div className="flex text-sm content-center items-center gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
+            <div className="mt-5 flex">
+              <BaseButton
+                color="blue"
+                textColor="white"
+                width="125px"
+                height="40px"
+                textSize="text-sm"
+                onClick={handleButtonClick}
+              >
+                Summary
+              </BaseButton>
+              <BaseButton
+                textColor="white"
+                width="125px"
+                height="40px"
+                textSize="text-sm"
+                onClick={handleButtonClick}
+              >
+                Translation
+              </BaseButton>
+            </div>
             <BaseFormInput
               label=""
               name="Search"
