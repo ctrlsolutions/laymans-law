@@ -61,6 +61,11 @@ export default function AccountLayout({
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
           },
+          {
+            key: "ofw-support",
+            name: "OFW Support Section Details",
+            path: () => `/wiki/ofw-support`,
+          },
         ]
       : [
           { key: "home", name: "Home", path: (id: string) => `/${id}` },
@@ -77,12 +82,17 @@ export default function AccountLayout({
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
           },
+          {
+            key: "ofw-support",
+            name: "OFW Support Section Details",
+            path: () => `/wiki/ofw-support`,
+          },
         ];
 
   const activeTab =
     tabs.find((tab) => pathname === tab.path(userId))?.name || "";
 
-  const isWikiPage = pathname === "/wiki";
+  const isWikiPage = pathname.startsWith("/wiki");
 
   let contentToShow;
   if (isWikiPage) {
