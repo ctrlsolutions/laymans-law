@@ -44,25 +44,19 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({
 
         {userType === "lawyer" ? (
           <div className="flex text-sm content-center items-baseline gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-            <BaseButton
-              color="blue"
-              textColor="white"
-              width="125px"
-              height="40px"
-              textSize="text-sm"
-              onClick={handleButtonClick}
-            >
-              Summary
-            </BaseButton>
-            <BaseButton
-              textColor="white"
-              width="125px"
-              height="40px"
-              textSize="text-sm"
-              onClick={handleButtonClick}
-            >
-              Translation
-            </BaseButton>
+            <BaseFormSelect
+              label=""
+              name="Submit"
+              color="[#0D0330]"
+              width="w-[8.75rem]"
+              value={selectedOption}
+              choices={[
+                { label: "Submit", value: "Submit" },
+                { label: "Summary", value: "Summary" },
+                { label: "Translation", value: "Translation" },
+              ]}
+              onChange={(e) => handleSelectChange(e.target.value)}
+            />
             <BaseFormInput
               label=""
               name="Search"
@@ -245,7 +239,7 @@ const Page: React.FC = () => {
       const result = await fetchAllLaws();
       if (result) {
         setLaws(
-          result.map((law) => ({
+          result.map((law: any) => ({
             id: law.id,
             title: law.title,
             chapter: law.code,
@@ -270,10 +264,10 @@ const Page: React.FC = () => {
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
-        firstName={profile ? profile.first_name : ""}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
+        user={profile}
       />
 
       <WikiHeader
