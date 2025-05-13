@@ -44,19 +44,25 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({
 
         {userType === "lawyer" ? (
           <div className="flex text-sm content-center items-baseline gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-            <BaseFormSelect
-              label=""
-              name="Submit"
-              color="[#0D0330]"
-              width="w-[8.75rem]"
-              value={selectedOption}
-              choices={[
-                { label: "Submit", value: "Submit" },
-                { label: "Summary", value: "Summary" },
-                { label: "Translation", value: "Translation" },
-              ]}
-              onChange={(e) => handleSelectChange(e.target.value)}
-            />
+            <BaseButton
+              color="blue"
+              textColor="white"
+              width="125px"
+              height="40px"
+              textSize="text-sm"
+              onClick={handleButtonClick}
+            >
+              Summary
+            </BaseButton>
+            <BaseButton
+              textColor="white"
+              width="125px"
+              height="40px"
+              textSize="text-sm"
+              onClick={handleButtonClick}
+            >
+              Translation
+            </BaseButton>git
             <BaseFormInput
               label=""
               name="Search"
