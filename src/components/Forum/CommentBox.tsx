@@ -32,7 +32,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
           height={36}
           className="rounded-full border"
         />
-        {!isReply && <div className="w-px bg-black flex-grow mt-1"></div>}
+        {!isReply && <div className="w-px bg-gray-300 flex-grow mt-1"></div>}
       </div>
 
       <div className="bg-white border rounded-xl shadow-sm px-4 py-2 max-w-2xl">
@@ -47,7 +47,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
         {!isReplying && (
           <button
             onClick={handleReplyClick}
-            className="text-xs text-black mt-2 hover:underline"
+            className="text-xs text-gray-400 mt-2 hover:underline"
           >
             Reply
           </button>
@@ -58,7 +58,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
             <CustomTextarea
               placeholder="Write your reply..."
               rows={3}
-              className="mb-2 text-xs text-black"
+              className="mb-2 text-xs"
             />
             <div className="flex items-center gap-2">
               <button
@@ -75,7 +75,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
         )}
 
         {comment.replies && comment.replies.length > 0 && (
-          <div className="mt-4 text-black">
+          <div className="mt-4">
             {comment.replies.map((reply, index) => (
               <CommentBox key={index} comment={reply} isReply={true} />
             ))}
