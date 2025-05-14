@@ -14,16 +14,6 @@ export default function AccountLayout({
   layman: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const handleLogout = async () => {
-    try {
-      await UserLogout();
-
-      router.push("/login");
-    } catch (error) {
-      toast.error("Failed to lsog out. Please try again.");
-    }
-  };
-
   const pathname = usePathname();
   const router = useRouter();
 
@@ -32,78 +22,50 @@ export default function AccountLayout({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedUserType = localStorage.getItem("user_type");
-      const storedUserId = localStorage.getItem("user_id");
-      setUserType(storedUserType);
-      setUserId(storedUserId);
+      setUserType(localStorage.getItem("user_type"));
+      setUserId(localStorage.getItem("user_id"));
     }
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await UserLogout();
+      router.push("/login");
+    } catch (error) {
+      toast.error("Failed to log out. Please try again.");
+    }
+  };
+
   if (!userType || !userId) return null;
-  const tabs =
-    userType === "layman"
-      ? [
-          { key: "home", name: "Home", path: (id: string) => `/${id}` },
-          {
-            key: "submit",
-            name: "Submit Case",
-            path: () => `/submit-case`,
-          },
-          {
-            key: "submitted",
-            name: "Submitted Cases",
-            path: (id: string) => `/${id}`,
-          },
-          { key: "wiki", name: "Wiki", path: () => `/wiki` },
-          { key: "forum", name: "Forum", path: () => `/forum` },
-          {
-            key: "settings",
-            name: "Settings",
-            path: (id: string) => `/${id}/settings`,
-          },
-          {
-            key: "ofw-support",
-            name: "OFW Support Section Details",
-            path: () => `/wiki/ofw-support`,
-          },
-        ]
-      : [
-          { key: "home", name: "Home", path: (id: string) => `/${id}` },
-          { key: "browse", name: "Browse Cases", path: () => `/browse` },
-          {
-            key: "active",
-            name: "Active Cases",
-            path: (id: string) => `/${id}/active-cases`,
-          },
-          { key: "wiki", name: "Wiki", path: () => `/wiki` },
-          { key: "forum", name: "Forum", path: () => `/forum` },
-          {
-            key: "settings",
-            name: "Settings",
-            path: (id: string) => `/${id}/settings`,
-          },
-          {
-            key: "ofw-support",
-            name: "OFW Support Section Details",
-            path: () => `/wiki/ofw-support`,
-          },
-        ];
 
-  const activeTab =
-    tabs.find((tab) => pathname === tab.path(userId))?.name || "";
+  const baseTabs = [
+    { key: "home", name: "Home", path: (id: string) => `/${id}`, match: (p: string, id: string) => p === `/${id}` },
+    { key: "wiki", name: "Wiki", path: () => `/wiki`, match: (p: string) => p.startsWith("/wiki") },
+    { key: "forum", name: "Forum", path: () => `/forum`, match: (p: string) => p.startsWith("/forum") },
+    { key: "settings", name: "Settings", path: (id: string) => `/${id}/settings`, match: (p: string, id: string) => p.startsWith(`/${id}/settings`) },
+    { key: "ofw-support", name: "OFW Support Section Details", path: () => `/wiki/ofw-support`, match: (p: string) => p.startsWith("/wiki/ofw-support") },
+  ];
 
-  let contentToShow;
+  const laymanTabs = [
+    { key: "submit", name: "Submit Case", path: (id: string) => `/${id}/submit-case`, match: (p: string, id: string) => p.startsWith(`/${id}/submit-case`) },
+    { key: "submitted", name: "Submitted Cases", path: (id: string) => `/${id}/submitted-cases`, match: (p: string, id: string) => p.startsWith(`/${id}/submitted-cases`) },
+  ];
+
+  const lawyerTabs = [
+    { key: "browse", name: "Browse Cases", path: () => `/browse`, match: (p: string) => p.startsWith("/browse") },
+    { key: "active", name: "Active Cases", path: (id: string) => `/${id}/active-cases`, match: (p: string, id: string) => p.startsWith(`/${id}/active-cases`) },
+  ];
+
+  const tabs = userType === "layman"
+    ? [...baseTabs.slice(0, 1), ...laymanTabs, ...baseTabs.slice(1)]
+    : [...baseTabs.slice(0, 1), ...lawyerTabs, ...baseTabs.slice(1)];
+
+  const activeTab = tabs.find(tab => tab.match(pathname, userId))?.name || "";
+
   const standaloneRoutes = ["/wiki", "/forum", "/browse", "/submit-case"];
-  const isStandalonePage = standaloneRoutes.some((prefix) =>
-    pathname.startsWith(prefix)
-  );
+  const isStandalonePage = standaloneRoutes.some((prefix) => pathname.startsWith(prefix));
 
-  if (isStandalonePage) {
-    contentToShow = children;
-  } else {
-    contentToShow = userType === "layman" ? layman : lawyer;
-  }
-
+  const contentToShow = isStandalonePage ? children : userType === "layman" ? layman : lawyer;
   const sidebarBg = userType === "lawyer" ? "bg-blue/60" : "bg-red/60";
 
   return (
@@ -112,7 +74,6 @@ export default function AccountLayout({
       style={{ backgroundImage: `url("/bg-base.png")` }}
     >
       {/* Sidebar */}
-
       <div
         className={`absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[22vw] ${sidebarBg} ml-8 p-6 pl-0 rounded-3xl flex flex-col justify-between font-extrabold`}
       >
@@ -134,7 +95,6 @@ export default function AccountLayout({
           ))}
         </div>
         <button className="text-[1.1rem] ml-4" onClick={handleLogout}>
-          {" "}
           Logout
         </button>
       </div>

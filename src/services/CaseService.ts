@@ -1,42 +1,40 @@
-import { ApiResponse } from "@/interface/AuthTypes";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const API_CASES_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cases`;
-
-export const fetchCases = async (): Promise<ApiResponse> => {
+export const fetchCases = async (userId: string): Promise<ApiResponse> => {
     try {
-        const response = await fetch(API_CASES_URL, {
+        const response = await fetch(`${API_BASE}/cases/user/${userId}/`, {
             method: "GET",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
             },
-            credentials: "include", // Important: send cookies automatically
+            credentials: "include",
         });
 
-        console.log('API Response Status:', response.status);
-        
+        console.log("API Response Status:", response.status);
+
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('API Error:', errorData);
-            return { 
-                success: false, 
+            console.error("API Error:", errorData);
+            return {
+                success: false,
                 message: errorData.detail || "Failed to fetch cases.",
-                data: null
+                data: null,
             };
         }
 
         const data = await response.json();
-        console.log('API Data:', data); // Log the received data
-        return { 
-            success: true, 
-            message: "Cases fetched successfully!", 
-            data 
+        console.log("API Data:", data);
+        return {
+            success: true,
+            message: "Cases fetched successfully!",
+            data,
         };
     } catch (error) {
         console.error("Network Error:", error);
-        return { 
-            success: false, 
+        return {
+            success: false,
             message: "Network error. Please check connection.",
-            data: null
+            data: null,
         };
     }
 };
