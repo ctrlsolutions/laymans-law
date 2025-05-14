@@ -4,8 +4,6 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import CasePage from "@/components/Cases/BrowseCaseComponent";
 
-import CasePage from "@/components/Cases/BrowseCaseComponent";
-
 export default function LawyerCasesPage({
   children,
 }: {
