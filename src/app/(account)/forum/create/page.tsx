@@ -48,6 +48,7 @@ const DiscussionForm: React.FC<{
           <BaseFormSelect
             label=""
             name="forumCategory"
+            textSize="text-xs"
             value={forumCategory}
             onChange={(e) => setForumCategory(e.target.value)}
             choices={[
