@@ -61,6 +61,11 @@ export default function AccountLayout({
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
           },
+          {
+            key: "ofw-support",
+            name: "OFW Support Section Details",
+            path: () => `/wiki/ofw-support`,
+          },
         ]
       : [
           { key: "home", name: "Home", path: (id: string) => `/${id}` },
@@ -77,10 +82,27 @@ export default function AccountLayout({
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
           },
+          {
+            key: "ofw-support",
+            name: "OFW Support Section Details",
+            path: () => `/wiki/ofw-support`,
+          },
         ];
 
   const activeTab =
     tabs.find((tab) => pathname === tab.path(userId))?.name || "";
+
+  let contentToShow;
+  const standaloneRoutes = ["/wiki", "/forum", "/browse", "/submit-case"];
+  const isStandalonePage = standaloneRoutes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
+
+  if (isStandalonePage) {
+    contentToShow = children;
+  } else {
+    contentToShow = userType === "layman" ? layman : lawyer;
+  }
 
   const sidebarBg = userType === "lawyer" ? "bg-blue/60" : "bg-red/60";
 
@@ -117,7 +139,7 @@ export default function AccountLayout({
         </button>
       </div>
       <div className="h-[95vh] w-[90vw] bg-white p-10 pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
-        {userType === "layman" ? layman : lawyer}
+        {contentToShow}
       </div>
     </div>
   );

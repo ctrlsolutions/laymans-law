@@ -8,7 +8,9 @@ const BaseFormSelect: FC<FormSelectProps> = ({
   label,
   name,
   color = "black",
-  width = "w-full",
+  width,
+  height,
+  textSize,
   value,
   choices,
   onChange,
@@ -18,11 +20,18 @@ const BaseFormSelect: FC<FormSelectProps> = ({
       htmlFor={name}
       className={`flex flex-col space-y-1 mt-4 text-${color}`}
     >
-      <span className="text-sm font-extrabold sm:text-sm md:text-base lg:text-lg xl:text-xl">
+      <span
+        className={`font-extrabold ${
+          textSize || "text-sm"
+        } sm:text-sm md:text-base lg:text-lg xl:text-xl`}
+      >
         {label}
       </span>
 
-      <div className={`relative flex items-center ${width}`}>
+      <div
+        className={`relative flex items-center ${width || ""}`}
+        style={{ width, height }}
+      >
         <select
           id={name}
           name={name}

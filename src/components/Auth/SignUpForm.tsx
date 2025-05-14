@@ -32,6 +32,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
   const [errors, setErrors] = useState<Partial<SignupData>>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     setForm((prevForm) => ({
@@ -146,13 +147,13 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             name="gender"
             color="blue"
             value={form.gender}
-            choices={[
-              { label: "Male", value: "M" },
-              { label: "Female", value: "F" },
-              { label: "Other", value: "O" },
-            ]}
             onChange={handleChange}
-          />
+            >
+            <option value="" disabled> Select </option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="O">Other</option>
+          </BaseFormSelect>
 
           <BaseFormInput
             label="Date of Birth"
@@ -196,7 +197,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <BaseFormInput
           label="Password"
           name="password"
-          type="password"
+          type={showPassword ? "text" : "password"} 
           color={userType === "layman" ? "red" : "blue"}
           icon={showPassword ? "passhide" : "pass"}
           value={form.password}
@@ -207,17 +208,18 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <BaseFormInput
           label="Re-Type Password"
           name="confirm_password"
-          type="password"
+          type={showConfirmPassword ? "text" : "password"} 
           color={userType === "layman" ? "red" : "blue"}
-          icon={showPassword ? "passhide" : "pass"}
+          icon={showConfirmPassword ? "passhide" : "pass"}
           value={form.confirm_password}
           onChange={handleChange}
           onBlur={handleBlur}
-          onIconClick={() => setShowPassword(!showPassword)}
+          onIconClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword
         />
         {errors.confirm_password && (
           <p className="text-red-500 text-sm">{errors.confirm_password}</p>
         )}
+
         <div className="mt-5">
           <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
         </div>
