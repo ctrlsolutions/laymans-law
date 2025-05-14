@@ -3,9 +3,10 @@ import { useRouter } from "next/navigation";
 import React, { useState, useRef } from "react";
 import Header from "@/components/Profile/Header";
 import BaseFormInput from "@/components/Global/BaseFormInput";
+import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import Button from "@/components/Global/BaseButton";
-import { Case } from "@/interface/CaseTypes";
 import Textarea from "@/components/Global/BaseTextArea";
+import { Case } from "@/interface/CaseTypes";
 import { AiOutlineUpload } from "react-icons/ai";
 import { IoVideocamOutline } from "react-icons/io5";
 import { CiImageOn } from "react-icons/ci";
@@ -15,6 +16,8 @@ const DiscussionForm: React.FC<{
   setForumTitle: React.Dispatch<React.SetStateAction<string>>;
   forumDetails: string;
   setForumDetails: React.Dispatch<React.SetStateAction<string>>;
+  forumCategory: string;
+  setForumCategory: React.Dispatch<React.SetStateAction<string>>;
   handleSubmit: (e: React.FormEvent) => void;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
   setImage: React.Dispatch<React.SetStateAction<File | null>>;
@@ -27,6 +30,8 @@ const DiscussionForm: React.FC<{
   setForumTitle,
   forumDetails,
   setForumDetails,
+  forumCategory,
+  setForumCategory,
   handleSubmit,
   setFile,
   setImage,
@@ -35,6 +40,7 @@ const DiscussionForm: React.FC<{
   image,
   video,
 }) => {
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -58,17 +64,40 @@ const DiscussionForm: React.FC<{
     <div className="w-full lg:h-[44dvh]">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 overflow-x-hidden sm:overflow-y-auto md:overflow-y-auto lg:overflow-y-auto sm:max-h-[calc(50vh-156px)] sm:max-w-[58dvw] md:max-h-[calc(50vh-156px)] md:max-w-[54dvw] lg:max-h-[calc(60vh-156px)] lg:max-w-[70dvw] xl:max-h-[calc(76vh-156px)] pr-2"
+        className="space-y-4 lg:overflow-x-hidden sm:overflow-y-auto md:overflow-y-auto 
+        lg:overflow-y-auto sm:max-h-[calc(50vh-156px)] sm:max-w-[58dvw] 
+        md:max-h-[calc(50vh-156px)] md:max-w-[54dvw] 
+        lg:max-h-[calc(60vh-156px)] lg:max-w-[70dvw] 
+        xl:max-h-[calc(95vh-400px)] my-2"
       >
-        <BaseFormInput
-          label=""
-          name="forumTitle"
-          type="text"
-          value={forumTitle}
-          onChange={(e) => setForumTitle(e.target.value)}
-          placeholder="Enter Forum Title"
-          className="w-full h-12 border border-black rounded-lg mt-2 p-4 text-[14px] text-black-200 text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw]"
-        />
+        <div className="flex items-center space-x-4 mt-2">
+          <BaseFormInput
+            label=""
+            name="forumTitle"
+            type="text"
+            value={forumTitle}
+            onChange={(e) => setForumTitle(e.target.value)}
+            placeholder="Enter Forum Title"
+            className="w-[50vw] flex-grow h-12 border border-black rounded-lg p-4 text-[14px] text-black-200"
+          />
+
+          <BaseFormSelect
+            label=""
+            name="forumCategory"
+            value={forumCategory}
+            onChange={(e) => setForumCategory(e.target.value)}
+            choices={[
+              { value: "General", label: "General" },
+              { value: "FAQ's", label: "FAQ's" },
+              { value: "Divorce Cases", label: "Divorce Cases" },
+              { value: "Land Ownership", label: "Land Ownership" },
+              { value: "Civil Rights", label: "Civil Rights" },
+              { value: "Environmental Law", label: "Environmental Law" },
+              { value: "Human Rights" , label: "Human Rights" },
+              { value: "Other", label: "Other" },
+            ]}
+          />
+        </div>
 
         <div className="flex flex-col space-y-1 mt-4 mb-4 relative">
           <Textarea
@@ -169,6 +198,8 @@ const DiscussionPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
+  const [forumCategory, setForumCategory] = useState("General");
+
 
   const router = useRouter();
 
@@ -242,6 +273,8 @@ const DiscussionPage: React.FC = () => {
             setForumTitle={setForumTitle}
             forumDetails={forumDetails}
             setForumDetails={setForumDetails}
+            forumCategory={forumCategory}
+            setForumCategory={setForumCategory}
             handleSubmit={handleSubmit}
             setFile={setFile}
             setImage={setImage}
@@ -251,7 +284,7 @@ const DiscussionPage: React.FC = () => {
             video={video}
           />
 
-          <div className="flex justify-center mt-6 mx-auto space-x-40 overflow-y-hidden max-h-[calc(70vh-156px)] lg:mt-4">
+          <div className="flex justify-center mx-auto space-x-40 overflow-y-hidden max-h-[calc(70vh-160px)]">
             <Button color="red" textColor="white" type="button" width="200px" onClick={handleCancel}>
               Cancel
             </Button>
