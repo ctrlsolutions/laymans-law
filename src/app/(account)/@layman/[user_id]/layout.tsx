@@ -23,20 +23,17 @@ export default function LaymanHomePage({
   return (
     <div>
       {!isSettingsPage ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 p-4">
           <div className="flex flex-col space-y-4">
             {details}
             {notifications}
           </div>
-        
-          <div className="row-span-2 h-full">
-            {submitted_cases}
-          </div>
+
+          <div className="row-span-2 h-full">{submitted_cases}</div>
         </div>
-      ) : ( 
+      ) : (
         children
-      )
-    }
+      )}
     </div>
-  )
+  );
 }

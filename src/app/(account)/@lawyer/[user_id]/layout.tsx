@@ -22,28 +22,28 @@ export default function LawyerHomePage({
 }) {
   const pathName = usePathname();
 
-  const lastSegment = ["settings", "active-cases"].some(segment => pathName.includes(segment));
+  const lastSegment = ["settings", "active-cases"].some((segment) =>
+    pathName.includes(segment)
+  );
   console.log("Current Path:", lastSegment);
   console.log("Details Component:", details);
-
 
   return (
     <div>
       {!lastSegment ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 p-4">
           <div className="flex flex-col gap-4">
             <LawyerDetails />
-            <LawyerStats/>
+            <LawyerStats />
           </div>
           <div className="flex flex-col gap-4">
-            <LawyerNotifs/>
-            <LawyerCases/>
+            <LawyerNotifs />
+            <LawyerCases />
           </div>
-        </div> 
-      ) : ( 
+        </div>
+      ) : (
         children
-      )
-    }
+      )}
     </div>
-  )
+  );
 }
