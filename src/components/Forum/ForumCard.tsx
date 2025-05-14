@@ -11,7 +11,7 @@ const ForumCard: React.FC<{
   const [bookmarked, setBookmarked] = useState(caseItem.isBookmarked || false);
 
   const getCategoryColor = (category: Category) => {
-    return colorMap[category.color] || "bg-gray-300";
+    return colorMap[category.color] || "bg-gray-200";
   };
 
   const category = categories.find((cat) => cat.id === caseItem.case_type);
