@@ -1,15 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import Header from "@/components/Profile/Header";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import Button from "@/components/Global/BaseButton";
 import Textarea from "@/components/Global/BaseTextArea";
 import { Case } from "@/interface/CaseTypes";
-import { AiOutlineUpload } from "react-icons/ai";
-import { IoVideocamOutline } from "react-icons/io5";
-import { CiImageOn } from "react-icons/ci";
 
 const DiscussionForm: React.FC<{
   forumTitle: string;
@@ -19,9 +16,6 @@ const DiscussionForm: React.FC<{
   forumCategory: string;
   setForumCategory: React.Dispatch<React.SetStateAction<string>>;
   handleSubmit: (e: React.FormEvent) => void;
-  setFile: React.Dispatch<React.SetStateAction<File | null>>;
-  setImage: React.Dispatch<React.SetStateAction<File | null>>;
-  setVideo: React.Dispatch<React.SetStateAction<File | null>>;
   file: File | null;
   image: File | null;
   video: File | null;
@@ -33,32 +27,10 @@ const DiscussionForm: React.FC<{
   forumCategory,
   setForumCategory,
   handleSubmit,
-  setFile,
-  setImage,
-  setVideo,
   file,
   image,
   video,
 }) => {
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files?.length) setFile(files[0]);
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files?.length) setImage(files[0]);
-  };
-
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files?.length) setVideo(files[0]);
-  };
 
   return (
     <div className="w-full lg:h-[44dvh]">
@@ -78,7 +50,7 @@ const DiscussionForm: React.FC<{
             value={forumTitle}
             onChange={(e) => setForumTitle(e.target.value)}
             placeholder="Enter Forum Title"
-            className="w-[50vw] flex-grow h-12 border border-black rounded-lg p-4 text-[14px] text-black-200"
+            className="w-[50vw] flex-grow h-12 border border-black rounded-lg p-4 text-[14px] text-black-200 focus:outline-none focus:ring-0"
           />
 
           <BaseFormSelect
@@ -99,90 +71,15 @@ const DiscussionForm: React.FC<{
           />
         </div>
 
-        <div className="flex flex-col space-y-1 mt-4 mb-4 relative">
+        <div className="flex flex-col space-y-1 p-1 mt-4 mb-4 relative">
           <Textarea
             name="forumDetails"
             value={forumDetails}
             onChange={(e) => setForumDetails(e.target.value)}
             placeholder="Enter Forum Details"
-            className="w-full h-[30dvh] border border-gray rounded-lg mt-2.5 p-4 text-[13.5px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus:ring-0 focus:border-gray-300"
+            className="w-full h-[30dvh] border border-black rounded-lg mt-2.5 p-4 text-[13.4px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus:border-black focus:ring-0 focus-visible:ring-0"
             aria-label="Forum Details"
           />
-
-          <div className="absolute bottom-16 right-2 w-[80%] h-[18vh] flex flex-col items-end space-y-2 overflow-y-auto">
-            {file && (
-              <div className="text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded border">
-                📄 {file.name}
-              </div>
-            )}
-            {image && (
-              <img
-                src={URL.createObjectURL(image)}
-                alt="Uploaded"
-                className="w-16 h-16 object-cover border rounded"
-              />
-            )}
-            {video && (
-              <video
-                src={URL.createObjectURL(video)}
-                controls
-                className="w-28 h-20 border rounded"
-              />
-            )}
-          </div>
-
-          <div className="absolute bottom-2 right-2 flex items-center space-x-2 bg-white p-1 rounded">
-            <div className="relative">
-              <button
-                type="button"
-                className="p-1 text-gray-600 hover:text-blue-600 cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <AiOutlineUpload size={20} />
-              </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                className="hidden"
-                accept=".pdf,.doc,.docx,.txt"
-              />
-            </div>
-
-            <div className="relative">
-              <button
-                type="button"
-                className="p-1 text-gray-600 hover:text-blue-600 cursor-pointer"
-                onClick={() => imageInputRef.current?.click()}
-              >
-                <CiImageOn size={20} />
-              </button>
-              <input
-                type="file"
-                ref={imageInputRef}
-                onChange={handleImageUpload}
-                className="hidden"
-                accept="image/*"
-              />
-            </div>
-
-            <div className="relative">
-              <button
-                type="button"
-                className="p-1 text-gray-600 hover:text-blue-600 cursor-pointer"
-                onClick={() => videoInputRef.current?.click()}
-              >
-                <IoVideocamOutline size={20} />
-              </button>
-              <input
-                type="file"
-                ref={videoInputRef}
-                onChange={handleVideoUpload}
-                className="hidden"
-                accept="video/*"
-              />
-            </div>
-          </div>
         </div>
       </form>
     </div>
@@ -276,9 +173,6 @@ const DiscussionPage: React.FC = () => {
             forumCategory={forumCategory}
             setForumCategory={setForumCategory}
             handleSubmit={handleSubmit}
-            setFile={setFile}
-            setImage={setImage}
-            setVideo={setVideo}
             file={file}
             image={image}
             video={video}
