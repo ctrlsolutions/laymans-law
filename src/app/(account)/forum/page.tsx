@@ -39,6 +39,21 @@ const mockComments: Comment[] = [
 ];
 
 const Page: React.FC = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [content, setContent] = useState(`Lorem ipsum `.repeat(100));
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+  };
+
   return (
     <div
       style={{
@@ -89,30 +104,67 @@ const Page: React.FC = () => {
         }}
         className="space-y-6"
       >
-        <div style={{ gridArea: "header" }}>
-          <h1 className="text-2xl font-bold text-gray-600">
-            Petition for Dissolution of Marriage
-          </h1>
-          <p className="text-xs text-gray-600">
-            Shared by <strong>Cheska Paul Tucson</strong> on Aug 2, 2023 ·
-            Edited on Nov 19, 2023
-          </p>
-          <div className="mt-2 flex flex-col items-start gap-2">
-            <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">
-              Divorce Case
-            </span>
-            <div className="flex gap-2 text-xs text-black cursor-pointer ml-2">
-              <span>Edit</span>
-              <span>Delete</span>
+        <div
+          style={{ gridArea: "header" }}
+          className="flex items-center justify-between"
+        >
+          <div>
+            <h1 className="text-2xl font-bold text-gray-600">
+              Petition for Dissolution of Marriage
+            </h1>
+            <p className="text-xs text-gray-600">
+              Shared by <strong>Cheska Paul Tucson</strong> on Aug 2, 2023 ·
+              Edited on Nov 19, 2023
+            </p>
+            <div className="mt-2 flex flex-col items-start gap-2">
+              <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">
+                Divorce Case
+              </span>
+              <hr className="w-full border-t border-gray-300 mt-2" />
             </div>
-            <hr className="w-full border-t border-gray-300 mt-2" />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleEditClick}
+              className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue-700 text-xs"
+            >
+              Edit
+            </button>
+            <button className="px-4 py-2 bg-red text-white rounded-md hover:bg-red-700 text-xs">
+              Delete
+            </button>
           </div>
         </div>
 
         <div style={{ gridArea: "content" }}>
-          <p className="text-xs text-gray-800 whitespace-pre-line">
-            {`Lorem ipsum `.repeat(100)}
-          </p>
+          {isEditing ? (
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="w-full text-xs text-gray-800 border rounded-md p-2"
+              rows={10}
+            />
+          ) : (
+            <p className="text-xs text-gray-800 whitespace-pre-line">
+              {content}
+            </p>
+          )}
+          {isEditing && (
+            <div className="mt-2 flex gap-2">
+              <button
+                onClick={handleSaveClick}
+                className="px-4 py-2 bg-blue text-white rounded-md text-xs"
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancelClick}
+                className="px-4 py-2 bg-gray-400 text-white rounded-md text-xs"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
 
         <div
@@ -131,7 +183,7 @@ const Page: React.FC = () => {
           <div className="mt-6 flex items-center gap-2">
             <textarea
               placeholder="Reply"
-              className="flex-grow border rounded-md p-3 text-sm resize-none"
+              className="flex-grow text-black border rounded-md p-3 text-sm resize-none"
               rows={3}
             />
             <button className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue-700 text-sm">
