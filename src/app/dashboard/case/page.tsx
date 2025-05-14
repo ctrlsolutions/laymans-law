@@ -8,6 +8,7 @@ import { useEffect, useRef ,useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchCases } from "@/services/CaseService";
+import { useRouter } from "next/navigation";
 import AcceptCaseModal from "@/components/Case/AcceptCaseModal";
 
 const sortingOptions = [
@@ -244,7 +245,18 @@ const InputDesign: React.FC = () => {
                       key={caseItem.id}
                       caseItem={caseItem}
                       categories={categories}
-                      onClick={() => openModal(caseItem)} // This will now fire properly
+                      onClick={() => {
+                        console.log("Clicked Case Item:", caseItem); // Log the entire object being clicked
+                        console.log("Attempting to navigate with ID:", caseItem.id); // Log the specific ID
+
+                        if (caseItem.id) {
+                          router.push(`/dashboard/case/${caseItem.id}`);
+                        } else {
+                          console.error("ERROR: Cannot navigate because caseItem.id is missing!", caseItem);
+                          alert("Sorry, there was an error opening this case. The Case ID is missing.");
+                        }
+                      }
+                      }
                     />
 
                   ))                  

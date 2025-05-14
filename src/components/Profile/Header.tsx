@@ -129,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, openCaseCo
               alt="Profile"
               className="z-10 w-[60px] rounded-full mt-3"
             />
-            <span className="my-auto">{user?.first_name || "Guest"}</span>
+            <span className="my-auto text-black">{user?.firstName || "Guest"}</span>
           </div>
         </div>
       </div>

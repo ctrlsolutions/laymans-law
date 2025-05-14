@@ -29,6 +29,7 @@ export interface FormButtonProps {
   width?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export interface SubmitCaseFormData {
