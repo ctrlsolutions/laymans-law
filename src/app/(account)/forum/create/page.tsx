@@ -25,14 +25,14 @@ const DiscussionForm: React.FC<{
   handleSubmit,
 }) => {
   return (
-    <div className="w-full lg:h-[44dvh]">
+    <div className="w-full lg:h-[70dvh]">
       <form
         onSubmit={handleSubmit}
         className="space-y-4 lg:overflow-x-hidden sm:overflow-y-auto md:overflow-y-auto 
         lg:overflow-y-auto sm:max-h-[calc(50vh-156px)] sm:max-w-[58dvw] 
         md:max-h-[calc(50vh-156px)] md:max-w-[54dvw] 
-        lg:max-h-[calc(60vh-156px)] lg:max-w-[70dvw] 
-        xl:max-h-[calc(95vh-400px)] my-2"
+        lg:max-h-[calc(90vh-156px)] lg:max-w-[70dvw] 
+        xl:max-h-[calc(95vh-200px)] my-2"
       >
         <div className="flex items-center space-x-4 mt-2">
           <BaseFormInput
@@ -69,7 +69,7 @@ const DiscussionForm: React.FC<{
             value={forumDetails}
             onChange={(e) => setForumDetails(e.target.value)}
             placeholder="Enter Forum Details"
-            className="w-full h-[30dvh] border border-black rounded-lg mt-2.5 p-4 text-[13.4px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus:border-black focus:ring-0 focus-visible:ring-0"
+            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[13.5px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
             aria-label="Forum Details"
           />
         </div>
