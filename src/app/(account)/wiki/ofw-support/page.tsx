@@ -45,6 +45,7 @@ const SupportSectionHeader: React.FC<SupportSectionHeaderProps> = ({
           name="Country"
           color="[#0D0330]"
           width="w-35"
+          textSize="text-sm"
           value={selectedOption}
           choices={[
             { label: "Country", value: "" },

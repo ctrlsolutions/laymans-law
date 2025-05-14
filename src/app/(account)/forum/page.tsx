@@ -251,10 +251,11 @@ const InputDesign: React.FC = () => {
               <BaseFormSelect
                 label=""
                 name="sortOrder"
+                textSize="text-sm"
                 value={sortOrder}
                 choices={sortingOptions}
                 onChange={(e) => setSortOrder(e.target.value)}
-                width="130px"
+                width="200px"
               />
 
               {/* Checkbox: Mark All As Read */}
