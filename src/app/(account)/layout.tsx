@@ -93,7 +93,7 @@ export default function AccountLayout({
     tabs.find((tab) => pathname === tab.path(userId))?.name || "";
 
   let contentToShow;
-  const standaloneRoutes = ["/wiki", "/forum", "/browse", "/submit-case"];
+  const standaloneRoutes = ["/wiki", "/forum", "/submit-case"];
   const isStandalonePage = standaloneRoutes.some((prefix) =>
     pathname.startsWith(prefix)
   );

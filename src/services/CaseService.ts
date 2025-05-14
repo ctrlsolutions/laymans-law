@@ -40,3 +40,61 @@ export const fetchCases = async (): Promise<ApiResponse> => {
         };
     }
 };
+
+export const acceptCase = async (caseId: string): Promise<ApiResponse> => {
+  // We assume the backend updates status and assigns user automatically on PATCH
+  // You might need to send specific data if your backend requires it, e.g.:
+  // const updateData = { status: 'ongoing' };
+  // body: JSON.stringify(updateData)
+
+  const url = `${API_CASES_URL}/${caseId}/accept/`; // Adjust URL if needed
+
+  try {
+    const response = await fetch(url, {
+      method: "POST", // Or PUT or POST depending on your backend endpoint design
+      headers: {
+        "Content-Type": "application/json",
+        // Add Authorization header if your API requires tokens (e.g., JWT)
+        // 'Authorization': `Bearer ${your_token_variable}`,
+      },
+      credentials: "include", // Important: send cookies automatically for session auth
+      // body: JSON.stringify(updateData), // Uncomment and adjust if you need to send data
+    });
+
+    console.log('Accept Case API Response Status:', response.status);
+
+    if (!response.ok) {
+      let message = "Failed to accept case.";
+      try {
+        const errorData = await response.json();
+        console.error('API Error accepting case:', errorData);
+        message = errorData.detail || message; // Use detailed message from backend if available
+      } catch (e) {
+         console.error('Could not parse error response:', e);
+         // Use status text if JSON parsing fails
+         message = `Failed to accept case. Status: ${response.status} ${response.statusText}`;
+      }
+      return {
+        success: false,
+        message: message,
+        data: null
+      };
+    }
+
+    const updatedCaseData = await response.json();
+    console.log('Case accepted successfully via API:', updatedCaseData);
+    return {
+      success: true,
+      message: "Case accepted successfully!",
+      data: updatedCaseData // Return the updated case data
+    };
+
+  } catch (error) {
+    console.error("Network Error accepting case:", error);
+    return {
+      success: false,
+      message: "Network error. Please check connection.",
+      data: null
+    };
+  }
+};

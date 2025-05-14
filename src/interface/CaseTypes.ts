@@ -8,12 +8,17 @@ export interface Case {
   case_type: string;
   created_date: string;
   created_by: string;
+  media?: string[];
+  files?: string[];
+  openCaseCount?: number; 
+  user?: { firstName: string; email: string };
 }
 
 export interface Category {
   id: string;
   name: string;
   color: string;
+  icon?: string;
 }
 
 export const colorMap: Record<string, string> = {
