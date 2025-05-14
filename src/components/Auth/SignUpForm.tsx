@@ -12,6 +12,7 @@ import { UserSignup } from "@/services/AuthServices";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
+import { FaSpinner } from "react-icons/fa";
 
 export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const [errors, setErrors] = useState<Partial<SignupData>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setForm((prevForm) => ({
@@ -55,33 +57,39 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("Submitting form:", form);
+    setLoading(true);
 
-    const newErrors: Partial<SignupData> = {
-      email: validateField("email", form.email, form),
-      confirm_password: validateField(
-        "confirm_password",
-        form.confirm_password,
-        form
-      ),
-    };
-    console.log("FORM DATA", form);
-    const response = await UserSignup(form);
-    if (response.success) {
-      toast("Signup successful. Welcome aboard!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
-      router.push("/login");
-    } else {
-      toast.error(response.message);
+    try {
+      const newErrors: Partial<SignupData> = {
+        email: validateField("email", form.email, form),
+        confirm_password: validateField(
+          "confirm_password",
+          form.confirm_password,
+          form
+        ),
+      };
+
+      const response = await UserSignup(form);
+      if (response.success) {
+        toast("Signup successful. Welcome aboard!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        router.push("/login");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,7 +148,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           onBlur={handleBlur}
         />
 
-        {/* Gender & Birth Date */}
         <div className="grid grid-cols-2 gap-6 mb-2">
           <BaseFormSelect
             label="Select Gender"
@@ -148,12 +155,13 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             color="blue"
             value={form.gender}
             onChange={handleChange}
-            >
-            <option value="" disabled> Select </option>
-            <option value="M">Male</option>
-            <option value="F">Female</option>
-            <option value="O">Other</option>
-          </BaseFormSelect>
+            choices={[
+              { value: "", label: "Select", disabled: true },
+              { value: "M", label: "Male" },
+              { value: "F", label: "Female" },
+              { value: "O", label: "Other" },
+            ]}
+          />
 
           <BaseFormInput
             label="Date of Birth"
@@ -197,7 +205,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <BaseFormInput
           label="Password"
           name="password"
-          type={showPassword ? "text" : "password"} 
+          type={showPassword ? "text" : "password"}
           color={userType === "layman" ? "red" : "blue"}
           icon={showPassword ? "passhide" : "pass"}
           value={form.password}
@@ -208,7 +216,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <BaseFormInput
           label="Re-Type Password"
           name="confirm_password"
-          type={showConfirmPassword ? "text" : "password"} 
+          type={showConfirmPassword ? "text" : "password"}
           color={userType === "layman" ? "red" : "blue"}
           icon={showConfirmPassword ? "passhide" : "pass"}
           value={form.confirm_password}
@@ -221,7 +229,21 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         )}
 
         <div className="mt-5">
-          <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+          <BaseButton
+            type="submit"
+            disabled={loading} // Disable button while loading
+            className={`flex items-center justify-center w-full ${
+              loading ? "bg-gray-400 cursor-not-allowed" : ""
+            }`}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <FaSpinner className="animate-spin" /> Creating Account...
+              </span>
+            ) : (
+              "CREATE ACCOUNT"
+            )}
+          </BaseButton>
         </div>
       </form>
     </div>
