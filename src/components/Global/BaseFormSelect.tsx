@@ -12,7 +12,7 @@ const BaseFormSelect: FC<FormSelectProps> = ({
   height,
   textSize,
   value,
-  choices,
+  choices = [],
   onChange,
 }) => {
   return (
