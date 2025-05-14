@@ -90,7 +90,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
       <form className="overflow-y-auto p-4" onSubmit={handleSubmit}>
-        {/* First & Last Name */}
         <div className="grid grid-cols-2 gap-6 mb-2">
           <BaseFormInput
             label="First Name"
@@ -114,7 +113,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           />
         </div>
 
-        {/* Email */}
         <BaseFormInput
           label="Email"
           name="email"
@@ -127,7 +125,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-        {/* Contact No. */}
         <BaseFormInput
           label="Contact No."
           name="contact_number"
@@ -139,7 +136,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           onBlur={handleBlur}
         />
 
-        {/* Gender & Birth Date */}
         <div className="grid grid-cols-2 gap-6 mb-2">
           <BaseFormSelect
             label="Select Gender"
@@ -165,7 +161,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           />
         </div>
 
-        {/* Conditional Fields for Lawyers */}
         {userType === "lawyer" && (
           <div className="grid grid-cols-2 gap-6 mb-2">
             <BaseFormInput
@@ -191,7 +186,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           </div>
         )}
 
-        {/* Password Fields */}
         <BaseFormInput
           label="Password"
           name="password"
@@ -217,7 +211,9 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         {errors.confirm_password && (
           <p className="text-red-500 text-sm">{errors.confirm_password}</p>
         )}
-        <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+        <div className="mt-5">
+          <BaseButton type="submit">CREATE ACCOUNT</BaseButton>
+        </div>
       </form>
     </div>
   );
