@@ -1,35 +1,18 @@
 "use client";
 import * as React from "react";
 import { IoMdCheckmark } from "react-icons/io";
-import {
-  MdOutlineBookmarks,
-  MdForum,
-  MdOutlineMarkEmailUnread,
-} from "react-icons/md";
+import { MdOutlineBookmarks, MdForum } from "react-icons/md";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { Case, Category } from "@/interface/CaseTypes";
 import ForumCard from "@/components/Forum/ForumCard";
 import { useEffect, useRef, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
-import { fetchForums } from "@/services/ForumServices";
+import { fetchAllForumPosts } from "@/services/ForumServices";
 import { useRouter } from "next/navigation";
-import AcceptCaseModal from "@/components/Case/AcceptCaseModal";
 import { FaCheckSquare, FaRegSquare, FaBookmark } from "react-icons/fa";
-
-const sortingOptions = [
-  { label: "Latest first", value: "latest" },
-  { label: "Oldest first", value: "oldest" },
-];
-
-const categories: Category[] = [
-  { id: "faq", name: "FAQ's", color: "bg-yellow-400" },
-  { id: "divorce", name: "Divorce Cases", color: "bg-lime-800" },
-  { id: "land", name: "Land Ownership", color: "bg-teal-400" },
-  { id: "civil", name: "Civil Rights", color: "bg-blue" },
-  { id: "environmental", name: "Environmental Law", color: "bg-fuchsia-600" },
-  { id: "human", name: "Human Rights", color: "bg-pink-600" },
-];
+import { sortingOptions, categories } from "@/constants/caseConstants";
+import { ForumPost } from "@/interface/ForumTypes";
 
 const Sidebar: React.FC<{
   selectedCaseType: string;
@@ -70,22 +53,6 @@ const Sidebar: React.FC<{
           <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
         )}
       </button>
-
-      <button
-        onClick={() => setSelectedCaseType("open")}
-        className={`flex gap-2 mt-1 items-center hover:underline ${
-          selectedCaseType === "open"
-            ? "text-[#0838E5] font-bold"
-            : "text-black"
-        }`}
-      >
-        <MdOutlineMarkEmailUnread className="text-xl" />
-        <span className="font-semibold">Unread</span>
-        {selectedCaseType === "open" && (
-          <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
-        )}
-      </button>
-
       <button
         onClick={() => setSelectedCaseType("closed")}
         className={`flex gap-1.5 mt-1.5 items-center hover:underline ${
@@ -138,45 +105,46 @@ const InputDesign: React.FC = () => {
   const [selectedCaseType, setSelectedCaseType] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-  const [cases, setCases] = useState<Case[]>([]);
-  const [casesLoading, setCasesLoading] = useState(true);
+  const [cases, setForum] = useState<ForumPost[]>([]);
+  const [forumLoading, setForumLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allReadChecked, setAllReadChecked] = useState(false);
   const router = useRouter();
 
-  const openModal = (caseItem: Case) => {
-    setSelectedCase(caseItem);
-    setIsModalOpen(true);
+  const handleBookmarkToggle = (id: number) => {
+    setForum((prevCases) =>
+      prevCases.map((forumItem) =>
+        forumItem.id === id
+          ? { ...forumItem, bookmark: !forumItem.bookmark } // Toggle bookmark
+          : forumItem
+      )
+    );
   };
 
-  const filteredCases = cases.filter((caseItem) => {
+  const filteredCases = cases.filter((forumItem) => {
     const query = searchQuery.toLowerCase();
     const matchesCaseType =
       selectedCaseType === "all"
         ? true
         : selectedCaseType === "open"
-        ? caseItem.status.toLowerCase() === "open"
+        ? forumItem.bookmark === true
         : selectedCaseType === "closed"
-        ? caseItem.status.toLowerCase() === "closed"
+        ? forumItem.bookmark === false
         : false;
     const matchesCategory =
-      selectedCategory === null || caseItem.category.name === selectedCategory;
+      selectedCategory === null || forumItem.category === selectedCategory;
     const matchesSearch =
-      caseItem.title.toLowerCase().includes(query) ||
-      caseItem.category.name.toLowerCase().includes(query);
+      forumItem.title.toLowerCase().includes(query) ||
+      forumItem.category.toLowerCase().includes(query);
     return matchesCaseType && matchesCategory && matchesSearch;
   });
 
   const sortedCases = [...filteredCases].sort((a, b) => {
     if (sortOrder === "latest") {
-      return (
-        new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
-      );
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
     } else {
-      return (
-        new Date(a.created_date).getTime() - new Date(b.created_date).getTime()
-      );
+      return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
     }
   });
 
@@ -186,19 +154,33 @@ const InputDesign: React.FC = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const loadCases = async () => {
-      const response = await fetchForums();
+    const loadforum = async () => {
+      const response = await fetchAllForumPosts();
       if (isMounted) {
-        if (response.success && response.data) {
-          setCases(response.data);
+        if (response) {
+          const forumPostsAsCases: ForumPost[] = response.map((post) => ({
+            id: post.id,
+            author: {
+              first_name: post.author.first_name,
+              last_name: post.author.last_name,
+            },
+            title: post.title,
+            content: post.content,
+            timestamp: post.timestamp,
+            bookmark: post.bookmark,
+            category: post.category,
+          }));
+
+          setForum(forumPostsAsCases);
+          setForumLoading(false);
         } else {
-          setCasesError(response.message || "Failed to load cases");
+          setCasesError("Failed to load forum posts.");
+          setForumLoading(false);
         }
-        setCasesLoading(false);
       }
     };
 
-    loadCases();
+    loadforum();
     return () => {
       isMounted = false;
     };
@@ -225,7 +207,7 @@ const InputDesign: React.FC = () => {
     };
   }, []);
 
-  const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
+  const openCaseCount = filteredCases.filter((c) => (c.bookmark = true)).length;
 
   return (
     <main
@@ -256,43 +238,32 @@ const InputDesign: React.FC = () => {
                 onChange={(e) => setSortOrder(e.target.value)}
                 width="130px"
               />
-
-              {/* Checkbox: Mark All As Read */}
-              <button
-                className="flex items-center gap-2 text-sm font-semibold hover:underline"
-                onClick={() => setAllReadChecked(!allReadChecked)}
-              >
-                {allReadChecked ? (
-                  <FaCheckSquare className="text-blue-600 text-lg" />
-                ) : (
-                  <FaRegSquare className="text-gray-500 text-lg" />
-                )}
-                Mark All as Read
-              </button>
             </div>
 
             {/* Scrollable Case List */}
             <div className="flex-1 overflow-y-auto pr-5">
-              {casesLoading ? (
+              {forumLoading ? (
                 <p className="text-center text-gray-500 mt-20">
                   Loading cases...
                 </p>
               ) : casesError ? (
                 <p className="text-center text-red-500 mt-20">{casesError}</p>
               ) : sortedCases.length > 0 ? (
-                sortedCases.map((caseItem) => (
+                sortedCases.map((forumItem) => (
                   <ForumCard
-                    key={caseItem.id}
-                    caseItem={caseItem}
+                    key={forumItem.id}
+                    forumItem={forumItem}
                     categories={categories}
                     onClick={() =>
-                      router.push(`/dashboard/case/${caseItem.id}`)
+                      router.push(`/dashboard/case/${forumItem.id}`)
                     }
+                    onBookmarkToggle={handleBookmarkToggle} // Pass handler
+                    bookmarked={forumItem.bookmark} // Pass bookmark status
                   />
                 ))
               ) : (
                 <p className="text-center text-gray-500 mt-20">
-                  No cases found
+                  No forum posts found
                 </p>
               )}
             </div>
