@@ -1,7 +1,11 @@
 "use client";
 import * as React from "react";
 import { IoMdCheckmark } from "react-icons/io";
-import { MdOutlineBookmarks, MdForum, MdOutlineMarkEmailUnread } from "react-icons/md";
+import {
+  MdOutlineBookmarks,
+  MdForum,
+  MdOutlineMarkEmailUnread,
+} from "react-icons/md";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { Case, Category } from "@/interface/CaseTypes";
 import ForumCard from "@/components/Forum/ForumCard";
@@ -32,14 +36,23 @@ const Sidebar: React.FC<{
   setSelectedCaseType: (type: string) => void;
   selectedCategory: string | null;
   setSelectedCategory: (category: string | null) => void;
-}> = ({ selectedCaseType, setSelectedCaseType, selectedCategory, setSelectedCategory }) => (
-  <aside className="ml-5 w-[23%] max-md:ml-0 max-md:w-full" role="complementary">
+  router: ReturnType<typeof useRouter>;
+}> = ({
+  selectedCaseType,
+  setSelectedCaseType,
+  selectedCategory,
+  setSelectedCategory,
+  router,
+}) => (
+  <aside
+    className="ml-5 w-[23%] max-md:ml-0 max-md:w-full"
+    role="complementary"
+  >
     <nav className="flex flex-col mt-3 w-full text-xs font-medium">
-
       {/* Start a Discussion Button */}
       <button
         className="bg-red text-white text-md py-4 px-4 rounded-lg font-semibold mb-4 hover:bg-red-700 transition shadow-xl"
-        onClick={() => alert("Start a discussion clicked")}
+        onClick={() => router.push("/forum/create")}
       >
         Start a Discussion
       </button>
@@ -53,29 +66,39 @@ const Sidebar: React.FC<{
       >
         <MdForum className="text-xl" />
         <span className="font-semibold">All Discussion</span>
-        {selectedCaseType === "all" && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
+        {selectedCaseType === "all" && (
+          <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
+        )}
       </button>
 
       <button
         onClick={() => setSelectedCaseType("open")}
         className={`flex gap-2 mt-1 items-center hover:underline ${
-          selectedCaseType === "open" ? "text-[#0838E5] font-bold" : "text-black"
+          selectedCaseType === "open"
+            ? "text-[#0838E5] font-bold"
+            : "text-black"
         }`}
       >
         <MdOutlineMarkEmailUnread className="text-xl" />
         <span className="font-semibold">Unread</span>
-        {selectedCaseType === "open" && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
+        {selectedCaseType === "open" && (
+          <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
+        )}
       </button>
 
       <button
         onClick={() => setSelectedCaseType("closed")}
         className={`flex gap-1.5 mt-1.5 items-center hover:underline ${
-          selectedCaseType === "closed" ? "text-[#0838E5] font-bold" : "text-black"
+          selectedCaseType === "closed"
+            ? "text-[#0838E5] font-bold"
+            : "text-black"
         }`}
       >
         <MdOutlineBookmarks className="text-xl" />
         <span className="font-semibold">Favorites</span>
-        {selectedCaseType === "closed" && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
+        {selectedCaseType === "closed" && (
+          <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
+        )}
       </button>
 
       <hr className="mt-3 border-black border-opacity-30" />
@@ -84,13 +107,24 @@ const Sidebar: React.FC<{
           <li
             key={category.id}
             className={`flex gap-3 mt-6 ml-3.5 hover:underline cursor-pointer ${
-              selectedCategory === category.name ? "text-[#0838E5] font-bold" : "text-black"
+              selectedCategory === category.name
+                ? "text-[#0838E5] font-bold"
+                : "text-black"
             }`}
-            onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+            onClick={() =>
+              setSelectedCategory(
+                selectedCategory === category.name ? null : category.name
+              )
+            }
           >
-            <span className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`} aria-hidden="true" />
+            <span
+              className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`}
+              aria-hidden="true"
+            />
             <span>{category.name}</span>
-            {selectedCategory === category.name && <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />}
+            {selectedCategory === category.name && (
+              <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
+            )}
           </li>
         ))}
       </ul>
@@ -118,23 +152,31 @@ const InputDesign: React.FC = () => {
 
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
-    const matchesCaseType = selectedCaseType === "all"
-      ? true
-      : selectedCaseType === "open"
-      ? caseItem.status.toLowerCase() === "open"
-      : selectedCaseType === "closed"
-      ? caseItem.status.toLowerCase() === "closed"
-      : false;
-    const matchesCategory = selectedCategory === null || caseItem.category.name === selectedCategory;
-    const matchesSearch = caseItem.title.toLowerCase().includes(query) || caseItem.category.name.toLowerCase().includes(query);
+    const matchesCaseType =
+      selectedCaseType === "all"
+        ? true
+        : selectedCaseType === "open"
+        ? caseItem.status.toLowerCase() === "open"
+        : selectedCaseType === "closed"
+        ? caseItem.status.toLowerCase() === "closed"
+        : false;
+    const matchesCategory =
+      selectedCategory === null || caseItem.category.name === selectedCategory;
+    const matchesSearch =
+      caseItem.title.toLowerCase().includes(query) ||
+      caseItem.category.name.toLowerCase().includes(query);
     return matchesCaseType && matchesCategory && matchesSearch;
   });
 
   const sortedCases = [...filteredCases].sort((a, b) => {
     if (sortOrder === "latest") {
-      return new Date(b.created_date).getTime() - new Date(a.created_date).getTime();
+      return (
+        new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
+      );
     } else {
-      return new Date(a.created_date).getTime() - new Date(b.created_date).getTime();
+      return (
+        new Date(a.created_date).getTime() - new Date(b.created_date).getTime()
+      );
     }
   });
 
@@ -186,7 +228,10 @@ const InputDesign: React.FC = () => {
   const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
 
   return (
-    <main className="flex flex-col text-black w-full font-[Poppins]" role="main">
+    <main
+      className="flex flex-col text-black w-full font-[Poppins]"
+      role="main"
+    >
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -194,7 +239,10 @@ const InputDesign: React.FC = () => {
         user={user}
       />
 
-      <section className="self-center mt-10 pb-10 w-full max-w-[1080px] h-[calc(100vh-40px)] max-h-[77vh] flex flex-col" aria-label="Case listings">
+      <section
+        className="self-center mt-10 pb-10 w-full max-w-[1080px] h-[calc(100vh-40px)] max-h-[77vh] flex flex-col"
+        aria-label="Case listings"
+      >
         <div className="flex gap-5 max-md:flex-col h-full overflow-hidden">
           {/* Left Content */}
           <div className="w-[77%] h-[100%] max-md:w-full flex flex-col">
@@ -223,15 +271,12 @@ const InputDesign: React.FC = () => {
               </button>
             </div>
 
-            {/* Modal */}
-            {isModalOpen && selectedCase && (
-              <AcceptCaseModal onClose={() => setIsModalOpen(false)} caseData={selectedCase} />
-            )}
-
             {/* Scrollable Case List */}
             <div className="flex-1 overflow-y-auto pr-5">
               {casesLoading ? (
-                <p className="text-center text-gray-500 mt-20">Loading cases...</p>
+                <p className="text-center text-gray-500 mt-20">
+                  Loading cases...
+                </p>
               ) : casesError ? (
                 <p className="text-center text-red-500 mt-20">{casesError}</p>
               ) : sortedCases.length > 0 ? (
@@ -240,11 +285,15 @@ const InputDesign: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() => router.push(`/dashboard/case/${caseItem.id}`)}
+                    onClick={() =>
+                      router.push(`/dashboard/case/${caseItem.id}`)
+                    }
                   />
                 ))
               ) : (
-                <p className="text-center text-gray-500 mt-20">No cases found</p>
+                <p className="text-center text-gray-500 mt-20">
+                  No cases found
+                </p>
               )}
             </div>
           </div>
@@ -255,6 +304,7 @@ const InputDesign: React.FC = () => {
             setSelectedCaseType={setSelectedCaseType}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            router={router}
           />
         </div>
       </section>
