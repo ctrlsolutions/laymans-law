@@ -92,10 +92,13 @@ export default function AccountLayout({
   const activeTab =
     tabs.find((tab) => pathname === tab.path(userId))?.name || "";
 
-  const isWikiPage = pathname.startsWith("/wiki");
-
   let contentToShow;
-  if (isWikiPage) {
+  const standaloneRoutes = ["/wiki", "/forum", "/browse", "/submit-case"];
+  const isStandalonePage = standaloneRoutes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
+
+  if (isStandalonePage) {
     contentToShow = children;
   } else {
     contentToShow = userType === "layman" ? layman : lawyer;
