@@ -74,7 +74,7 @@ const InputDesign: React.FC = () => {
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
     const matchesCategory =
-      selectedCategory === null || caseItem.category.name === selectedCategory;
+      selectedCategory === null || caseItem.case_type === selectedCategory;
     const matchesSearch =
       caseItem.title.toLowerCase().includes(query) ||
       caseItem.category.name.toLowerCase().includes(query);
