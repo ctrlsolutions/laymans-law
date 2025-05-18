@@ -62,21 +62,31 @@ export default function SubmittedCasePage() {
     return <div className="p-8 text-center text-red-500">Case not found or failed to load.</div>;
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Approved":
-        return "bg-green-500";
-      case "Pending":
-        return "bg-yellow-500";
-      default:
-        return "bg-red-500";
-    }
-  };
-
-  const handleCancelCase = () => {
+  const handleCancelCase = async () => {
     if (confirm("Are you sure you want to cancel this case? This action cannot be undone.")) {
-      console.log("Case cancelled:", caseId);
-      router.push(`/${user_id}/submitted-cases`);
+      setLoading(true); // Indicate loading during deletion
+      try {
+        // Placeholder: Call service to delete the case
+        // const response = await deleteCaseById(caseId as string);
+        // if (response.success) {
+        //   console.log("Case cancelled:", caseId);
+        //   router.push(`/${user_id}/submitted-cases`);
+        // } else {
+        //   console.error("Failed to cancel case:", response.message);
+        //   alert(`Failed to cancel case: ${response.message}`); // Provide feedback to user
+        // }
+
+        // Temporary redirect for demonstration without actual deletion
+        console.log("Case cancellation confirmed for:", caseId);
+        alert("Case cancellation confirmed. (Actual deletion not implemented yet)");
+        router.push(`/${user_id}/submitted-cases`);
+
+      } catch (error) {
+        console.error("Error cancelling case:", error);
+        alert("An error occurred while trying to cancel the case.");
+      } finally {
+        setLoading(false); // End loading
+      }
     }
   };
 
@@ -120,45 +130,50 @@ export default function SubmittedCasePage() {
              <p>{caseData.description}</p>
           </div>
 
-          {caseData.media && caseData.media.length > 0 && (
-            <div className="relative mb-6">
-              <div className="w-full h-80 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
-                <Image
-                  src={caseData.media[currentImageIndex]}
-                  alt={`Case media ${currentImageIndex + 1}`}
-                  width={600}
-                  height={320}
-                  objectFit="cover"
-                />
-              </div>
-              {caseData.media.length > 1 && (
-                 <>
-                    <button
-                       onClick={goToPreviousImage}
-                       className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
-                    >
-                       &lt;
-                    </button>
-                    <button
-                       onClick={goToNextImage}
-                       className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
-                    >
-                       &gt;
-                    </button>
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-                       {caseData.media.map((_, index) => (
-                          <button
-                             key={index}
-                             onClick={() => handleDotClick(index)}
-                             className={`w-2 h-2 rounded-full ${
-                                index === currentImageIndex ? "bg-white" : "bg-gray-400"
-                             }`}
-                          ></button>
-                       ))}
-                    </div>
-                 </>
-              )}
-            </div>
+          {/* Media Section */}
+          {caseData.media && caseData.media.length > 0 ? (
+             <div className="relative mb-6">
+               <div className="w-full h-80 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+                 <Image
+                   src={caseData.media[currentImageIndex]}
+                   alt={`Case media ${currentImageIndex + 1}`}
+                   width={600}
+                   height={320}
+                   objectFit="cover"
+                 />
+               </div>
+               {caseData.media.length > 1 && (
+                  <>
+                     <button
+                        onClick={goToPreviousImage}
+                        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
+                     >
+                        &lt;
+                     </button>
+                     <button
+                        onClick={goToNextImage}
+                        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
+                     >
+                        &gt;
+                     </button>
+                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+                        {caseData.media.map((_, index) => (
+                           <button
+                              key={index}
+                              onClick={() => handleDotClick(index)}
+                              className={`w-2 h-2 rounded-full ${
+                                 index === currentImageIndex ? "bg-white" : "bg-gray-400"
+                              }`}
+                           ></button>
+                        ))}
+                     </div>
+                  </>
+               )}
+             </div>
+          ) : (
+             <div className="w-full h-80 bg-gray-200 flex items-center justify-center rounded-lg text-gray-500 mb-6">
+                No media available for this case.
+             </div>
           )}
 
           <div className="mt-6 text-right">
