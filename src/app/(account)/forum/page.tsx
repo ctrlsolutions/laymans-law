@@ -258,8 +258,8 @@ const InputDesign: React.FC = () => {
                     onClick={() =>
                       router.push(`/dashboard/case/${forumItem.id}`)
                     }
-                    onBookmarkToggle={handleBookmarkToggle} // Pass handler
-                    bookmarked={forumItem.bookmark} // Pass bookmark status
+                    onBookmarkToggle={handleBookmarkToggle}
+                    bookmarked={forumItem.bookmark}
                   />
                 ))
               ) : (

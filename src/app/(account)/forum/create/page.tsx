@@ -14,7 +14,6 @@ const DiscussionForm: React.FC<{
   setForumDetails: React.Dispatch<React.SetStateAction<string>>;
   forumCategory: string;
   setForumCategory: React.Dispatch<React.SetStateAction<string>>;
-  handleSubmit: (e: React.FormEvent) => void;
 }> = ({
   forumTitle,
   setForumTitle,
@@ -22,12 +21,10 @@ const DiscussionForm: React.FC<{
   setForumDetails,
   forumCategory,
   setForumCategory,
-  handleSubmit,
 }) => {
   return (
     <div className="w-full lg:h-[70dvh]">
-      <form
-        onSubmit={handleSubmit}
+      <div
         className="space-y-4 lg:overflow-x-hidden sm:overflow-y-auto md:overflow-y-auto 
         lg:overflow-y-auto sm:max-h-[calc(50vh-156px)] sm:max-w-[58dvw] 
         md:max-h-[calc(50vh-156px)] md:max-w-[54dvw] 
@@ -76,7 +73,7 @@ const DiscussionForm: React.FC<{
             aria-label="Forum Details"
           />
         </div>
-      </form>
+      </div>
     </div>
   );
 };
@@ -115,10 +112,7 @@ const DiscussionPage: React.FC = () => {
         throw new Error("Failed to create forum post.");
       }
 
-      console.log("Created forum post:", newPost);
-
       alert("Forum post created successfully!");
-
       setForumTitle("");
       setForumDetails("");
       setForumCategory("General");
@@ -146,36 +140,37 @@ const DiscussionPage: React.FC = () => {
             aria-hidden="true"
           />
 
-          <DiscussionForm
-            forumTitle={forumTitle}
-            setForumTitle={setForumTitle}
-            forumDetails={forumDetails}
-            setForumDetails={setForumDetails}
-            forumCategory={forumCategory}
-            setForumCategory={setForumCategory}
-            handleSubmit={handleSubmit}
-          />
+          {/* Wrap entire form including buttons */}
+          <form onSubmit={handleSubmit}>
+            <DiscussionForm
+              forumTitle={forumTitle}
+              setForumTitle={setForumTitle}
+              forumDetails={forumDetails}
+              setForumDetails={setForumDetails}
+              forumCategory={forumCategory}
+              setForumCategory={setForumCategory}
+            />
 
-          <div className="flex justify-end mx-auto space-x-8 overflow-y-hidden max-h-[calc(70vh-160px)]">
-            <Button
-              color="blue"
-              textColor="white"
-              type="submit"
-              width="200px"
-              onClick={handleSubmit}
-            >
-              Submit
-            </Button>
-            <Button
-              color="red"
-              textColor="white"
-              type="button"
-              width="200px"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-          </div>
+            <div className="flex justify-end mx-auto space-x-8 overflow-y-hidden max-h-[calc(70vh-160px)]">
+              <Button
+                color="blue"
+                textColor="white"
+                type="submit"
+                width="200px"
+              >
+                Submit
+              </Button>
+              <Button
+                color="red"
+                textColor="white"
+                type="button"
+                width="200px"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
         </div>
       </section>
     </main>

@@ -15,6 +15,8 @@ export interface FormSelectProps {
   name: string;
   color?: string;
   width?: string;
+  height?: string;
+  textSize?: string;
   value: string;
   choices: { label: string; value: string }[];
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
