@@ -43,7 +43,7 @@ const DiscussionForm: React.FC<{
             width="50px"
             onChange={(e) => setForumTitle(e.target.value)}
             placeholder="Enter Forum Title"
-            className="w-[46vw] flex-grow h-12 border border-black rounded-lg p-4 text-[14px] text-black-200 focus:outline-none focus:ring-0"
+            className="w-[46vw] flex-grow h-12 border border-black rounded-lg p-4 text-[0.90rem] text-black-200 focus:outline-none focus:ring-0"
           />
 
           <BaseFormSelect
@@ -72,7 +72,7 @@ const DiscussionForm: React.FC<{
             value={forumDetails}
             onChange={(e) => setForumDetails(e.target.value)}
             placeholder="Enter Forum Details"
-            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[15px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
+            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[0.9rem] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
             aria-label="Forum Details"
           />
         </div>
@@ -156,16 +156,7 @@ const DiscussionPage: React.FC = () => {
             handleSubmit={handleSubmit}
           />
 
-          <div className="flex justify-center mx-auto space-x-40 overflow-y-hidden max-h-[calc(70vh-160px)]">
-            <Button
-              color="red"
-              textColor="white"
-              type="button"
-              width="200px"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
+          <div className="flex justify-end mx-auto space-x-8 overflow-y-hidden max-h-[calc(70vh-160px)]">
             <Button
               color="blue"
               textColor="white"
@@ -174,6 +165,15 @@ const DiscussionPage: React.FC = () => {
               onClick={handleSubmit}
             >
               Submit
+            </Button>
+            <Button
+              color="red"
+              textColor="white"
+              type="button"
+              width="200px"
+              onClick={handleCancel}
+            >
+              Cancel
             </Button>
           </div>
         </div>
