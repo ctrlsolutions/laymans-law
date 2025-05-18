@@ -33,33 +33,24 @@ export default function EditCasePage() {
   const [mediaImages, setMediaImages] = useState<string[]>([]);
   const [fileList, setFileList] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const fetchCaseData = async () => {
-      const mockCase: Case = {
-        id: caseId as string,
-        title: 'Mock Case Title',
-        description: 'Mock case description...',
-        category: 'Mock Category',
-        status: 'Open',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        media: Array(8).fill('/defaultphoto.jpg'),
-        files: [
-          'witness_report.pdf',
-          'cctv_footage.mp4',
-          'suspect_profile.docx',
-          'court_documents.pdf',
-          'photos.zip',
-        ],
-      };
+      try {
+        const res = await fetch(`http://localhost:8000/api/cases/${caseId}/`);
+        if (!res.ok) throw new Error("Failed to fetch case");
+        const data: Case = await res.json();
 
-      setCaseData(mockCase);
-      setTitle(mockCase.title);
-      setDescription(mockCase.description);
-      setCategory(mockCase.category);
-      setMediaImages(mockCase.media ?? []);
-      setFileList(mockCase.files ?? []);
+        setCaseData(data);
+        setTitle(data.title);
+        setDescription(data.description);
+        setCategory(data.category);
+        setMediaImages(data.media ?? []);
+        setFileList(data.files ?? []);
+      } catch (err) {
+        console.error("Error fetching case data:", err);
+      }
     };
 
     fetchCaseData();
@@ -74,19 +65,39 @@ export default function EditCasePage() {
     link.click();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setIsSaving(true);
     const updatedCase = {
-      ...caseData,
       title,
       description,
       category,
-      updatedAt: new Date().toISOString(),
       media: mediaImages,
       files: fileList,
     };
-    console.log('Updated case:', updatedCase);
-    alert('Case updated (mock)');
-    router.push(`/dashboard/submitted-cases/${caseId}`);
+
+    try {
+      const res = await fetch(`http://localhost:8000/api/cases/${caseId}/edit/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedCase),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to update case');
+      }
+
+      const data = await res.json();
+      console.log('Updated case:', data);
+      alert('Case updated successfully');
+      router.push(`/dashboard/submitted-cases/${caseId}`);
+    } catch (error) {
+      console.error('Error updating case:', error);
+      alert('Failed to update case. Check console for details.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDeleteImage = (index: number) => {
@@ -165,8 +176,8 @@ export default function EditCasePage() {
               </div>
 
               <div className="pt-2 flex gap-4 justify-end w-[42vw]">
-                <BaseButton color="violet" textColor="white" onClick={handleSave}>
-                  Save Changes
+                <BaseButton color="violet" textColor="white" onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save Changes"}
                 </BaseButton>
                 <BaseButton color="red" textColor="white" onClick={() => router.back()}>
                   Discard Changes
@@ -196,9 +207,7 @@ export default function EditCasePage() {
                 </div>
               </div>
 
-              {/* Scrollable Section */}
               <div className="flex-grow overflow-y-auto space-y-2 pr-1">
-                {/* Media */}
                 <div>
                   <p className="font-semibold text-sm mb-3 ml-3 text-black">Media</p>
                   <div className="grid grid-cols-3 gap-2 ml-3 mr-3">
@@ -233,7 +242,6 @@ export default function EditCasePage() {
                   )}
                 </div>
 
-                {/* Files */}
                 <div>
                   <p className="font-semibold text-black text-sm mb-2 ml-3">Files</p>
                   <ul className="text-sm space-y-2 ml-3 mr-3">
