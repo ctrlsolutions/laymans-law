@@ -40,14 +40,17 @@ const DiscussionForm: React.FC<{
             name="forumTitle"
             type="text"
             value={forumTitle}
+            width="50px"
             onChange={(e) => setForumTitle(e.target.value)}
             placeholder="Enter Forum Title"
-            className="w-[50vw] flex-grow h-12 border border-black rounded-lg p-4 text-[14px] text-black-200 focus:outline-none focus:ring-0"
+            className="w-[46vw] flex-grow h-12 border border-black rounded-lg p-4 text-[14px] text-black-200 focus:outline-none focus:ring-0"
           />
 
           <BaseFormSelect
             label=""
             name="forumCategory"
+            width="200px"
+            textSize="text-xs"
             value={forumCategory}
             onChange={(e) => setForumCategory(e.target.value)}
             choices={[
@@ -69,7 +72,7 @@ const DiscussionForm: React.FC<{
             value={forumDetails}
             onChange={(e) => setForumDetails(e.target.value)}
             placeholder="Enter Forum Details"
-            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[13.5px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
+            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[15px] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
             aria-label="Forum Details"
           />
         </div>
@@ -136,7 +139,7 @@ const DiscussionPage: React.FC = () => {
     <main className="h-[calc(100vh-4rem)] px-4 py-6 lg:px-8">
       <section className="mx-0 flex flex-col mt-6 overflow-y-auto max-h-full md:mx-4 lg:mx-8 lg:flex-row">
         <div className="w-full mx-0 md:mx-4">
-          <h1 className="text-black text-lg font-[900] px-2">Post Forum</h1>
+          <h1 className="text-black text-lg font-[900] px-2">Create a Post</h1>
           <div
             className="my-0 mt-1.5 w-full h-px bg-black bg-opacity-60"
             role="separator"

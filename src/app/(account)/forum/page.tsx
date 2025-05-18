@@ -236,7 +236,8 @@ const InputDesign: React.FC = () => {
                 value={sortOrder}
                 choices={sortingOptions}
                 onChange={(e) => setSortOrder(e.target.value)}
-                width="130px"
+                width="145px"
+                textSize="text-xs"
               />
             </div>
 
@@ -268,8 +269,6 @@ const InputDesign: React.FC = () => {
               )}
             </div>
           </div>
-
-          {/* Sidebar */}
           <Sidebar
             selectedCaseType={selectedCaseType}
             setSelectedCaseType={setSelectedCaseType}
