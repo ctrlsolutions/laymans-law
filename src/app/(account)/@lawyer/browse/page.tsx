@@ -116,7 +116,8 @@ const CasePage: React.FC = () => {
             value={sortOrder}
             choices={sortingOptions}
             onChange={(e) => setSortOrder(e.target.value)}
-            width="130px"
+            width="150px"
+            textSize="text-xs"
           />
           <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden scrollbar-hide">
             <div className="w-full max-md:w-full">

@@ -1,6 +1,6 @@
 import { IoMdCheckmark } from "react-icons/io";
 import { CaseFilterButton } from "./CaseFilterButton";
-import { SidebarProps, colorMap } from "@/interface/CaseTypes";
+import { SidebarProps } from "@/interface/CaseTypes";
 import React from "react";
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <span
               className={`flex self-center shrink-0 w-2 h-2 ${
-                colorMap[category.color] || "bg-gray-300"
+                category.color || "bg-gray-300"
               } rounded-full`}
               aria-hidden="true"
             />
@@ -80,15 +80,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         ))}
       </ul>
     </nav>
-
-    <div className="hidden">
-      <span className="bg-yellow-400" />
-      <span className="bg-lime-800" />
-      <span className="bg-teal-400" />
-      <span className="bg-blue" />
-      <span className="bg-fuchsia-600" />
-      <span className="bg-pink-600" />
-    </div>
   </aside>
 );
 
