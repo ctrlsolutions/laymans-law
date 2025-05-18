@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchCases } from "@/services/CaseService";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 const sortingOptions = [
   { label: "Latest first", value: "latest" },
@@ -59,6 +59,8 @@ const Sidebar: React.FC<{
 
 const InputDesign: React.FC = () => {
   const router = useRouter();
+  const params = useParams();
+  const userId = params.user_id as string;
 
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("latest");
@@ -93,8 +95,7 @@ const InputDesign: React.FC = () => {
     let isMounted = true;
 
     const loadCases = async () => {
-      const user_id = localStorage.getItem("user_id");
-      const response = await fetchCases(user_id);
+      const response = await fetchCases(userId);
       if (isMounted) {
         if (response.success && response.data) {
           setCases(response.data);
@@ -110,7 +111,7 @@ const InputDesign: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -171,7 +172,7 @@ const InputDesign: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() =>{const id = localStorage.getItem('user_id'); router.push(`/${id}/submitted-cases/${caseItem.id}/`)}}
+                    onClick={() => router.push(`/${userId}/submitted-cases/${caseItem.id}/`)}
                   />
                 ))
               ) : (
