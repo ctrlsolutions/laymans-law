@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import BaseButton from '@/components/Global/BaseButton';
-import Header from "@/components/Profile/Header";
 import * as React from "react";
 
 interface Case {
@@ -12,14 +11,22 @@ interface Case {
   description: string;
   category: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   media?: string[];
   files?: string[];
+  created_by?: {
+    user_id: string;
+    name: string;
+    email: string;
+    address?: string;
+    contact_number?: string;
+    profile_image?: string;
+  };
 }
 
 export default function EditCasePage() {
-  const { caseId } = useParams();
+  const { caseId, user_id } = useParams();
   const router = useRouter();
 
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -32,14 +39,19 @@ export default function EditCasePage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [mediaImages, setMediaImages] = useState<string[]>([]);
   const [fileList, setFileList] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = React.useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCaseData = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const res = await fetch(`http://localhost:8000/api/cases/${caseId}/`);
-        if (!res.ok) throw new Error("Failed to fetch case");
+        if (!res.ok) {
+          throw new Error(`Failed to fetch case: ${res.statusText}`);
+        }
         const data: Case = await res.json();
 
         setCaseData(data);
@@ -50,13 +62,31 @@ export default function EditCasePage() {
         setFileList(data.files ?? []);
       } catch (err) {
         console.error("Error fetching case data:", err);
+        setError(err instanceof Error ? err.message : "Failed to load case data");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchCaseData();
   }, [caseId]);
 
-  if (!caseData) return <p className="p-8">Loading...</p>;
+  if (isLoading) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-950"></div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="p-8 text-center">
+      <p className="text-red-600 mb-4">{error}</p>
+      <BaseButton color="violet" textColor="white" onClick={() => router.back()}>
+        Go Back
+      </BaseButton>
+    </div>
+  );
+
+  if (!caseData) return null;
 
   const handleDownload = (fileName: string) => {
     const link = document.createElement('a');
@@ -67,6 +97,8 @@ export default function EditCasePage() {
 
   const handleSave = async () => {
     setIsSaving(true);
+    setError(null);
+    
     const updatedCase = {
       title,
       description,
@@ -77,7 +109,7 @@ export default function EditCasePage() {
 
     try {
       const res = await fetch(`http://localhost:8000/api/cases/${caseId}/edit/`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -85,18 +117,49 @@ export default function EditCasePage() {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update case');
+        const errorData = await res.json();
+        throw new Error(errorData.detail || 'Failed to update case');
       }
 
       const data = await res.json();
       console.log('Updated case:', data);
-      alert('Case updated successfully');
-      router.push(`/dashboard/submitted-cases/${caseId}`);
+      router.push(`/${user_id}/submitted-cases/${caseId}`);
     } catch (error) {
       console.error('Error updating case:', error);
-      alert('Failed to update case. Check console for details.');
+      setError(error instanceof Error ? error.message : 'Failed to update case');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, type: 'media' | 'files') => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const formData = new FormData();
+    Array.from(files).forEach(file => {
+      formData.append(type === 'media' ? 'media' : 'files', file);
+    });
+
+    try {
+      const res = await fetch(`http://localhost:8000/api/cases/${caseId}/upload/`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to upload files');
+      }
+
+      const data = await res.json();
+      if (type === 'media') {
+        setMediaImages(prev => [...prev, ...data.media]);
+      } else {
+        setFileList(prev => [...prev, ...data.files]);
+      }
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      setError(error instanceof Error ? error.message : 'Failed to upload files');
     }
   };
 
@@ -112,111 +175,139 @@ export default function EditCasePage() {
   };
 
   return (
-    <>
-      <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
-        <div className="pb-2 px-0 rounded-b-2xl">
-          <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        </div>
-
-        <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-10 mb-20">
-          <div className="bg-violet-950 text-white px-8 py-4">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-violet-950 text-white px-8 py-4 sticky top-0 z-10">
             <button
               onClick={() => router.push(`/dashboard/submitted-cases/${caseId}`)}
-              className="text-white hover:underline"
+              className="text-white hover:underline flex items-center gap-2"
             >
-              ← Back to Case
+              <span>←</span> Back to Case
             </button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-1 pr-0 pl-8">
+          <div className="grid md:grid-cols-3 gap-6 p-6">
             {/* Left Section */}
-            <div className="md:col-span-2 h-[65vh] flex flex-col rounded-xl pr-15 pt-15 overflow-hidden">
-              <div className="space-y-3 ">
-                <div>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="text-3xl text-black font-bold mt-11 ml-8 mb-2 w-[40vw] outline-none border-b border-gray-300 focus:border-gray-500"
-                  />
-                  <p className="text-sm ml-8 text-black">
-                    Submitted: <strong>{new Date(caseData.createdAt).toLocaleDateString()}</strong>
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block font-bold text-black mb-1 ml-8 ">Description</label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={6}
-                    className="w-[40vw] border text-black border-gray-300 rounded-md ml-8 mr-8 p-2 "
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-black mb-1 ml-8 mr-8">Category</label>
-                  <input
-                    type="text"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-[40vw] text-black border border-gray-300 ml-8 mr-8 rounded-md p-2"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-black mb-1 ml-8 mr-8">Upload Media</label>
-                  <input type="file" accept="image/*" className="ml-8 mr-8 text-black" multiple onChange={() => alert('Media uploaded (mock)')} />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-black ml-8 mr-8 mb-1">Upload Files</label>
-                  <input type="file" className="ml-8 mr-8 text-black" multiple onChange={() => alert('Files uploaded (mock)')} />
-                </div>
+            <div className="md:col-span-2 space-y-6 overflow-y-auto max-h-[calc(100vh-12rem)]">
+              <div>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-3xl text-black font-bold w-full outline-none border-b border-gray-300 focus:border-gray-500 pb-2"
+                  placeholder="Enter case title"
+                />
+                <p className="text-sm text-gray-600 mt-2">
+                  Submitted: <strong>{new Date(caseData.created_at).toLocaleDateString()}</strong>
+                </p>
               </div>
 
-              <div className="pt-2 flex gap-4 justify-end w-[42vw]">
-                <BaseButton color="violet" textColor="white" onClick={handleSave} disabled={isSaving}>
+              <div>
+                <label className="block font-bold text-black mb-2">Description</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={6}
+                  className="w-full border text-black border-gray-300 rounded-md p-3"
+                  placeholder="Enter case description"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-black mb-2">Category</label>
+                <input
+                  type="text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full text-black border border-gray-300 rounded-md p-2"
+                  placeholder="Enter case category"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-black mb-2">Upload Media</label>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="w-full text-black" 
+                  multiple 
+                  onChange={(e) => handleFileUpload(e, 'media')} 
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-black mb-2">Upload Files</label>
+                <input 
+                  type="file" 
+                  className="w-full text-black" 
+                  multiple 
+                  onChange={(e) => handleFileUpload(e, 'files')} 
+                />
+              </div>
+
+              {error && (
+                <div className="text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <div className="flex gap-4 justify-end pt-4 border-t border-gray-200 mt-6">
+                <BaseButton 
+                  color="violet" 
+                  textColor="white" 
+                  onClick={handleSave}
+                >
                   {isSaving ? "Saving..." : "Save Changes"}
                 </BaseButton>
-                <BaseButton color="red" textColor="white" onClick={() => router.back()}>
+                <BaseButton 
+                  color="red" 
+                  textColor="white" 
+                  onClick={() => router.back()}
+                >
                   Discard Changes
                 </BaseButton>
               </div>
             </div>
 
             {/* Right Section */}
-            <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
-              <div className="text-center mb-4 shrink-0">
+            <div className="md:col-span-1 bg-gray-50 p-6 rounded-lg border border-gray-200 overflow-y-auto max-h-[calc(100vh-12rem)]">
+              <div className="text-center mb-6">
                 <img
-                  src="/defaultphoto.jpg"
+                  src={caseData.created_by?.profile_image || "/defaultphoto.jpg"}
                   alt="avatar"
                   className="rounded-full w-20 h-20 mx-auto mb-2"
                 />
                 <h3 className="text-lg text-black font-semibold">
-                  Chraine Paul Tuazon
+                  {caseData.created_by?.name || "User"}
                 </h3>
-                <p className="text-sm text-gray-500 mb-4">Pro Sabongero</p>
-                <div className="text-sm text-gray-700 text-left ml-3">
-                  <p className="font-semibold">Address</p>
-                  <p className="mb-2">Camputhaw, Cebu City</p>
-                  <p className="font-semibold">Contact Number</p>
-                  <p className="mb-2">+09 876 543 21</p>
-                  <p className="font-semibold">Email Address</p>
-                  <p className="mb-2 text-blue-600">chrepau@gmail.com</p>
+                <p className="text-sm text-gray-500 mb-4">{caseData.created_by?.email}</p>
+                <div className="text-sm text-gray-700 text-left">
+                  {caseData.created_by?.address && (
+                    <>
+                      <p className="font-semibold">Address</p>
+                      <p className="mb-2">{caseData.created_by.address}</p>
+                    </>
+                  )}
+                  {caseData.created_by?.contact_number && (
+                    <>
+                      <p className="font-semibold">Contact Number</p>
+                      <p className="mb-2">{caseData.created_by.contact_number}</p>
+                    </>
+                  )}
                 </div>
               </div>
 
-              <div className="flex-grow overflow-y-auto space-y-2 pr-1">
+              <div className="space-y-6">
                 <div>
-                  <p className="font-semibold text-sm mb-3 ml-3 text-black">Media</p>
-                  <div className="grid grid-cols-3 gap-2 ml-3 mr-3">
+                  <p className="font-semibold text-sm mb-3 text-black">Media</p>
+                  <div className="grid grid-cols-3 gap-2">
                     {(showAllMedia ? mediaImages : mediaImages.slice(0, 3)).map((src, i) => (
                       <div key={i} className="relative group">
                         <img
                           src={src}
                           alt={`media-${i}`}
-                          className="rounded-md cursor-pointer"
+                          className="rounded-md cursor-pointer w-full h-24 object-cover"
                           onClick={() => {
                             setCurrentImageIndex(i);
                             setSelectedImage(src);
@@ -232,23 +323,23 @@ export default function EditCasePage() {
                       </div>
                     ))}
                   </div>
-                  {caseData.media && caseData.media.length > 3 && (
+                  {mediaImages.length > 3 && (
                     <button
-                      className="text-sm mb-0 text-gray-700 hover:underline mt-2 ml-3"
+                      className="text-sm text-gray-700 hover:underline mt-2"
                       onClick={() => setShowAllMedia((prev) => !prev)}
                     >
-                      {showAllMedia ? "Show less" : `+${caseData.media.length - 3}`}
+                      {showAllMedia ? "Show less" : `+${mediaImages.length - 3}`}
                     </button>
                   )}
                 </div>
 
                 <div>
-                  <p className="font-semibold text-black text-sm mb-2 ml-3">Files</p>
-                  <ul className="text-sm space-y-2 ml-3 mr-3">
+                  <p className="font-semibold text-black text-sm mb-2">Files</p>
+                  <ul className="space-y-2">
                     {(showAllFiles ? fileList : fileList.slice(0, 1)).map((file, i) => (
                       <li key={i} className="relative group">
                         <div
-                          className="bg-gray-200 text-black cursor-pointer px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                          className="bg-white text-black cursor-pointer px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
                           onClick={() => handleDownload(file)}
                         >
                           {file}
@@ -263,14 +354,12 @@ export default function EditCasePage() {
                       </li>
                     ))}
                   </ul>
-                  {!showAllFiles && fileList.length > 1 && (
-                    <button onClick={() => setShowAllFiles(true)} className="mt-2 mb-0 text-sm ml-3 text-gray-700 hover:underline">
-                      +{fileList.length - 1}
-                    </button>
-                  )}
-                  {showAllFiles && fileList.length > 1 && (
-                    <button onClick={() => setShowAllFiles(false)} className="text-xs text-gray-500 hover:underline mt-2 ml-3">
-                      Show less
+                  {fileList.length > 1 && (
+                    <button 
+                      onClick={() => setShowAllFiles(!showAllFiles)} 
+                      className="text-sm text-gray-700 hover:underline mt-2"
+                    >
+                      {showAllFiles ? "Show less" : `+${fileList.length - 1}`}
                     </button>
                   )}
                 </div>
@@ -278,20 +367,26 @@ export default function EditCasePage() {
             </div>
           </div>
         </div>
-
-        {selectedImage && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-            <div className="relative flex flex-col items-center">
-              <button onClick={() => setSelectedImage(null)} className="absolute top-3 right-3 text-white text-xl">✕</button>
-              <img
-                src={mediaImages[currentImageIndex]}
-                alt="Selected"
-                className="max-w-[80vw] max-h-[80vh] object-contain rounded-md"
-              />
-            </div>
-          </div>
-        )}
       </div>
-    </>
+
+      {selectedImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+          <div className="relative flex flex-col items-center">
+            <button 
+              onClick={() => setSelectedImage(null)} 
+              className="absolute top-3 right-3 text-white text-xl hover:bg-black/20 rounded-full p-2"
+            >
+              ✕
+            </button>
+            <img
+              src={mediaImages[currentImageIndex]}
+              alt="Selected"
+              className="max-w-[80vw] max-h-[80vh] object-contain rounded-md"
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
+
