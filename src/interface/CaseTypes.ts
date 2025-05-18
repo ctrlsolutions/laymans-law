@@ -49,3 +49,16 @@ export interface SidebarProps {
   selectedStatus: string | "";
   setSelectedStatus: (status: string | "") => void;
 }
+
+export interface LawData {
+  id: number;
+  title: string;
+  chapter: string;
+  tags: string[];
+  content: string;
+  translation: {
+    language_tagalog: string;
+    language_bisaya: string;
+    language_waray: string;
+  };
+}
