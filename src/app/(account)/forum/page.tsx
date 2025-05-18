@@ -1,103 +1,16 @@
 "use client";
 import * as React from "react";
-import { IoMdCheckmark } from "react-icons/io";
-import { MdOutlineBookmarks, MdForum } from "react-icons/md";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { Case, Category } from "@/interface/CaseTypes";
+import { Case } from "@/interface/CaseTypes";
 import ForumCard from "@/components/Forum/ForumCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchAllForumPosts } from "@/services/ForumServices";
 import { useRouter } from "next/navigation";
-import { FaCheckSquare, FaRegSquare, FaBookmark } from "react-icons/fa";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { ForumPost } from "@/interface/ForumTypes";
-
-const Sidebar: React.FC<{
-  selectedCaseType: string;
-  setSelectedCaseType: (type: string) => void;
-  selectedCategory: string | null;
-  setSelectedCategory: (category: string | null) => void;
-  router: ReturnType<typeof useRouter>;
-}> = ({
-  selectedCaseType,
-  setSelectedCaseType,
-  selectedCategory,
-  setSelectedCategory,
-  router,
-}) => (
-  <aside
-    className="ml-5 w-[23%] max-md:ml-0 max-md:w-full"
-    role="complementary"
-  >
-    <nav className="flex flex-col mt-3 w-full text-xs font-medium">
-      {/* Start a Discussion Button */}
-      <button
-        className="bg-red text-white text-md py-4 px-4 rounded-lg font-semibold mb-4 hover:bg-red-700 transition shadow-xl"
-        onClick={() => router.push("/forum/create")}
-      >
-        Start a Discussion
-      </button>
-
-      {/* Navigation Buttons */}
-      <button
-        onClick={() => setSelectedCaseType("all")}
-        className={`flex gap-1 mt-1.5 items-center hover:underline ${
-          selectedCaseType === "all" ? "text-[#0838E5] font-bold" : "text-black"
-        }`}
-      >
-        <MdForum className="text-xl" />
-        <span className="font-semibold">All Discussion</span>
-        {selectedCaseType === "all" && (
-          <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
-        )}
-      </button>
-      <button
-        onClick={() => setSelectedCaseType("closed")}
-        className={`flex gap-1.5 mt-1.5 items-center hover:underline ${
-          selectedCaseType === "closed"
-            ? "text-[#0838E5] font-bold"
-            : "text-black"
-        }`}
-      >
-        <MdOutlineBookmarks className="text-xl" />
-        <span className="font-semibold">Favorites</span>
-        {selectedCaseType === "closed" && (
-          <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
-        )}
-      </button>
-
-      <hr className="mt-3 border-black border-opacity-30" />
-      <ul className="mt-5" role="list">
-        {categories.map((category) => (
-          <li
-            key={category.id}
-            className={`flex gap-3 mt-6 ml-3.5 hover:underline cursor-pointer ${
-              selectedCategory === category.name
-                ? "text-[#0838E5] font-bold"
-                : "text-black"
-            }`}
-            onClick={() =>
-              setSelectedCategory(
-                selectedCategory === category.name ? null : category.name
-              )
-            }
-          >
-            <span
-              className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`}
-              aria-hidden="true"
-            />
-            <span>{category.name}</span>
-            {selectedCategory === category.name && (
-              <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
-  </aside>
-);
+import ForumSideBar from "@/components/Forum/ForumSideBar";
 
 const InputDesign: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -116,7 +29,7 @@ const InputDesign: React.FC = () => {
     setForum((prevCases) =>
       prevCases.map((forumItem) =>
         forumItem.id === id
-          ? { ...forumItem, bookmark: !forumItem.bookmark } // Toggle bookmark
+          ? { ...forumItem, bookmark: !forumItem.bookmark }
           : forumItem
       )
     );
@@ -227,9 +140,9 @@ const InputDesign: React.FC = () => {
       >
         <div className="flex gap-5 max-md:flex-col h-full overflow-hidden">
           {/* Left Content */}
-          <div className="w-[77%] h-[100%] max-md:w-full flex flex-col">
+          <div className="w-[77%] h-[98%] max-md:w-full flex flex-col">
             {/* Top Controls */}
-            <div className="flex justify-between gap-4 mb-6 max-md:flex-col mr-6">
+            <div className="flex justify-between gap-2 max-md:flex-col mr-6">
               <BaseFormSelect
                 label=""
                 name="sortOrder"
@@ -269,12 +182,10 @@ const InputDesign: React.FC = () => {
               )}
             </div>
           </div>
-          <Sidebar
+          <ForumSideBar
             selectedCaseType={selectedCaseType}
             setSelectedCaseType={setSelectedCaseType}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            router={router}
+            categories={categories}
           />
         </div>
       </section>

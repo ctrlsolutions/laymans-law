@@ -6,6 +6,7 @@ import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import Button from "@/components/Global/BaseButton";
 import Textarea from "@/components/Global/BaseTextArea";
 import { createForumPost } from "@/services/ForumServices";
+import { categories } from "@/constants/caseConstants";
 
 const DiscussionForm: React.FC<{
   forumTitle: string;
@@ -22,6 +23,11 @@ const DiscussionForm: React.FC<{
   forumCategory,
   setForumCategory,
 }) => {
+  const categoryOptions = categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
+
   return (
     <div className="w-full lg:h-[70dvh]">
       <div
@@ -50,16 +56,7 @@ const DiscussionForm: React.FC<{
             textSize="text-xs"
             value={forumCategory}
             onChange={(e) => setForumCategory(e.target.value)}
-            choices={[
-              { value: "General", label: "General" },
-              { value: "FAQ's", label: "FAQ's" },
-              { value: "Divorce Cases", label: "Divorce Cases" },
-              { value: "Land Ownership", label: "Land Ownership" },
-              { value: "Civil Rights", label: "Civil Rights" },
-              { value: "Environmental Law", label: "Environmental Law" },
-              { value: "Human Rights", label: "Human Rights" },
-              { value: "Other", label: "Other" },
-            ]}
+            choices={categoryOptions}
           />
         </div>
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Category, colorMap } from "@/interface/CaseTypes";
+import { Category } from "@/interface/CaseTypes";
 import { ForumPost } from "@/interface/ForumTypes";
 import Card from "@/components/Profile/Card";
 import { FaRegBookmark, FaBookmark, FaRegCommentDots } from "react-icons/fa";
@@ -12,10 +12,28 @@ const ForumCard: React.FC<{
   bookmarked: boolean;
 }> = ({ forumItem, categories, onClick }) => {
   const [bookmarked, setBookmarked] = useState(forumItem.bookmark || false);
-
+  const getCategoryColor = (categoryId: string) => {
+    const category = categories.find((c) => c.id === categoryId);
+    return category ? category.color : "bg-gray-300";
+  };
+  const getCategoryName = (caseTypeId: string): string => {
+    const category = categories.find((c) => c.id === caseTypeId);
+    return category ? category.name : caseTypeId;
+  };
   return (
     <Card className="bg-transparent shadow-none">
       <article className="mt-8 relative z-0">
+        <div className="absolute top-[-15px] right-2 flex justify-center items-center px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm z-10">
+          <span
+            className={`mr-2 flex shrink-0 w-2 h-2 ${getCategoryColor(
+              forumItem.category
+            )} rounded-full`}
+            aria-hidden="true"
+          />
+          <span className="mr-2 text-[9.8px] font-bold">
+            {getCategoryName(forumItem.category)}
+          </span>
+        </div>
         <div
           className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-xl"
           onClick={onClick}
