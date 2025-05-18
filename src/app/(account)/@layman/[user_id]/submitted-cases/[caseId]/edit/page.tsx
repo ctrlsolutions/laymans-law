@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import BaseButton from '@/components/Global/BaseButton';
 import * as React from "react";
+import { fetchCaseById, updateCase } from '@/services/CaseService';
+import { Category } from '@/interface/CaseTypes';
 
 interface Case {
   id: string;
   title: string;
   description: string;
-  category: string;
+  category: Category;
   status: string;
   created_at: string;
   updated_at: string;
@@ -25,6 +27,15 @@ interface Case {
   };
 }
 
+const categories: Category[] = [
+  { id: "family", name: "Family Law", color: "yellow" },
+  { id: "criminal", name: "Criminal Law", color: "lime" },
+  { id: "labor", name: "Labor Law", color: "teal" },
+  { id: "civil", name: "Civil Law", color: "blue" },
+  { id: "commercial", name: "Commercial and Business Law", color: "fuchsia" },
+  { id: "other", name: "Others", color: "pink" },
+];
+
 export default function EditCasePage() {
   const { caseId, user_id } = useParams();
   const router = useRouter();
@@ -32,11 +43,8 @@ export default function EditCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [showAllMedia, setShowAllMedia] = useState(false);
-  const [showAllFiles, setShowAllFiles] = useState(false);
+  const [category, setCategory] = useState<Category>({ id: "civil", name: "Civil Law", color: "blue" });
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [mediaImages, setMediaImages] = useState<string[]>([]);
   const [fileList, setFileList] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -48,12 +56,13 @@ export default function EditCasePage() {
       try {
         setIsLoading(true);
         setError(null);
-        const res = await fetch(`http://localhost:8000/api/cases/${caseId}/`);
-        if (!res.ok) {
-          throw new Error(`Failed to fetch case: ${res.statusText}`);
+        const response = await fetchCaseById(caseId as string);
+        
+        if (!response.success) {
+          throw new Error(response.message || 'Failed to fetch case');
         }
-        const data: Case = await res.json();
 
+        const data = response.data as Case;
         setCaseData(data);
         setTitle(data.title);
         setDescription(data.description);
@@ -88,13 +97,6 @@ export default function EditCasePage() {
 
   if (!caseData) return null;
 
-  const handleDownload = (fileName: string) => {
-    const link = document.createElement('a');
-    link.href = `/mock/files/${fileName}`;
-    link.download = fileName;
-    link.click();
-  };
-
   const handleSave = async () => {
     setIsSaving(true);
     setError(null);
@@ -108,21 +110,12 @@ export default function EditCasePage() {
     };
 
     try {
-      const res = await fetch(`http://localhost:8000/api/cases/${caseId}/edit/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedCase),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || 'Failed to update case');
+      const response = await updateCase(caseId as string, updatedCase);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to update case');
       }
 
-      const data = await res.json();
-      console.log('Updated case:', data);
       router.push(`/${user_id}/submitted-cases/${caseId}`);
     } catch (error) {
       console.error('Error updating case:', error);
@@ -142,9 +135,14 @@ export default function EditCasePage() {
     });
 
     try {
+      const authToken = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
       const res = await fetch(`http://localhost:8000/api/cases/${caseId}/upload/`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Token ${authToken}`,
+        },
         body: formData,
+        credentials: 'include',
       });
 
       if (!res.ok) {
@@ -180,7 +178,7 @@ export default function EditCasePage() {
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-violet-950 text-white px-8 py-4 sticky top-0 z-10">
             <button
-              onClick={() => router.push(`/dashboard/submitted-cases/${caseId}`)}
+              onClick={() => router.push(`/${user_id}/submitted-cases/${caseId}`)}
               className="text-white hover:underline flex items-center gap-2"
             >
               <span>←</span> Back to Case
@@ -216,13 +214,22 @@ export default function EditCasePage() {
 
               <div>
                 <label className="block font-bold text-black mb-2">Category</label>
-                <input
-                  type="text"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                <select
+                  value={category?.id || ''}
+                  onChange={(e) => {
+                    const selectedCategory = categories.find(c => c.id === e.target.value);
+                    if (selectedCategory) {
+                      setCategory(selectedCategory);
+                    }
+                  }}
                   className="w-full text-black border border-gray-300 rounded-md p-2"
-                  placeholder="Enter case category"
-                />
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -252,140 +259,73 @@ export default function EditCasePage() {
                 </div>
               )}
 
-              <div className="flex gap-4 justify-end pt-4 border-t border-gray-200 mt-6">
-                <BaseButton 
-                  color="violet" 
-                  textColor="white" 
-                  onClick={handleSave}
-                >
-                  {isSaving ? "Saving..." : "Save Changes"}
-                </BaseButton>
-                <BaseButton 
-                  color="red" 
-                  textColor="white" 
+              <div className="flex justify-end gap-4">
+                <BaseButton
+                  color="gray"
+                  textColor="black"
                   onClick={() => router.back()}
                 >
-                  Discard Changes
+                  Cancel
+                </BaseButton>
+                <BaseButton
+                  color="violet"
+                  textColor="white"
+                  onClick={handleSave}
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
                 </BaseButton>
               </div>
             </div>
 
             {/* Right Section */}
-            <div className="md:col-span-1 bg-gray-50 p-6 rounded-lg border border-gray-200 overflow-y-auto max-h-[calc(100vh-12rem)]">
-              <div className="text-center mb-6">
-                <img
-                  src={caseData.created_by?.profile_image || "/defaultphoto.jpg"}
-                  alt="avatar"
-                  className="rounded-full w-20 h-20 mx-auto mb-2"
-                />
-                <h3 className="text-lg text-black font-semibold">
-                  {caseData.created_by?.name || "User"}
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">{caseData.created_by?.email}</p>
-                <div className="text-sm text-gray-700 text-left">
-                  {caseData.created_by?.address && (
-                    <>
-                      <p className="font-semibold">Address</p>
-                      <p className="mb-2">{caseData.created_by.address}</p>
-                    </>
-                  )}
-                  {caseData.created_by?.contact_number && (
-                    <>
-                      <p className="font-semibold">Contact Number</p>
-                      <p className="mb-2">{caseData.created_by.contact_number}</p>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-6">
+            <div className="md:col-span-1 space-y-6">
+              {/* Media Preview */}
+              {mediaImages.length > 0 && (
                 <div>
-                  <p className="font-semibold text-sm mb-3 text-black">Media</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {(showAllMedia ? mediaImages : mediaImages.slice(0, 3)).map((src, i) => (
-                      <div key={i} className="relative group">
+                  <h3 className="font-bold text-black mb-2">Media Preview</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {mediaImages.map((image, index) => (
+                      <div key={index} className="relative">
                         <img
-                          src={src}
-                          alt={`media-${i}`}
-                          className="rounded-md cursor-pointer w-full h-24 object-cover"
-                          onClick={() => {
-                            setCurrentImageIndex(i);
-                            setSelectedImage(src);
-                          }}
+                          src={image}
+                          alt={`Media ${index + 1}`}
+                          className="w-full h-24 object-cover rounded"
                         />
                         <button
-                          onClick={() => handleDeleteImage(i)}
-                          className="absolute top-1 right-1 bg-white text-gray-500 rounded-lg px-1.5 py-.5 text-s font-bold shadow group-hover:opacity-100 opacity-0 transition"
-                          title="Delete"
+                          onClick={() => handleDeleteImage(index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
                         >
-                          x
+                          ×
                         </button>
                       </div>
                     ))}
                   </div>
-                  {mediaImages.length > 3 && (
-                    <button
-                      className="text-sm text-gray-700 hover:underline mt-2"
-                      onClick={() => setShowAllMedia((prev) => !prev)}
-                    >
-                      {showAllMedia ? "Show less" : `+${mediaImages.length - 3}`}
-                    </button>
-                  )}
                 </div>
+              )}
 
+              {/* Files List */}
+              {fileList.length > 0 && (
                 <div>
-                  <p className="font-semibold text-black text-sm mb-2">Files</p>
+                  <h3 className="font-bold text-black mb-2">Files</h3>
                   <ul className="space-y-2">
-                    {(showAllFiles ? fileList : fileList.slice(0, 1)).map((file, i) => (
-                      <li key={i} className="relative group">
-                        <div
-                          className="bg-white text-black cursor-pointer px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
-                          onClick={() => handleDownload(file)}
-                        >
-                          {file}
-                        </div>
+                    {fileList.map((file, index) => (
+                      <li key={index} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600 truncate">{file}</span>
                         <button
-                          onClick={() => handleDeleteFile(i)}
-                          className="absolute top-2.5 right-2 bg-white text-gray-500 rounded-lg px-1.5 py-.5 text-xs font-bold shadow group-hover:opacity-100 opacity-0 transition"
-                          title="Delete"
+                          onClick={() => handleDeleteFile(index)}
+                          className="text-red-500 hover:text-red-700"
                         >
-                          x
+                          ×
                         </button>
                       </li>
                     ))}
                   </ul>
-                  {fileList.length > 1 && (
-                    <button 
-                      onClick={() => setShowAllFiles(!showAllFiles)} 
-                      className="text-sm text-gray-700 hover:underline mt-2"
-                    >
-                      {showAllFiles ? "Show less" : `+${fileList.length - 1}`}
-                    </button>
-                  )}
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-          <div className="relative flex flex-col items-center">
-            <button 
-              onClick={() => setSelectedImage(null)} 
-              className="absolute top-3 right-3 text-white text-xl hover:bg-black/20 rounded-full p-2"
-            >
-              ✕
-            </button>
-            <img
-              src={mediaImages[currentImageIndex]}
-              alt="Selected"
-              className="max-w-[80vw] max-h-[80vh] object-contain rounded-md"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
