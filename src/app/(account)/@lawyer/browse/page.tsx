@@ -5,13 +5,13 @@ import React from "react";
 import CasePage from "@/components/Cases/BrowseCaseComponent";
 
 export default function LawyerCasesPage({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const pathname = usePathname();
-    const pathSegments = pathname.split("/").filter(Boolean);
-    const lastSegment = pathSegments[pathSegments.length - 1];
+  const pathname = usePathname();
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const lastSegment = pathSegments[pathSegments.length - 1];
 
-    return <>{lastSegment === "browse" ? <CasePage /> : children}</>;
+  return <>{lastSegment === "browse" ? <CasePage /> : children}</>;
 }
