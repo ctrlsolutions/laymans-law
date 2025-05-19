@@ -1,99 +1,119 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import { validateField } from "@/utils/AuthValidators";
-import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { SendRecoveryCode } from "@/services/RecoveryServices";
 
 export default function RecoverAccountForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [sending, setSending] = useState(false);
+  const [cooldown, setCooldown] = useState<number>(0);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setEmail(value);
-    setError(validateField("email", value, { email: value }));
-  };
+  // ⏱️ Timer countdown
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (cooldown > 0) {
+      timer = setInterval(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+    }
 
-  const handleBlur = () => {
-    setError(validateField("email", email, { email }));
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [cooldown]);
+
+  const handleSendCode = async () => {
+    if (!email) {
+      toast.error("Please enter your email first.");
+      return;
+    }
+
+    setSending(true);
+    const res = await SendRecoveryCode(email);
+    setSending(false);
+
+    if (res.success) {
+      toast.success("Recovery code sent successfully!");
+      setCooldown(59); // start countdown
+    } else {
+      toast.error(res.message || "Failed to send recovery code.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const emailError = validateField("email", email, { email });
-    setError(emailError);
+    if (!code) {
+      toast.error("Please enter the recovery code.");
+      return;
+    }
 
-    if (emailError) return;
+    // Optionally, you can verify the code here by calling an API before redirecting
 
-    // Simulated response or replace with actual service call
-    toast("Recovery email sent if the account exists.", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "dark",
-      transition: Bounce,
-    });
-
-    // Optional redirect after delay
+    toast.success("Code verified! Redirecting...");
+    
     setTimeout(() => {
-      router.push("/auth/login");
-    }, 3000);
+      router.push("/login/recover-account/change-password");
+    }, 1500);
   };
 
   return (
- <form
-  onSubmit={handleSubmit}
-  className="flex flex-col h-full w-full"
->
-  <ToastContainer />
+    <form onSubmit={handleSubmit} className="space-y-4 w-full mb-7">
+      <ToastContainer />
 
-  {/* Top input section */}
-  <div>
-    <BaseFormInput
-      label="Email"
-      name="email"
-      type="email"
-      value={email}
-      onBlur={handleBlur}
-      onChange={handleChange}
-      icon="email"
-      color="black"
-      width="100%"
-    />
-    {error && <p className="text-gray-500">{error}</p>}
-  </div>
+      {/* Email Input with paper plane icon */}
+      <BaseFormInput
+        label="Email"
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        icon="paperPlane"
+        onIconClick={() => {
+          if (cooldown === 0) handleSendCode();
+        }}
+        color="black"
+        width="100%"
+      />
 
-  {/* Bottom button section */}
-  <div className="flex flex-row justify-end items-end gap-4 space-y-4 ">
-    <BaseButton
-      type="button"
-      color="gray-300"
-      textColor="black"
-      width="25%"
-      onClick={() => router.push("/login")}
-    >
-      Cancel
-    </BaseButton>
-    <BaseButton
-      type="button"
-      color="black"
-      textColor="white"
-      width="25%"
-      onClick={() => router.push("/login/recover-account/security-code")}
-    >
-      Search
-    </BaseButton>
-  </div>
-</form>
+      {/* Recovery Code Input */}
+      <BaseFormInput
+        label="Recovery Code"
+        name="code"
+        type="text"
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+        color="black"
+        width="100%"
+      />
 
+      {/* Submit Button */}
+      <BaseButton type="submit" color="black" textColor="white" width="100%">
+        VERIFY CODE
+      </BaseButton>
+
+      {/* Resend Message */}
+      <div className="text-center text-sm mt-2 text-gray-700">
+        Didn’t receive a code?{" "}
+        {cooldown === 0 ? (
+          <span
+            className="font-bold text-black cursor-pointer underline"
+            onClick={handleSendCode}
+          >
+            Resend code
+          </span>
+        ) : (
+          <span>
+            <span className="font-bold text-black">Resend code</span> in {cooldown}s...
+          </span>
+        )}
+      </div>
+    </form>
   );
 }

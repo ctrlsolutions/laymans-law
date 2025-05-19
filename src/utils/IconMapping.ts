@@ -8,7 +8,7 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaPaperPlane } from "react-icons/fa";
 import { MdOutlineModeEdit } from "react-icons/md";
 
 export const iconMapping: Record<string, IconType> = {
@@ -20,4 +20,5 @@ export const iconMapping: Record<string, IconType> = {
   hash: FiHash,
   calendar: FiCalendar,
   edit: MdOutlineModeEdit,
+  paperPlane: FaPaperPlane,
 };
