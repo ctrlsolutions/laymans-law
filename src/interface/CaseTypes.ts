@@ -8,6 +8,7 @@ export interface Case {
   case_type: string;
   created_date: string;
   created_by: string;
+  assigned_to: number | string | null;
   media?: string[];
   files?: string[];
   openCaseCount?: number; 

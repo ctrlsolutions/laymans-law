@@ -12,11 +12,16 @@ const CaseCard: React.FC<{
     return category ? category.color : "bg-gray-300";
   };
 
-  const StatusIndicator: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
-    const color = isOpen ? "bg-[#4BB328]" : "bg-[#B32828]";
+  const StatusIndicator: React.FC<{ status: string }> = ({ status }) => {
+    const color =
+    status === "open"
+      ? "bg-[#4BB328]"         // Green
+      : status === "closed"
+      ? "bg-gray-500"          // Gray
+      : "bg-orange-500";      // Orange for ongoing
     return (
       <span
-        className={`flex self-center shrink-0 w-2 h-2 ${color} rounded-full`}
+        className={`flex self-center shrink-0 w-4 h-4 ${color} rounded-full`}
         aria-hidden="true"
       />
     );
@@ -39,49 +44,57 @@ const CaseCard: React.FC<{
         </div>
 
         <div
-          className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-xl"
+          className="flex gap-5 justify-between items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-xl"
           onClick={onClick}
         >
-          <img
-            src={
-              caseItem.avatar ||
-              "https://www.w3schools.com/howto/img_avatar.png"
-            }
-            alt="Avatar"
-            className="w-[70px] rounded-full"
-          />
-          <div className="flex flex-col text-sm">
-            <h2 className="text-xl font-bold">{caseItem.title}</h2>
-            <div className="mt-3 font-light">
-              <p className="text-xs">
-                Last updated on{" "}
-                <strong className="font-bold">
-                  {new Date(caseItem.created_date).toLocaleDateString(
-                    undefined,
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  )}
-                </strong>
-                <br />
-                <strong className="font-bold">
-                  at{" "}
-                  {new Date(caseItem.created_date).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </strong>
-              </p>
+          <div className="flex items-start gap-6">
+            <img
+              src={
+                caseItem.avatar ||
+                "/blank-profile.svg"
+              }
+              alt="Avatar"
+              className="w-[70px] rounded-full"
+            />
+            <div className="flex flex-col text-sm">
+              <h2 className="text-xl font-bold">{caseItem.title}</h2>
+              <div className="mt-3 font-light">
+                <p className="text-xs">
+                  Last updated on{" "}
+                  <strong className="font-bold">
+                    {new Date(caseItem.created_date).toLocaleDateString(
+                      undefined,
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </strong>
+                  &nbsp;
+                  <strong className="font-bold">
+                    at{" "}
+                    {new Date(caseItem.created_date).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </strong>
+                </p>
+              </div>
+              <p className="mt-4 text-sm">{caseItem.description}</p>
             </div>
-            <p className="mt-4 text-sm">{caseItem.description}</p>
+
           </div>
 
           <div className="flex gap-2 px-2.5 py-2.5 text-base font-bold bg-white rounded-xl shadow-[0px_0px_4px_rgba(0,0,0,0.25)] hover:bg-blue-700">
-            <StatusIndicator isOpen={caseItem.status === "open"} />
-            <span className="pl-1 pr-4 text-base font-extrabold">
-              {caseItem.status === "open" ? "Open" : "Closed"}
+            <StatusIndicator status={caseItem.status} />
+            <span className="pl-1 pr-1 text-base font-extrabold">
+              {caseItem.status === "open"
+              ? "Open"
+              : caseItem.status === "closed"
+              ? "Closed"
+              : "Ongoing"}
+
             </span>
           </div>
         </div>
