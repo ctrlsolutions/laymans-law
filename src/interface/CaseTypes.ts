@@ -1,3 +1,5 @@
+import { Category } from "@/interface/CategoryTypes";
+
 export interface Case {
   id: string;
   title: string;
@@ -10,13 +12,6 @@ export interface Case {
   created_by: string;
 }
 
-export interface Category {
-  id: string;
-  name: string;
-  color: string;
-}
-
-export const categories: Category[] = [];
 export const cases: Case[] = [];
 
 export interface HeaderProps {

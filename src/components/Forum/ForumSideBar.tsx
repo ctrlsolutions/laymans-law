@@ -1,10 +1,10 @@
 import { IoMdCheckmark } from "react-icons/io";
-import { SidebarProps } from "@/interface/CaseTypes";
+import { SideBar } from "@/interface/ForumTypes";
 import { MdOutlineBookmarks, MdForum } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const ForumSideBar: React.FC<SidebarProps> = ({
+const ForumSideBar: React.FC<SideBar> = ({
   selectedCaseType,
   setSelectedCaseType,
   categories,

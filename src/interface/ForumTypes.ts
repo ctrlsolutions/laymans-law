@@ -1,4 +1,6 @@
-export interface ForumPost {
+import { Category } from "@/interface/CategoryTypes";
+
+export interface Forum {
   id: number;
   author: {
     first_name: string;
@@ -7,6 +9,12 @@ export interface ForumPost {
   title: string;
   content: string;
   timestamp: string;
-  category: string;
+  category: Category;
   bookmark: boolean;
+}
+
+export interface SideBar {
+  selectedCaseType: string;
+  setSelectedCaseType: (type: string) => void;
+  categories: { id: string; name: string; color: string }[];
 }

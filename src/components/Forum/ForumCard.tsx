@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Category } from "@/interface/CaseTypes";
-import { ForumPost } from "@/interface/ForumTypes";
+import { Category } from "@/interface/CategoryTypes";
+import { Forum } from "@/interface/ForumTypes";
 import Card from "@/components/Profile/Card";
 import { FaRegBookmark, FaBookmark, FaRegCommentDots } from "react-icons/fa";
 
 const ForumCard: React.FC<{
-  forumItem: ForumPost;
+  forumItem: Forum;
   categories: Category[];
   onClick: () => void;
   onBookmarkToggle: (id: number) => void;
@@ -26,12 +26,12 @@ const ForumCard: React.FC<{
         <div className="absolute top-[-15px] right-2 flex justify-center items-center px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm z-10">
           <span
             className={`mr-2 flex shrink-0 w-2 h-2 ${getCategoryColor(
-              forumItem.category
+              forumItem.category.color
             )} rounded-full`}
             aria-hidden="true"
           />
           <span className="mr-2 text-[9.8px] font-bold">
-            {getCategoryName(forumItem.category)}
+            {getCategoryName(forumItem.category.name)}
           </span>
         </div>
         <div

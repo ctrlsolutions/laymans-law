@@ -1,28 +1,25 @@
 "use client";
 import * as React from "react";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { Case } from "@/interface/CaseTypes";
+import { Forum } from "@/interface/ForumTypes";
 import ForumCard from "@/components/Forum/ForumCard";
+import ForumSideBar from "@/components/Forum/ForumSideBar";
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import { fetchAllForumPosts } from "@/services/ForumServices";
 import { useRouter } from "next/navigation";
 import { sortingOptions, categories } from "@/constants/caseConstants";
-import { ForumPost } from "@/interface/ForumTypes";
-import ForumSideBar from "@/components/Forum/ForumSideBar";
 
 const InputDesign: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-  const [cases, setForum] = useState<ForumPost[]>([]);
+  const [selectedCase, setSelectedCase] = useState<Forum | null>(null);
+  const [cases, setForum] = useState<Forum[]>([]);
   const [forumLoading, setForumLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [allReadChecked, setAllReadChecked] = useState(false);
   const router = useRouter();
 
   const handleBookmarkToggle = (id: number) => {
@@ -46,10 +43,10 @@ const InputDesign: React.FC = () => {
         ? forumItem.bookmark === false
         : false;
     const matchesCategory =
-      selectedCategory === null || forumItem.category === selectedCategory;
+      selectedCategory === null || forumItem.category.name === selectedCategory;
     const matchesSearch =
       forumItem.title.toLowerCase().includes(query) ||
-      forumItem.category.toLowerCase().includes(query);
+      forumItem.category.name.toLowerCase().includes(query);
     return matchesCaseType && matchesCategory && matchesSearch;
   });
 
@@ -71,7 +68,7 @@ const InputDesign: React.FC = () => {
       const response = await fetchAllForumPosts();
       if (isMounted) {
         if (response) {
-          const forumPostsAsCases: ForumPost[] = response.map((post) => ({
+          const forumPostsAsCases: Forum[] = response.map((post) => ({
             id: post.id,
             author: {
               first_name: post.author.first_name,
