@@ -5,6 +5,7 @@ import { useState } from "react";
 import CommentBox from "@/components/Forum/CommentBox";
 import { Comment } from "@/interface/ComponentTypes";
 import { useRouter } from "next/navigation";
+import { FaBookmark } from "react-icons/fa";
 
 // Initial comments data
 const initialComments: Comment[] = [
@@ -167,8 +168,9 @@ const Page: React.FC = () => {
               Shared by <strong>Cheska Paul Tucson</strong> on Aug 2, 2023 ·
               Edited on Nov 19, 2023
             </p>
-            <p className="text-xs text-gray-600">
-              🔖 Favorited by <strong>152</strong> users
+            <p className="text-xs text-gray-600 flex items-center gap-1">
+              <FaBookmark className="text-yellow-500" />
+              Favorited by <strong>152</strong> users
             </p>
             <div className="mt-2 flex flex-col items-start gap-2">
               <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">
