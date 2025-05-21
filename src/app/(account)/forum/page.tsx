@@ -168,9 +168,7 @@ const InputDesign: React.FC = () => {
                     key={forumItem.id}
                     forumItem={forumItem}
                     categories={categories}
-                    onClick={() =>
-                      router.push(`/dashboard/case/${forumItem.id}`)
-                    }
+                    onClick={() => router.push(`/forum/show/`)}
                     onBookmarkToggle={handleBookmarkToggle}
                     bookmarked={forumItem.bookmark}
                   />
