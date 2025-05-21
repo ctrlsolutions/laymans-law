@@ -1,13 +1,28 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 interface SignUpPageProps {
   onChoose: (type: "lawyer" | "layman") => void;
 }
 
 const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [choice, setChoice] = useState<"lawyer" | "layman" | null>(null);
+
+  const handleChoose = (type: "lawyer" | "layman") => {
+    setChoice(type);
+    setIsExiting(true);
+    setTimeout(() => {
+      onChoose(type);
+    }, 300);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center">
+    <div
+      className={`min-h-screen flex items-center justify-center bg-cover animate-bounce-to-center bg-center ${
+        isExiting ? "animate-slide-to-left" : ""
+      }`}
+    >
       <div className="bg-white rounded-2xl shadow-lg p-8 w-[40vw] text-black">
         <h1 className="text-[50px] font-black tracking-tight mt-1">Sign Up</h1>
         <p className="mb-6">
@@ -16,7 +31,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
 
         <div className="space-y-4 text-white">
           <button
-            onClick={() => onChoose("lawyer")}
+            onClick={() => handleChoose("lawyer")}
             className="w-full bg-indigo-900 py-4 rounded-lg flex items-center justify-between px-6"
           >
             <div className="flex flex-col items-start text-[3vh]">
@@ -29,7 +44,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
           </button>
 
           <button
-            onClick={() => onChoose("layman")}
+            onClick={() => handleChoose("layman")}
             className="w-full bg-red py-4 rounded-lg flex items-center justify-between px-6"
           >
             <div className="flex flex-col items-start">
@@ -41,7 +56,6 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
                 various concerns and problems.
               </p>
             </div>
-
             <span className="text-xl text-[5vh]">→</span>
           </button>
         </div>

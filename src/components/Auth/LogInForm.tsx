@@ -17,6 +17,7 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<Partial<LoginData>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleInputChange(event, setForm, setErrors, validateField);
@@ -40,23 +41,34 @@ export default function LoginForm() {
 
     if (newErrors.email || newErrors.password) return;
 
-    const response = await UserLogin(form.email, form.password);
+    setLoading(true);
 
-    if (response.success) {
-      toast("Login successful. Welcome back!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-        transition: Bounce,
-      });
+    try {
+      const response = await UserLogin(form.email, form.password);
 
-      setTimeout(() => {
-        router.push(`${response.user_id}`);
-      }, 2000);
+      if (response.success) {
+        toast("Login successful. Welcome back!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+
+        setTimeout(() => {
+          router.push(`${response.user_id}`);
+        }, 2000);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    } finally {
+      setLoading(false); // Set loading to false after submission is complete
     }
   };
 
@@ -108,13 +120,22 @@ export default function LoginForm() {
           />
           <span>Remember Me</span>
         </label>
-        <Link href="/login/recover-account" className="text-black underline hover:text-gray-700">
+        <Link
+          href="/login/recover-account"
+          className="text-black underline hover:text-gray-700"
+        >
           Forgot Account?
         </Link>
       </div>
 
       {/* Submit */}
-      <BaseButton type="submit" color="black" textColor="white" width="100%">
+      <BaseButton
+        type="submit"
+        color="black"
+        textColor="white"
+        width="100%"
+        loading={loading}
+      >
         LOGIN
       </BaseButton>
     </form>

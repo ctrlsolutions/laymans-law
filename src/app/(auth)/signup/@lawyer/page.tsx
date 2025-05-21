@@ -4,7 +4,7 @@ import Container from "@/components/Auth/AuthContainer";
 
 export default function Home() {
   return (
-    <Container bgColor="blue">
+    <Container bgColor="blue" className="animate-bounce-to-center">
       <div className="flex items-center justify-center h-full">
         <SignupForm userType="lawyer" />
       </div>

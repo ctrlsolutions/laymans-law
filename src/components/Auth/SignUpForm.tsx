@@ -231,18 +231,10 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <div className="mt-5">
           <BaseButton
             type="submit"
-            disabled={loading} // Disable button while loading
-            className={`flex items-center justify-center w-full ${
-              loading ? "bg-gray-400 cursor-not-allowed" : ""
-            }`}
+            loading={loading}
+            className="flex items-center justify-center w-full"
           >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <FaSpinner className="animate-spin" /> Creating Account...
-              </span>
-            ) : (
-              "CREATE ACCOUNT"
-            )}
+            CREATE ACCOUNT
           </BaseButton>
         </div>
       </form>
