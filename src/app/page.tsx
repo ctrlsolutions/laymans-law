@@ -6,7 +6,7 @@ import LandingNavButton from "@/components/Global/LandingNavButton";
 import Head from "next/head";
 
 export default function Home() {
-  const [animateNav, setAnimateNav] = useState(false); // State to trigger animation
+  const [animateNav, setAnimateNav] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
 

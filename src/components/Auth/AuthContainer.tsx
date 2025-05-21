@@ -1,8 +1,7 @@
 import { ContainerProps } from "@/interface/AuthContainer";
 
 interface AuthContainerProps extends ContainerProps {
-  className?: string; // Add className prop
-}
+  className?: string;
 
 const Layout = ({
   children,

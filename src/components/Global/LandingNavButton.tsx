@@ -2,14 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import React from "react";
-import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import { FaSpinner } from "react-icons/fa";
 
 interface NavButtonProps {
   text?: string;
   opacity?: number;
   borderRadius?: string;
-  width?: string; // Added width
-  height?: string; // Added height
+  width?: string;
+  height?: string;
   fontSize?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
@@ -17,7 +17,7 @@ interface NavButtonProps {
   replace?: boolean;
   variant?: "red" | "blue" | "black";
   className?: string;
-  loading?: boolean; // Added loading prop
+  loading?: boolean;
 }
 
 export default function NavButton({

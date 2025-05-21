@@ -41,7 +41,7 @@ export default function LoginForm() {
 
     if (newErrors.email || newErrors.password) return;
 
-    setLoading(true); // Set loading to true when submission starts
+    setLoading(true);
 
     try {
       const response = await UserLogin(form.email, form.password);
