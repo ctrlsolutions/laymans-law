@@ -8,7 +8,7 @@ import { FaArrowLeft } from "react-icons/fa";
 export default function LoginPage() {
   return (
     <AuthContainer bgColor="black" className="animate-bounce-to-center">
-      <div className="relative h-full w-full flex items-center justify-center animate-bounce-to-center">
+      <div className="relative h-full w-full flex items-center justify-center">
         {/* Back to Landing Button in Top-Right */}
         <Link
           href="/"
