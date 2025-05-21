@@ -9,9 +9,11 @@ export interface Forum {
   title: string;
   content: string;
   timestamp: string;
-  category: Category;
+  category: string;
   bookmark: boolean;
 }
+
+export const cases: Forum[] = [];
 
 export interface SideBar {
   selectedCaseType: string;

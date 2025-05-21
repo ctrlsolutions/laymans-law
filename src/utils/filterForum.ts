@@ -12,11 +12,11 @@ export function filterForum(
   let filtered = forum.filter((forumItem) => {
     const matchesSearch =
       forumItem.title.toLowerCase().includes(query) ||
-      forumItem.category.name.toLowerCase().includes(query);
+      forumItem.category.toLowerCase().includes(query);
 
     let matchesCategory = true;
     if (selectedCategory && selectedCategory !== "all") {
-      matchesCategory = forumItem.category.name === selectedCategory;
+      matchesCategory = forumItem.category === selectedCategory;
     }
 
     let matchesType = true;

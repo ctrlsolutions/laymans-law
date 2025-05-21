@@ -69,17 +69,10 @@ const ForumSideBar: React.FC<SideBar> = ({
                 )
               }
             >
-              {/* <span
-                className={`flex self-center shrink-0 w-2 h-2 ${
-                  colorMap[category.color] || "bg-gray-300"
-                } rounded-full`}
-                aria-hidden="true"
-              /> */}
               <span
                 className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`}
                 aria-hidden="true"
               />
-
               <span>{category.name}</span>
               {selectedCaseType === category.id && (
                 <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
@@ -88,15 +81,6 @@ const ForumSideBar: React.FC<SideBar> = ({
           ))}
         </ul>
       </nav>
-
-      <div className="hidden">
-        <span className="bg-yellow-400" />
-        <span className="bg-lime-800" />
-        <span className="bg-teal-400" />
-        <span className="bg-blue" />
-        <span className="bg-fuchsia-600" />
-        <span className="bg-pink-600" />
-      </div>
     </aside>
   );
 };

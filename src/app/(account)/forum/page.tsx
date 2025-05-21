@@ -1,26 +1,45 @@
 "use client";
-import * as React from "react";
-import BaseFormSelect from "@/components/Global/BaseFormSelect";
+
+import React, { useEffect, useState } from "react";
 import { Forum } from "@/interface/ForumTypes";
+
+import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import ForumCard from "@/components/Forum/ForumCard";
 import ForumSideBar from "@/components/Forum/ForumSideBar";
-import { useEffect, useState } from "react";
-import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
-import { fetchAllForumPosts } from "@/services/ForumServices";
-import { useRouter } from "next/navigation";
-import { sortingOptions, categories } from "@/constants/caseConstants";
 
-const InputDesign: React.FC = () => {
+import { getProfile } from "@/services/ProfileServices";
+import { fetchAllForums } from "@/services/ForumServices";
+
+import { sortingOptions, categories } from "@/constants/caseConstants";
+import { filterForum } from "@/utils/filterForum";
+import { useRouter } from "next/navigation";
+
+const ForumPage: React.FC = () => {
+  const router = useRouter();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedCase, setSelectedCase] = useState<Forum | null>(null);
-  const [cases, setForum] = useState<Forum[]>([]);
+
+  const [forum, setForum] = useState<Forum[]>([]);
   const [forumLoading, setForumLoading] = useState(true);
-  const [casesError, setCasesError] = useState("");
-  const router = useRouter();
+  const [forumError, setForumError] = useState("");
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
+  const [status, setStatus] = useState<string | "">("all");
+  const ForumCount = filteredForum.filter((f) => f.title).length;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCase, setSelectedForum] = useState<Forum | null>(null);
+
+  const openModal = (forumItem: Forum) => {
+    setSelectedForum(forumItem);
+    setIsModalOpen(true);
+  };
 
   const handleBookmarkToggle = (id: number) => {
     setForum((prevCases) =>
@@ -32,65 +51,36 @@ const InputDesign: React.FC = () => {
     );
   };
 
-  const filteredCases = cases.filter((forumItem) => {
-    const query = searchQuery.toLowerCase();
-    const matchesCaseType =
-      selectedCaseType === "all"
-        ? true
-        : selectedCaseType === "open"
-        ? forumItem.bookmark === true
-        : selectedCaseType === "closed"
-        ? forumItem.bookmark === false
-        : false;
-    const matchesCategory =
-      selectedCategory === null || forumItem.category.name === selectedCategory;
-    const matchesSearch =
-      forumItem.title.toLowerCase().includes(query) ||
-      forumItem.category.name.toLowerCase().includes(query);
-    return matchesCaseType && matchesCategory && matchesSearch;
-  });
-
-  const sortedCases = [...filteredCases].sort((a, b) => {
-    if (sortOrder === "latest") {
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-    } else {
-      return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  useEffect(() => {
+    if (forum.length > 0) {
+      const filtered = filterForum(
+        forum,
+        searchQuery,
+        sortOrder,
+        selectedCaseType,
+        status
+      );
+      console.log("Filtered forums:", filtered);
+      setFilteredForum(filtered);
     }
-  });
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  }, [forum, searchQuery, selectedCaseType, sortOrder, status]);
 
   useEffect(() => {
     let isMounted = true;
 
-    const loadforum = async () => {
-      const response = await fetchAllForumPosts();
+    const loadForum = async () => {
+      const response = await fetchAllForums();
       if (isMounted) {
-        if (response) {
-          const forumPostsAsCases: Forum[] = response.map((post) => ({
-            id: post.id,
-            author: {
-              first_name: post.author.first_name,
-              last_name: post.author.last_name,
-            },
-            title: post.title,
-            content: post.content,
-            timestamp: post.timestamp,
-            bookmark: post.bookmark,
-            category: post.category,
-          }));
-
-          setForum(forumPostsAsCases);
-          setForumLoading(false);
+        if (response.success && response.data) {
+          setForum(response.data);
         } else {
-          setCasesError("Failed to load forum posts.");
-          setForumLoading(false);
+          setForumError(response.message || "Failed to load cases");
         }
+        setForumLoading(false);
       }
     };
 
-    loadforum();
+    loadForum();
     return () => {
       isMounted = false;
     };
@@ -117,8 +107,6 @@ const InputDesign: React.FC = () => {
     };
   }, []);
 
-  const openCaseCount = filteredCases.filter((c) => (c.bookmark = true)).length;
-
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
@@ -127,7 +115,7 @@ const InputDesign: React.FC = () => {
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        openCaseCount={openCaseCount}
+        openCaseCount={ForumCount}
         user={user}
       />
 
@@ -155,12 +143,12 @@ const InputDesign: React.FC = () => {
             <div className="flex-1 overflow-y-auto pr-5">
               {forumLoading ? (
                 <p className="text-center text-gray-500 mt-20">
-                  Loading cases...
+                  Loading forums...
                 </p>
-              ) : casesError ? (
-                <p className="text-center text-red-500 mt-20">{casesError}</p>
-              ) : sortedCases.length > 0 ? (
-                sortedCases.map((forumItem) => (
+              ) : forumError ? (
+                <p className="text-center text-red-500 mt-20">{forumError}</p>
+              ) : filteredForum.length > 0 ? (
+                filteredForum.map((forumItem) => (
                   <ForumCard
                     key={forumItem.id}
                     forumItem={forumItem}
@@ -188,4 +176,4 @@ const InputDesign: React.FC = () => {
   );
 };
 
-export default InputDesign;
+export default ForumPage;
