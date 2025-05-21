@@ -52,7 +52,7 @@ export default function AccountLayout({
           {
             key: "submitted",
             name: "Submitted Cases",
-            path: (id: string) => `/${id}`,
+            path: (id: string) => `/${id}/submitted-cases`,
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
