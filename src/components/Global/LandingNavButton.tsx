@@ -1,61 +1,75 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useRouter } from "next/navigation";
+import React from "react";
+import { FaSpinner } from "react-icons/fa"; // Import spinner icon
 
 interface NavButtonProps {
   text?: string;
   opacity?: number;
   borderRadius?: string;
-  width?: string;  // Added width
+  width?: string; // Added width
   height?: string; // Added height
   fontSize?: string;
   onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   route?: string;
   replace?: boolean;
-  variant?: 'red' | 'blue' | 'black';
+  variant?: "red" | "blue" | "black";
   className?: string;
+  loading?: boolean; // Added loading prop
 }
 
 export default function NavButton({
-  text = 'Placeholder',
+  text = "Placeholder",
   opacity = 1,
-  borderRadius = '2rem',
-  width = '8rem',  
-  height = '1.5rem', 
+  borderRadius = "2rem",
+  width = "8rem",
+  height = "1.5rem",
   onClick,
-  type = 'button',
+  type = "button",
   route,
   replace = false,
-  variant = 'red',
-  className = '',
+  variant = "red",
+  className = "",
+  loading = false,
 }: NavButtonProps) {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (type !== 'submit') {
+    if (type !== "submit") {
       e.preventDefault();
     }
 
-    if (route) {
-      replace ? router.replace(route) : router.push(route);
-    }
+    if (!loading) {
+      onClick?.();
 
-    onClick?.();
+      if (route) {
+        setTimeout(() => {
+          replace ? router.replace(route) : router.push(route);
+        }, 700);
+      }
+    }
   };
 
   return (
     <button
       type={type}
       onClick={handleClick}
+      disabled={loading}
       style={{ opacity, borderRadius, width, height }}
       className={`
         font-bold transition duration-200 ease-in-out hover:opacity-80
-        bg-${variant} text-white  ${className}
+      flex items-center justify-center
+        ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : `bg-${variant} text-white`
+        }
+        ${className}
       `}
     >
-      {text}
+      {loading ? <FaSpinner className="animate-spin text-lg" /> : text}
     </button>
   );
 }

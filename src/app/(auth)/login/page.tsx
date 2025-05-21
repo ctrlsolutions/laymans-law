@@ -3,12 +3,12 @@
 import AuthContainer from "@/components/Auth/AuthContainer";
 import LoginForm from "@/components/Auth/LogInForm";
 import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa"; // import from react-icons
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function LoginPage() {
   return (
-    <AuthContainer bgColor="black">
-      <div className="relative h-full w-full flex items-center justify-center">
+    <AuthContainer bgColor="black" className="animate-bounce-to-center">
+      <div className="relative h-full w-full flex items-center justify-center animate-bounce-to-center">
         {/* Back to Landing Button in Top-Right */}
         <Link
           href="/"
