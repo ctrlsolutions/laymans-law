@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Case } from "@/interface/CaseTypes";
 import { fetchCases } from "@/services/CaseService";
 import { getProfile } from "@/services/ProfileServices";
@@ -10,6 +11,7 @@ import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
+
 
 const CasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,6 +27,8 @@ const CasePage: React.FC = () => {
 
   const [filteredCases, setFilteredCases] = useState<Case[]>([]);
   const [status, setStatus] = useState<string | "">("all");
+
+  const router = useRouter();
 
   useEffect(() => {
     if (cases.length > 0) {
@@ -85,13 +89,7 @@ const CasePage: React.FC = () => {
     };
   }, []);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-
-  const openModal = (caseItem: Case) => {
-    setSelectedCase(caseItem);
-    setIsModalOpen(true);
-  };
 
   return (
     <main
@@ -133,7 +131,7 @@ const CasePage: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() => openModal(caseItem)}
+                    onClick={() => router.push(`/browse/${caseItem.id}`)}
                   />
                 ))
               ) : (
