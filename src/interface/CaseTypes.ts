@@ -1,3 +1,9 @@
+export interface UserType{
+  first_name: string;
+  last_name: string;
+  email: string;
+  contact_number?: string;
+}
 export interface Case {
   id: string;
   title: string;
@@ -7,7 +13,7 @@ export interface Case {
   description: string;
   case_type: string;
   created_date: string;
-  created_by: string;
+  created_by: UserType;
   assigned_to: number | string | null;
   media?: string[];
   files?: string[];

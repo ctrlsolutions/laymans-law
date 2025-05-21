@@ -124,6 +124,7 @@ export default function AcceptCasePage() {
   };
 
   if (loading || !caseData) return <p className="p-8">Loading...</p>;
+  console.log("caseData:", caseData);
 
   return (
     <>
@@ -264,6 +265,7 @@ export default function AcceptCasePage() {
             </div>
 
             {/* Right Panel */}
+            
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
                 <img
@@ -272,16 +274,16 @@ export default function AcceptCasePage() {
                   className="rounded-full w-20 h-20 mx-auto mb-2"
                 />
                 <h3 className="text-lg text-black font-semibold">
-                  { caseData.user?.firstName || "Unknown User"}
+                  { caseData.created_by 
+                  ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
+                  : "Unknown User" }
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">Layman</p>
                 <div className="text-sm text-gray-700 text-left ml-3">
-                  <p className="font-semibold">Address</p>
-                  <p className="mb-2">Camputhaw, Cebu City</p>
                   <p className="font-semibold">Contact Number</p>
-                  <p className="mb-2">+09 876 543 21</p>
+                  <p className="mb-2">{caseData.created_by?.contact_number}</p>
                   <p className="font-semibold">Email Address</p>
-                  <p className="mb-2 text-blue-600">chrepau@gmail.com</p>
+                  <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not Provided"}</p>
                 </div>
               </div>
 

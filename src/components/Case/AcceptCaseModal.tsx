@@ -1,14 +1,5 @@
 import React from "react";
-
-interface Case {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Case } from "@/interface/CaseTypes";
 
 interface CaseModalProps {
   caseData: Case;
@@ -26,10 +17,10 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
           </button>
           <h2 className="text-3xl font-bold mb-2">{caseData.title}</h2>
           <span className="inline-block bg-gray-200 text-gray-800 text-xs px-3 py-1 rounded-full mb-2">
-            {caseData.category} Case
+            {caseData.category.name} Case
           </span>
           <p className="text-sm text-gray-500 mb-4">
-            Submitted: <strong>{new Date(caseData.createdAt).toLocaleDateString()}</strong>
+            Submitted: <strong>{new Date(caseData.created_date).toLocaleDateString()}</strong>
           </p>
           <p className="text-gray-700 mb-4">
             {caseData.description || "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum"}
@@ -48,16 +39,18 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
             alt="avatar"
             className="rounded-full w-20 h-20 mb-2"
           />
-          <h3 className="text-lg font-semibold">Chraine Paul Tuazon</h3>
-          <p className="text-sm text-gray-500 mb-4">Pro Sabongero</p>
+          <h3 className="text-lg font-semibold">
+            { caseData.created_by 
+            ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
+            : "Unknown User" }
+          </h3>
+          <p className="text-sm text-gray-500 mb-4">Layman</p>
 
           <div className="w-full text-sm text-gray-700 mb-4">
-            <p className="font-semibold">Address</p>
-            <p className="mb-2">Camputhaw, Cebu City</p>
             <p className="font-semibold">Contact Number</p>
             <p className="mb-2">+09 876 543 21</p>
             <p className="font-semibold">Email Address</p>
-            <p className="mb-2 text-blue-600">chrepau@gmail.com</p>
+            <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not Provided"}</p>
           </div>
 
           <hr className="w-full border-gray-300 mb-4" />
