@@ -53,7 +53,6 @@ const CasePage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log("Fetched pisti cases:", response.data);
           setCases(response.data);
         } else {
           setCasesError(response.message || "Failed to load cases");
