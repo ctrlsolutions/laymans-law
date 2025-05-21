@@ -168,7 +168,7 @@ const Page: React.FC = () => {
               Edited on Nov 19, 2023
             </p>
             <p className="text-xs text-gray-600">
-              🌟 Favorited by <strong>152</strong> users
+              🔖 Favorited by <strong>152</strong> users
             </p>
             <div className="mt-2 flex flex-col items-start gap-2">
               <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">
