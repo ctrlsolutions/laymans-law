@@ -103,8 +103,8 @@ const ForumCard: React.FC<{
   forumItem: Forum;
   categories: Category[];
   onClick: () => void;
-  onBookmarkToggle: (id: number) => void; // ✅ coming from parent
-  bookmarked: boolean; // ✅ passed from parent
+  onBookmarkToggle: (id: number) => void;
+  bookmarked: boolean;
 }> = ({ forumItem, categories, onClick, onBookmarkToggle, bookmarked }) => {
   const getCategoryColor = (categoryId: string) => {
     const category = categories.find((c) => c.id === categoryId);
@@ -120,7 +120,7 @@ const ForumCard: React.FC<{
     e.stopPropagation();
     const result = await toggleBookmark(forumItem.id);
     if (result) {
-      onBookmarkToggle(forumItem.id); // notify parent to update forum state
+      onBookmarkToggle(forumItem.id);
     }
   };
 

@@ -89,7 +89,7 @@ const ForumPage: React.FC = () => {
                 return { ...item, bookmark: result?.bookmarked };
               } catch (error) {
                 console.error("Error checking bookmark:", error);
-                return { ...item, bookmark: false }; // Default to not bookmarked on error
+                return { ...item, bookmark: false };
               }
             })
           );

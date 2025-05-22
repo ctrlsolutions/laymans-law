@@ -24,7 +24,7 @@ export const fetchAllForums = async (): Promise<ApiResponse> => {
     }
 
     const data = await response.json();
-    console.log("API Data:", data); // Log the received data
+    console.log("API Data:", data);
     return {
       success: true,
       message: "Cases fetched successfully!",
@@ -82,7 +82,7 @@ export const toggleBookmark = async (
       return null;
     }
 
-    return await response.json(); // { bookmarked: true } or { bookmarked: false }
+    return await response.json();
   } catch (error) {
     console.error("Error toggling bookmark:", error);
     return null;
