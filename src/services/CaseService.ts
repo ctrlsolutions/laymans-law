@@ -90,3 +90,88 @@ export const acceptCase = async (caseId: string): Promise<ApiResponse> => {
     };
   }
 }
+
+export const fetchCaseById = async (caseId: string): Promise<ApiResponse> => {
+    try {
+        const response = await fetch(`${API_CASES_URL}/${caseId}`, {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('API Error:', errorData);
+            return { 
+                success: false, 
+                message: errorData.detail || "Failed to fetch case.",
+                data: null
+            };
+        }
+
+        const data = await response.json();
+        return { 
+            success: true, 
+            message: "Case fetched successfully!", 
+            data 
+        };
+    } catch (error) {
+        console.error("Network Error:", error);
+        return { 
+            success: false, 
+            message: "Network error. Please check connection.",
+            data: null
+        };
+    }
+};
+
+interface UpdateCaseData {
+    title: string;
+    description: string;
+    category: {
+        id: string;
+        name: string;
+        color: string;
+    };
+    media?: string[];
+    files?: string[];
+}
+
+export const updateCase = async (caseId: string, caseData: UpdateCaseData): Promise<ApiResponse> => {
+    try {
+        const response = await fetch(`${API_CASES_URL}/${caseId}/`, {
+            method: "PATCH",
+            headers: { 
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(caseData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('API Error:', errorData);
+            return { 
+                success: false, 
+                message: errorData.detail || "Failed to update case.",
+                data: null
+            };
+        }
+
+        const data = await response.json();
+        return { 
+            success: true, 
+            message: "Case updated successfully!", 
+            data 
+        };
+    } catch (error) {
+        console.error("Network Error:", error);
+        return { 
+            success: false, 
+            message: "Network error. Please check connection.",
+            data: null
+        };
+    }
+};
