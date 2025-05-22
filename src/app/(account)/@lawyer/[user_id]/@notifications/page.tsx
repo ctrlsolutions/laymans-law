@@ -8,7 +8,14 @@ export default function LawyerNotifs() {
       <>
         <Card>
           <NotificationContainer count={5}>
-            <NotificationComponent />
+            <NotificationComponent notification={{
+              id: 1,
+              title: "New Case Assignment",
+              username: "@client456",
+              description: "You have been assigned a new case",
+              timeAgo: "1 hour ago",
+              category: "Case Assignments"
+            }} />
           </NotificationContainer>
         </Card>
       </>

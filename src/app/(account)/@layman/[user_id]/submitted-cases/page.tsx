@@ -71,7 +71,6 @@ const InputDesign: React.FC = () => {
   const [casesError, setCasesError] = useState("");
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
@@ -95,7 +94,7 @@ const InputDesign: React.FC = () => {
     let isMounted = true;
 
     const loadCases = async () => {
-      const response = await fetchCases(userId);
+      const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
           setCases(response.data);
@@ -111,7 +110,7 @@ const InputDesign: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -124,7 +123,6 @@ const InputDesign: React.FC = () => {
         } else {
           console.error("Error fetching user data:", response.message);
         }
-        setLoading(false);
       }
     };
 
