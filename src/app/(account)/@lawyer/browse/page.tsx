@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Case } from "@/interface/CaseTypes";
 
 import Header from "@/components/Profile/Header";
@@ -13,6 +14,7 @@ import { getProfile } from "@/services/ProfileServices";
 
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
+
 
 const CasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +39,8 @@ const CasePage: React.FC = () => {
     setSelectedCase(caseItem);
     setIsModalOpen(true);
   };
+
+  const router = useRouter();
 
   useEffect(() => {
     if (cases.length > 0) {
@@ -94,6 +98,9 @@ const CasePage: React.FC = () => {
     };
   }, []);
 
+
+  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+  
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
@@ -134,7 +141,7 @@ const CasePage: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() => openModal(caseItem)}
+                    onClick={() => router.push(`/browse/${caseItem.id}`)}
                   />
                 ))
               ) : (
