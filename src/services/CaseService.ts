@@ -1,42 +1,218 @@
 import { ApiResponse } from "@/interface/AuthTypes";
+import { Case } from "@/interface/CaseTypes";
 
-const API_CASES_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cases`;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const fetchCases = async (): Promise<ApiResponse> => {
+// Helper function to get cookie value
+const getCookie = (name: string): string | null => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+};
+
+export const fetchCases = async (userId: string): Promise<ApiResponse> => {
     try {
-        const response = await fetch(API_CASES_URL, {
+        const authToken = getCookie('auth_token');
+        console.log("Auth Token:", authToken);
+        console.log("User ID:", userId);
+
+        const response = await fetch(`${API_BASE}/cases/`, {
             method: "GET",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Token ${authToken}`,
             },
-            credentials: "include", // Important: send cookies automatically
+            credentials: "include",
         });
 
-        console.log('API Response Status:', response.status);
-        
+        console.log("Response Status:", response.status);
+        console.log("Response Headers:", Object.fromEntries(response.headers.entries()));
+
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('API Error:', errorData);
-            return { 
-                success: false, 
+            console.error("API Error:", errorData);
+            return {
+                success: false,
                 message: errorData.detail || "Failed to fetch cases.",
-                data: null
+                data: null,
             };
         }
 
         const data = await response.json();
-        console.log('API Data:', data); // Log the received data
-        return { 
-            success: true, 
-            message: "Cases fetched successfully!", 
-            data 
+        console.log("Raw API Response:", data);
+        
+        // Filter cases for the specific user if needed
+        const userCases = data.filter((caseItem: Case) => {
+            console.log("Case Item:", caseItem);
+            console.log("Case created_by:", caseItem.created_by);
+            console.log("Comparing with userId:", userId);
+            // Convert both to strings for comparison
+            return String(caseItem.created_by) === String(userId);
+        });
+        
+        console.log("Filtered User Cases:", userCases);
+        
+        return {
+            success: true,
+            message: "Cases fetched successfully!",
+            data: userCases,
         };
     } catch (error) {
         console.error("Network Error:", error);
-        return { 
-            success: false, 
+        return {
+            success: false,
             message: "Network error. Please check connection.",
-            data: null
+            data: null,
+        };
+    }
+};
+
+export const fetchCaseById = async (caseId: string): Promise<ApiResponse> => {
+    try {
+        const authToken = getCookie('auth_token');
+        const response = await fetch(`${API_BASE}/cases/${caseId}/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${authToken}`,
+            },
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return {
+                success: false,
+                message: errorData.detail || "Failed to fetch case.",
+                data: null,
+            };
+        }
+
+        const data = await response.json();
+        return {
+            success: true,
+            message: "Case fetched successfully.",
+            data,
+        };
+    } catch (error) {
+        console.error("Network Error:", error);
+        return {
+            success: false,
+            message: "Network error",
+            data: null,
+        };
+    }
+};
+
+export const createCase = async (caseData: Partial<Case>): Promise<ApiResponse> => {
+    try {
+        const authToken = getCookie('auth_token');
+        const response = await fetch(`${API_BASE}/cases/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${authToken}`,
+            },
+            credentials: "include",
+            body: JSON.stringify(caseData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return {
+                success: false,
+                message: errorData.detail || "Failed to create case.",
+                data: null,
+            };
+        }
+
+        const data = await response.json();
+        return {
+            success: true,
+            message: "Case created successfully.",
+            data,
+        };
+    } catch (error) {
+        console.error("Network Error:", error);
+        return {
+            success: false,
+            message: "Network error",
+            data: null,
+        };
+    }
+};
+
+export const updateCase = async (caseId: string, caseData: Partial<Case>): Promise<ApiResponse> => {
+    try {
+        const authToken = getCookie('auth_token');
+        const response = await fetch(`${API_BASE}/cases/${caseId}/`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${authToken}`,
+            },
+            credentials: "include",
+            body: JSON.stringify(caseData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return {
+                success: false,
+                message: errorData.detail || "Failed to update case.",
+                data: null,
+            };
+        }
+
+        const data = await response.json();
+        return {
+            success: true,
+            message: "Case updated successfully.",
+            data,
+        };
+    } catch (error) {
+        console.error("Network Error:", error);
+        return {
+            success: false,
+            message: "Network error",
+            data: null,
+        };
+    }
+};
+
+export const deleteCase = async (caseId: string): Promise<ApiResponse> => {
+    try {
+        const authToken = getCookie('auth_token');
+        const response = await fetch(`${API_BASE}/cases/${caseId}/`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${authToken}`,
+            },
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return {
+                success: false,
+                message: errorData.detail || "Failed to delete case.",
+                data: null,
+            };
+        }
+
+        return {
+            success: true,
+            message: "Case deleted successfully.",
+            data: null,
+        };
+    } catch (error) {
+        console.error("Network Error:", error);
+        return {
+            success: false,
+            message: "Network error",
+            data: null,
         };
     }
 };

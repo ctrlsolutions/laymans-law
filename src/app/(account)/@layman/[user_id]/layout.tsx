@@ -15,28 +15,25 @@ export default function LaymanHomePage({
   submitted_cases: React.ReactNode;
 }) {
   const pathName = usePathname();
-
   const isSettingsPage = pathName.includes("settings");
-  const isCasesPage = pathName.includes("case");
+  const isCasesPage = pathName.includes("submitted-cases");
   console.log("Current Path:", usePathname());
 
   return (
     <div>
-      {!isSettingsPage ? (
+      {isSettingsPage || isCasesPage ? (
+        children
+      ) : (
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col space-y-4">
             {details}
             {notifications}
           </div>
-        
           <div className="row-span-2 h-full">
             {submitted_cases}
           </div>
         </div>
-      ) : ( 
-        children
-      )
-    }
+      )}
     </div>
-  )
+  );
 }
