@@ -34,7 +34,7 @@ export default function LoginForm() {
 
     const newErrors = {
       email: validateField("email", form.email, form),
-      // password: validateField("password", form.password, form),
+      password: validateField("password", form.password, form),
     };
 
     setErrors(newErrors);
