@@ -1,9 +1,3 @@
-export interface UserType{
-  first_name: string;
-  last_name: string;
-  email: string;
-  contact_number?: string;
-}
 export interface Case {
   id: string;
   title: string;
@@ -13,19 +7,13 @@ export interface Case {
   description: string;
   case_type: string;
   created_date: string;
-  created_by: UserType;
-  assigned_to: number | string | null;
-  media?: string[];
-  files?: string[];
-  openCaseCount?: number; 
-  user?: { firstName: string; email: string };
+  created_by: string;
 }
 
 export interface Category {
   id: string;
   name: string;
   color: string;
-  icon?: string;
 }
 
 export const categories: Category[] = [];
