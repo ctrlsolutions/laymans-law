@@ -15,7 +15,6 @@ import { getProfile } from "@/services/ProfileServices";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
 
-
 const CasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
@@ -98,9 +97,6 @@ const CasePage: React.FC = () => {
     };
   }, []);
 
-
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-  
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
