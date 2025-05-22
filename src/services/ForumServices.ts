@@ -64,3 +64,73 @@ export const createForum = async (
     return null;
   }
 };
+
+export const toggleBookmark = async (
+  postId: number
+): Promise<{ bookmarked: boolean } | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${postId}/bookmark/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to toggle bookmark:", response.statusText);
+      return null;
+    }
+
+    return await response.json(); // { bookmarked: true } or { bookmarked: false }
+  } catch (error) {
+    console.error("Error toggling bookmark:", error);
+    return null;
+  }
+};
+
+export const checkIfBookmarked = async (
+  postId: number
+): Promise<{ bookmarked: boolean } | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${postId}/is-bookmarked/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to check bookmark status:", response.statusText);
+      return null;
+    }
+
+    return await response.json(); // { bookmarked: true/false }
+  } catch (error) {
+    console.error("Error checking bookmark status:", error);
+    return null;
+  }
+};
+
+export const fetchBookmarkedForumPosts = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookmarked/`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch bookmarked posts:", response.statusText);
+      return [];
+    }
+
+    return await response.json(); // returns an array of bookmarked ForumPost objects
+  } catch (error) {
+    console.error("Error fetching bookmarked posts:", error);
+    return [];
+  }
+};

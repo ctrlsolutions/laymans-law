@@ -39,16 +39,16 @@ const ForumSideBar: React.FC<SideBar> = ({
           )}
         </button>
         <button
-          onClick={() => setSelectedCaseType("closed")}
+          onClick={() => setSelectedCaseType("bookmarked")}
           className={`flex gap-1.5 mt-1.5 items-center hover:underline ${
-            selectedCaseType === "closed"
+            selectedCaseType === "bookmarked"
               ? "text-[#0838E5] font-bold"
               : "text-black"
           }`}
         >
           <MdOutlineBookmarks className="text-xl" />
           <span className="font-semibold">Favorites</span>
-          {selectedCaseType === "closed" && (
+          {selectedCaseType === "bookmarked" && (
             <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
           )}
         </button>

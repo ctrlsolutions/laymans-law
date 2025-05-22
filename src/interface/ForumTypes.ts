@@ -1,5 +1,3 @@
-import { Category } from "@/interface/CategoryTypes";
-
 export interface Forum {
   id: number;
   author: {

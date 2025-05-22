@@ -9,7 +9,11 @@ import ForumSideBar from "@/components/Forum/ForumSideBar";
 import Header from "@/components/Profile/Header";
 
 import { getProfile } from "@/services/ProfileServices";
-import { fetchAllForums } from "@/services/ForumServices";
+import {
+  fetchAllForums,
+  fetchBookmarkedForumPosts,
+} from "@/services/ForumServices";
+import { checkIfBookmarked } from "@/services/ForumServices";
 
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterForum } from "@/utils/filterForum";
@@ -30,11 +34,10 @@ const ForumPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
-  const [status, setStatus] = useState<string | "">("all");
   const ForumCount = filteredForum.filter((f) => f.title).length;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCase, setSelectedForum] = useState<Forum | null>(null);
+  const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
 
   const openModal = (forumItem: Forum) => {
     setSelectedForum(forumItem);
@@ -57,34 +60,49 @@ const ForumPage: React.FC = () => {
         forum,
         searchQuery,
         sortOrder,
-        selectedCaseType,
-        status
+        selectedCaseType
       );
       console.log("Filtered forums:", filtered);
       setFilteredForum(filtered);
     }
-  }, [forum, searchQuery, selectedCaseType, sortOrder, status]);
+  }, [forum, searchQuery, selectedCaseType, sortOrder]);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadForum = async () => {
-      const response = await fetchAllForums();
-      if (isMounted) {
-        if (response.success && response.data) {
-          setForum(response.data);
+    const loadForumsByType = async () => {
+      setForumLoading(true);
+      if (selectedCaseType === "bookmarked") {
+        const bookmarked = await fetchBookmarkedForumPosts();
+        setForum(
+          (bookmarked || []).map((forumItem: any) => ({
+            ...forumItem,
+            bookmark: true,
+          }))
+        );
+      } else {
+        const all = await fetchAllForums();
+        if (all.success && all.data) {
+          // Check bookmarks for each forum post after fetching
+          const forumsWithBookmarks = await Promise.all(
+            all.data.map(async (item: Forum) => {
+              try {
+                const result = await checkIfBookmarked(item.id);
+                return { ...item, bookmark: result?.bookmarked };
+              } catch (error) {
+                console.error("Error checking bookmark:", error);
+                return { ...item, bookmark: false }; // Default to not bookmarked on error
+              }
+            })
+          );
+          setForum(forumsWithBookmarks);
         } else {
-          setForumError(response.message || "Failed to load cases");
+          setForumError(all.message || "Failed to load forums");
         }
-        setForumLoading(false);
       }
+      setForumLoading(false);
     };
 
-    loadForum();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    loadForumsByType();
+  }, [selectedCaseType]);
 
   useEffect(() => {
     let isMounted = true;
