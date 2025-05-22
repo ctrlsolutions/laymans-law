@@ -22,7 +22,7 @@ export const getProfile = async (): Promise<ApiResponse> => {
   }
 };
 
-export const updateProfile = async (profileData: Record<string, unknown>): Promise<ApiResponse> => {
+export const updateProfile = async (profileData: any): Promise<ApiResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/update_profile/`, {
       method: "PATCH",

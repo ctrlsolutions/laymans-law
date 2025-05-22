@@ -21,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        suppressHydrationWarning
         className={`${poppins.variable} antialiased relative min-h-screen bg-cover bg-center bg-[url(/lowerBG.png)]`}
       >
         {children}
