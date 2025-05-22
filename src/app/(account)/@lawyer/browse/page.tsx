@@ -3,17 +3,15 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Case } from "@/interface/CaseTypes";
-
+import { fetchCases } from "@/services/CaseService";
+import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import Sidebar from "@/components/Cases/Sidebar";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import CaseCard from "@/components/Cases/CaseCard";
-
-import { fetchCases } from "@/services/CaseService";
-import { getProfile } from "@/services/ProfileServices";
-
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
+
 
 const CasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,15 +27,6 @@ const CasePage: React.FC = () => {
 
   const [filteredCases, setFilteredCases] = useState<Case[]>([]);
   const [status, setStatus] = useState<string | "">("all");
-  const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-
-  const openModal = (caseItem: Case) => {
-    setSelectedCase(caseItem);
-    setIsModalOpen(true);
-  };
 
   const router = useRouter();
 
@@ -54,6 +43,8 @@ const CasePage: React.FC = () => {
       setFilteredCases(filtered);
     }
   }, [cases, searchQuery, selectedCaseType, sortOrder, status]);
+
+  const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
 
   useEffect(() => {
     let isMounted = true;
@@ -96,6 +87,8 @@ const CasePage: React.FC = () => {
       isMounted = false;
     };
   }, []);
+
+  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
 
   return (
     <main

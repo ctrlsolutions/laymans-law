@@ -275,19 +275,6 @@ export default function AcceptCasePage() {
                       {/* Show loading text */}
                       {isAccepting ? "Accepting..." : "Accept Case"}
                   </BaseButton>
-
-                  {/* <BaseButton
-                      color="red"
-                      textColor="white"
-                      onClick={() => {
-                        // Keep decline mock or implement similarly if needed
-                        alert("Case declined (mock)");
-                        router.push("/dashboard/cases");
-                      }}
-                      disabled={isAccepting} // Also disable decline during accept
-                  >
-                      Decline Case
-                  </BaseButton> */}
                 </div>
                   {/* Display Accept/Decline Errors */}
                   {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
