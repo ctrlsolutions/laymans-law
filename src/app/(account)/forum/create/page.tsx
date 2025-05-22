@@ -5,7 +5,7 @@ import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import Button from "@/components/Global/BaseButton";
 import Textarea from "@/components/Global/BaseTextArea";
-import { createForumPost } from "@/services/ForumServices";
+import { createForum } from "@/services/ForumServices";
 import { categories } from "@/constants/caseConstants";
 
 const DiscussionForm: React.FC<{
@@ -70,7 +70,7 @@ const DiscussionForm: React.FC<{
             aria-label="Forum Details"
             maxLength={500}
           />
-          <span className="absolute bottom-2 right-12 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
+          <span className="absolute bottom-2 right-20 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
             {forumDetails.length}/500
           </span>
         </div>
@@ -98,7 +98,7 @@ const DiscussionPage: React.FC = () => {
     }
 
     try {
-      const newPost = await createForumPost({
+      const newPost = await createForum({
         title: forumTitle,
         content: forumDetails,
         category: forumCategory,
