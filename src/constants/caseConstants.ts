@@ -7,7 +7,7 @@ export const sortingOptions = [
 
 export const categories: Category[] = [
   { id: "family", name: "Family Law", color: "bg-yellow-400" },
-  { id: "criminal", name: "Criminal Law", color: "bg-lime-800" },
+  { id: "criminal", name: "Criminal Law", color: "bg-lime-400" },
   { id: "labor", name: "Labor Law", color: "bg-teal-400" },
   { id: "civil", name: "Civil Law", color: "bg-blue" },
   {

@@ -1,10 +1,10 @@
 import { IoMdCheckmark } from "react-icons/io";
-import { SidebarProps } from "@/interface/CaseTypes";
+import { SideBar } from "@/interface/ForumTypes";
 import { MdOutlineBookmarks, MdForum } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const ForumSideBar: React.FC<SidebarProps> = ({
+const ForumSideBar: React.FC<SideBar> = ({
   selectedCaseType,
   setSelectedCaseType,
   categories,
@@ -39,16 +39,16 @@ const ForumSideBar: React.FC<SidebarProps> = ({
           )}
         </button>
         <button
-          onClick={() => setSelectedCaseType("closed")}
+          onClick={() => setSelectedCaseType("bookmarked")}
           className={`flex gap-1.5 mt-1.5 items-center hover:underline ${
-            selectedCaseType === "closed"
+            selectedCaseType === "bookmarked"
               ? "text-[#0838E5] font-bold"
               : "text-black"
           }`}
         >
           <MdOutlineBookmarks className="text-xl" />
           <span className="font-semibold">Favorites</span>
-          {selectedCaseType === "closed" && (
+          {selectedCaseType === "bookmarked" && (
             <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
           )}
         </button>
@@ -69,17 +69,10 @@ const ForumSideBar: React.FC<SidebarProps> = ({
                 )
               }
             >
-              {/* <span
-                className={`flex self-center shrink-0 w-2 h-2 ${
-                  colorMap[category.color] || "bg-gray-300"
-                } rounded-full`}
-                aria-hidden="true"
-              /> */}
               <span
                 className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`}
                 aria-hidden="true"
               />
-
               <span>{category.name}</span>
               {selectedCaseType === category.id && (
                 <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
@@ -88,15 +81,6 @@ const ForumSideBar: React.FC<SidebarProps> = ({
           ))}
         </ul>
       </nav>
-
-      <div className="hidden">
-        <span className="bg-yellow-400" />
-        <span className="bg-lime-800" />
-        <span className="bg-teal-400" />
-        <span className="bg-blue" />
-        <span className="bg-fuchsia-600" />
-        <span className="bg-pink-600" />
-      </div>
     </aside>
   );
 };

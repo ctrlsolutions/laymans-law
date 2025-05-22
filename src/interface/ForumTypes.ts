@@ -1,4 +1,4 @@
-export interface ForumPost {
+export interface Forum {
   id: number;
   author: {
     first_name: string;
@@ -9,4 +9,12 @@ export interface ForumPost {
   timestamp: string;
   category: string;
   bookmark: boolean;
+}
+
+export const cases: Forum[] = [];
+
+export interface SideBar {
+  selectedCaseType: string;
+  setSelectedCaseType: (type: string) => void;
+  categories: { id: string; name: string; color: string }[];
 }

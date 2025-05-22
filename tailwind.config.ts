@@ -18,6 +18,11 @@ export default {
     "animation-delay-100",
     "animation-delay-200",
     "animate-bounce-to-center",
+    "bg-yellow-400",
+    "bg-lime-400",
+    "bg-teal-400",
+    "bg-fuchsia-600",
+    "bg-pink-600",
   ],
   theme: {
     extend: {
@@ -35,12 +40,12 @@ export default {
       },
       keyframes: {
         moveUp: {
-          "0%": { transform: "translateY(0)"},
-          "100%": { transform: "translateY(-100px)"},
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-100px)" },
         },
         bounceToCenter: {
           "0%": { transform: "translateX(100%)" },
-          "60%": { transform: "translateX(-4%)"},
+          "60%": { transform: "translateX(-4%)" },
           "80%": { transform: "translateX(0.5%)" },
           "100%": { transform: "translateX(0)" },
         },
