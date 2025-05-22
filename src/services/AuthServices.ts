@@ -23,6 +23,11 @@ export const UserLogin = async (
       };
     }
 
+    // Store auth token if provided
+    if (data.token) {
+      document.cookie = `auth_token=${data.token}; path=/; secure; samesite=strict`;
+    }
+
     if (data.user_id) {
       localStorage.setItem("user_id", data.user_id);
     }

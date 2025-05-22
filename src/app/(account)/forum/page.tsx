@@ -1,29 +1,48 @@
 "use client";
-import * as React from "react";
-import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { Case } from "@/interface/CaseTypes";
-import ForumCard from "@/components/Forum/ForumCard";
-import { useEffect, useState } from "react";
-import { getProfile } from "@/services/ProfileServices";
-import Header from "@/components/Profile/Header";
-import { fetchAllForumPosts } from "@/services/ForumServices";
-import { useRouter } from "next/navigation";
-import { sortingOptions, categories } from "@/constants/caseConstants";
-import { ForumPost } from "@/interface/ForumTypes";
-import ForumSideBar from "@/components/Forum/ForumSideBar";
 
-const InputDesign: React.FC = () => {
+import React, { useEffect, useState } from "react";
+import { Forum } from "@/interface/ForumTypes";
+
+import BaseFormSelect from "@/components/Global/BaseFormSelect";
+import ForumCard from "@/components/Forum/ForumCard";
+import ForumSideBar from "@/components/Forum/ForumSideBar";
+import Header from "@/components/Profile/Header";
+
+import { getProfile } from "@/services/ProfileServices";
+import {
+  fetchAllForums,
+  fetchBookmarkedForumPosts,
+} from "@/services/ForumServices";
+import { checkIfBookmarked } from "@/services/ForumServices";
+
+import { sortingOptions, categories } from "@/constants/caseConstants";
+import { filterForum } from "@/utils/filterForum";
+import { useRouter } from "next/navigation";
+
+const ForumPage: React.FC = () => {
+  const router = useRouter();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-  const [cases, setForum] = useState<ForumPost[]>([]);
+
+  const [forum, setForum] = useState<Forum[]>([]);
   const [forumLoading, setForumLoading] = useState(true);
-  const [casesError, setCasesError] = useState("");
+  const [forumError, setForumError] = useState("");
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
+  const ForumCount = filteredForum.filter((f) => f.title).length;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [allReadChecked, setAllReadChecked] = useState(false);
-  const router = useRouter();
+  const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
+
+  const openModal = (forumItem: Forum) => {
+    setSelectedForum(forumItem);
+    setIsModalOpen(true);
+  };
 
   const handleBookmarkToggle = (id: number) => {
     setForum((prevCases) =>
@@ -35,69 +54,55 @@ const InputDesign: React.FC = () => {
     );
   };
 
-  const filteredCases = cases.filter((forumItem) => {
-    const query = searchQuery.toLowerCase();
-    const matchesCaseType =
-      selectedCaseType === "all"
-        ? true
-        : selectedCaseType === "open"
-        ? forumItem.bookmark === true
-        : selectedCaseType === "closed"
-        ? forumItem.bookmark === false
-        : false;
-    const matchesCategory =
-      selectedCategory === null || forumItem.category === selectedCategory;
-    const matchesSearch =
-      forumItem.title.toLowerCase().includes(query) ||
-      forumItem.category.toLowerCase().includes(query);
-    return matchesCaseType && matchesCategory && matchesSearch;
-  });
-
-  const sortedCases = [...filteredCases].sort((a, b) => {
-    if (sortOrder === "latest") {
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-    } else {
-      return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  useEffect(() => {
+    if (forum.length > 0) {
+      const filtered = filterForum(
+        forum,
+        searchQuery,
+        sortOrder,
+        selectedCaseType
+      );
+      console.log("Filtered forums:", filtered);
+      setFilteredForum(filtered);
     }
-  });
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  }, [forum, searchQuery, selectedCaseType, sortOrder]);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadforum = async () => {
-      const response = await fetchAllForumPosts();
-      if (isMounted) {
-        if (response) {
-          const forumPostsAsCases: ForumPost[] = response.map((post) => ({
-            id: post.id,
-            author: {
-              first_name: post.author.first_name,
-              last_name: post.author.last_name,
-            },
-            title: post.title,
-            content: post.content,
-            timestamp: post.timestamp,
-            bookmark: post.bookmark,
-            category: post.category,
-          }));
-
-          setForum(forumPostsAsCases);
-          setForumLoading(false);
+    const loadForumsByType = async () => {
+      setForumLoading(true);
+      if (selectedCaseType === "bookmarked") {
+        const bookmarked = await fetchBookmarkedForumPosts();
+        setForum(
+          (bookmarked || []).map((forumItem: any) => ({
+            ...forumItem,
+            bookmark: true,
+          }))
+        );
+      } else {
+        const all = await fetchAllForums();
+        if (all.success && all.data) {
+          // Check bookmarks for each forum post after fetching
+          const forumsWithBookmarks = await Promise.all(
+            all.data.map(async (item: Forum) => {
+              try {
+                const result = await checkIfBookmarked(item.id);
+                return { ...item, bookmark: result?.bookmarked };
+              } catch (error) {
+                console.error("Error checking bookmark:", error);
+                return { ...item, bookmark: false };
+              }
+            })
+          );
+          setForum(forumsWithBookmarks);
         } else {
-          setCasesError("Failed to load forum posts.");
-          setForumLoading(false);
+          setForumError(all.message || "Failed to load forums");
         }
       }
+      setForumLoading(false);
     };
 
-    loadforum();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    loadForumsByType();
+  }, [selectedCaseType]);
 
   useEffect(() => {
     let isMounted = true;
@@ -120,8 +125,6 @@ const InputDesign: React.FC = () => {
     };
   }, []);
 
-  const openCaseCount = filteredCases.filter((c) => (c.bookmark = true)).length;
-
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
@@ -130,7 +133,7 @@ const InputDesign: React.FC = () => {
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        openCaseCount={openCaseCount}
+        openCaseCount={ForumCount}
         user={user}
       />
 
@@ -158,19 +161,17 @@ const InputDesign: React.FC = () => {
             <div className="flex-1 overflow-y-auto pr-5">
               {forumLoading ? (
                 <p className="text-center text-gray-500 mt-20">
-                  Loading cases...
+                  Loading forums...
                 </p>
-              ) : casesError ? (
-                <p className="text-center text-red-500 mt-20">{casesError}</p>
-              ) : sortedCases.length > 0 ? (
-                sortedCases.map((forumItem) => (
+              ) : forumError ? (
+                <p className="text-center text-red-500 mt-20">{forumError}</p>
+              ) : filteredForum.length > 0 ? (
+                filteredForum.map((forumItem) => (
                   <ForumCard
                     key={forumItem.id}
                     forumItem={forumItem}
                     categories={categories}
-                    onClick={() =>
-                      router.push(`/dashboard/case/${forumItem.id}`)
-                    }
+                    onClick={() => router.push(`/forum/show/`)}
                     onBookmarkToggle={handleBookmarkToggle}
                     bookmarked={forumItem.bookmark}
                   />
@@ -193,4 +194,4 @@ const InputDesign: React.FC = () => {
   );
 };
 
-export default InputDesign;
+export default ForumPage;
