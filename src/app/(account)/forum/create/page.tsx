@@ -5,7 +5,7 @@ import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import Button from "@/components/Global/BaseButton";
 import Textarea from "@/components/Global/BaseTextArea";
-import { createForumPost } from "@/services/ForumServices";
+import { createForum } from "@/services/ForumServices";
 import { categories } from "@/constants/caseConstants";
 
 const DiscussionForm: React.FC<{
@@ -68,7 +68,11 @@ const DiscussionForm: React.FC<{
             placeholder="Enter Forum Details"
             className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[0.9rem] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
             aria-label="Forum Details"
+            maxLength={500}
           />
+          <span className="absolute bottom-2 right-20 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
+            {forumDetails.length}/500
+          </span>
         </div>
       </div>
     </div>
@@ -94,7 +98,7 @@ const DiscussionPage: React.FC = () => {
     }
 
     try {
-      const newPost = await createForumPost({
+      const newPost = await createForum({
         title: forumTitle,
         content: forumDetails,
         category: forumCategory,
