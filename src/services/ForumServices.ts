@@ -1,4 +1,4 @@
-import { ForumPost } from "@/interface/ForumTypes"; // Adjust the import path to your actual ForumPost interface
+import { ForumPost } from "@/interface/ForumTypes";
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/forum`;
 
@@ -7,7 +7,7 @@ export const fetchAllForumPosts = async (): Promise<ForumPost[] | null> => {
     const response = await fetch(`${API_BASE_URL}/`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // Use this if authentication is required and you need the cookies
+      credentials: "include",
     });
 
     if (!response.ok) {

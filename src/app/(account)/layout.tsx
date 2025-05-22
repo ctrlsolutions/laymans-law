@@ -60,6 +60,12 @@ export default function AccountLayout({
     ? [...baseTabs.slice(0, 1), ...laymanTabs, ...baseTabs.slice(1)]
     : [...baseTabs.slice(0, 1), ...lawyerTabs, ...baseTabs.slice(1)];
 
+  let contentToShow;
+  const standaloneRoutes = ["/wiki", "/forum", "/submit-case"];
+  const isStandalonePage = standaloneRoutes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
+
   const activeTab = tabs.find(tab => tab.match(pathname, userId))?.name || "";
 
   const standaloneRoutes = ["/wiki", "/forum", "/browse", "/submit-case"];
@@ -98,7 +104,7 @@ export default function AccountLayout({
           Logout
         </button>
       </div>
-      <div className="h-[95vh] w-[90vw] bg-white p-10 pt-5 rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
+      <div className="h-[95vh] w-[90vw] bg-white rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
         {contentToShow}
       </div>
     </div>

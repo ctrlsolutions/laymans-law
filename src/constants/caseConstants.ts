@@ -6,10 +6,14 @@ export const sortingOptions = [
 ];
 
 export const categories: Category[] = [
-  { id: "family", name: "Family Law", color: "yellow" },
-  { id: "criminal", name: "Criminal Law", color: "lime" },
-  { id: "labor", name: "Labor Law", color: "teal" },
-  { id: "civil", name: "Civil Law", color: "blue" },
-  { id: "commercial", name: "Commercial and Business Law", color: "fuchsia" },
-  { id: "other", name: "Others", color: "pink" },
+  { id: "family", name: "Family Law", color: "bg-yellow-400" },
+  { id: "criminal", name: "Criminal Law", color: "bg-lime-800" },
+  { id: "labor", name: "Labor Law", color: "bg-teal-400" },
+  { id: "civil", name: "Civil Law", color: "bg-blue" },
+  {
+    id: "commercial",
+    name: "Commercial and Business Law",
+    color: "bg-fuchsia-600",
+  },
+  { id: "other", name: "Others", color: "bg-pink-600" },
 ];

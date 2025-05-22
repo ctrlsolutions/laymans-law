@@ -7,10 +7,24 @@ const CaseCard: React.FC<{
   categories: Category[];
   onClick: () => void;
 }> = ({ caseItem, categories, onClick }) => {
-  const getCategoryColor = (categoryName: string) => {
-    const category = categories.find((c) => c.name === categoryName);
+  const getCategoryColor = (categoryId: string) => {
+    const category = categories.find((c) => c.id === categoryId);
     return category ? category.color : "bg-gray-300";
   };
+  const getCategoryName = (caseTypeId: string): string => {
+    const category = categories.find((c) => c.id === caseTypeId);
+    return category ? category.name : caseTypeId;
+  };
+
+  <div className="absolute top-[-15px] right-2 flex justify-center items-center px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm z-10">
+    <span
+      className={`mr-2 flex shrink-0 w-2 h-2 ${getCategoryColor(
+        caseItem.case_type
+      )} rounded-full`}
+      aria-hidden="true"
+    />
+    <span className="mr-2 text-[9.8px] font-bold">{caseItem.case_type}</span>
+  </div>;
 
   const StatusIndicator: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
     const color = isOpen ? "bg-[#4BB328]" : "bg-[#B32828]";
@@ -32,9 +46,9 @@ const CaseCard: React.FC<{
               caseItem.case_type
             )} rounded-full`}
             aria-hidden="true"
-          ></span>
+          />
           <span className="mr-2 text-[9.8px] font-bold">
-            {caseItem.case_type}
+            {getCategoryName(caseItem.case_type)}
           </span>
         </div>
 

@@ -1,26 +1,73 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import LandingNavButton from "@/components/Global/LandingNavButton";
 import Head from "next/head";
 
 export default function Home() {
+  const [animateNav, setAnimateNav] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
+
+  const handleLogin = () => {
+    setAnimateNav(true);
+    setIsLoggingIn(true);
+    setTimeout(() => {
+      setIsLoggingIn(false);
+    }, 10000);
+  };
+
+  const handleSignUp = () => {
+    setAnimateNav(true);
+    setIsSigningUp(true);
+    setTimeout(() => {
+      setIsSigningUp(false);
+    }, 10000);
+  };
+
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      <nav className="absolute top-6 right-12 flex gap-12 text-white font-semibold text-base p-8 z-50">
-        <a href="/forum" className="hover:underline">
+      <nav
+        className={`absolute top-6 right-12 flex flex-row gap-8 text-white font-semibold text-base p-8 z-50 ${
+          animateNav ? "animate-nav-links" : ""
+        }`}
+      >
+        <a
+          href="/forum"
+          className={`hover:underline ${
+            animateNav ? "animate-move-up animation-delay-0" : ""
+          }`}
+        >
           FORUM
         </a>
-        <a href="/wiki" className="hover:underline">
+        <a
+          href="/wiki"
+          className={`hover:underline ${
+            animateNav ? "animate-move-up animation-delay-100" : ""
+          }`}
+        >
           WIKI
         </a>
-        <a href="/about" className="hover:underline">
+        <a
+          href="/about"
+          className={`hover:underline ${
+            animateNav ? "animate-move-up animation-delay-200" : ""
+          }`}
+        >
           ABOUT
         </a>
       </nav>
-      <div className="absolute inset-0 flex items-center bg-cover bg-center bg-fixed h-full bg-[url(/upperBG.png)]">
+
+      <div
+        className={`absolute inset-0 flex items-center bg-cover bg-center bg-fixed h-full bg-[url(/upperBG.png)] transition-transform duration-1000 ease-in-out ${
+          isLoggingIn || isSigningUp ? "-translate-x-full" : "translate-x-0"
+        }`}
+      >
         <div className="w-1/2 sm:w-1/3md:w-2/3 lg:w-1/2 xl:w-1/2 max-w-[50rem] flex flex-col p-10 sm:p-6 md:p-8 translate-x-20 sm:translate-x-0 md:translate-x-12">
           <Image
             src="/LLLogo.png"
@@ -45,6 +92,8 @@ export default function Home() {
               width="10rem"
               height="3rem"
               fontSize="1.25rem"
+              loading={isLoggingIn}
+              onClick={handleLogin}
             />
             <LandingNavButton
               text="SIGN UP"
@@ -53,6 +102,8 @@ export default function Home() {
               width="10rem"
               height="3rem"
               fontSize="1.25rem"
+              loading={isSigningUp}
+              onClick={handleSignUp}
             />
           </div>
         </div>

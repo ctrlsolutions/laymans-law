@@ -13,6 +13,11 @@ export default {
     "bg-red",
     "bg-blue",
     "bg-black",
+    "animate-move-up",
+    "animation-delay-0",
+    "animation-delay-100",
+    "animation-delay-200",
+    "animate-bounce-to-center",
   ],
   theme: {
     extend: {
@@ -25,10 +30,43 @@ export default {
         stroke: "#D9D9D9",
       },
       fontSize: {
-        xxs: "10px", // Extra extra small
-        xxxs: "8px", // Super small text
+        xxs: "10px",
+        xxxs: "8px",
+      },
+      keyframes: {
+        moveUp: {
+          "0%": { transform: "translateY(0)"},
+          "100%": { transform: "translateY(-100px)"},
+        },
+        bounceToCenter: {
+          "0%": { transform: "translateX(100%)" },
+          "60%": { transform: "translateX(-4%)"},
+          "80%": { transform: "translateX(0.5%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        slideToLeft: {
+          "0%": { transform: "translateX(0)", opacity: "1" },
+          "100%": { transform: "translateX(-100%)", opacity: "0" },
+        },
+      },
+      animation: {
+        "move-up": "moveUp 0.5s ease-in-out forwards",
+        "slide-left": "slideLeft 0.5s ease-in-out forwards",
+        "bounce-to-center": "bounceToCenter 0.8s ease-out",
+        "slide-to-left": "slideToLeft 0.5s ease-in-out forwards",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".animation-delay-0": { "animation-delay": "0ms" },
+        ".animation-delay-100": { "animation-delay": "100ms" },
+        ".animation-delay-200": { "animation-delay": "200ms" },
+        ".animation-delay-300": { "animation-delay": "300ms" },
+        ".animation-delay-400": { "animation-delay": "400ms" },
+        ".animation-delay-500": { "animation-delay": "500ms" },
+      });
+    },
+  ],
 } satisfies Config;

@@ -1,10 +1,20 @@
 import { ContainerProps } from "@/interface/AuthContainer";
 
-const Layout = ({ children, bgColor = "black" }: ContainerProps) => {
+interface AuthContainerProps extends ContainerProps {
+  className?: string;
+}
+
+const Layout = ({
+  children,
+  bgColor = "black",
+  className = "",
+}: AuthContainerProps) => {
   return (
-    <div className="flex h-screen items-center justify-center relative">
+    <div
+      className={`flex h-screen items-center justify-center relative ${className}`}
+    >
       {/* Logo on Side */}
-      <div className="absolute left-[15vw] w-[22vw] h-[75vh] p-6 flex items-center justify-left bg-black/50 rounded-2xl  overflow-hidden">
+      <div className="absolute left-[15vw] w-[22vw] h-[75vh] p-6 flex items-center justify-left bg-black/50 rounded-2xl overflow-hidden">
         <div
           className="absolute inset-0"
           style={{ backgroundColor: bgColor, opacity: 0.1 }}
