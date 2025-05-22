@@ -36,10 +36,10 @@ const Sidebar: React.FC<{
           <li
             key={category.id}
             className={`flex gap-3 mt-6 ml-3.5 hover:underline cursor-pointer ${
-              selectedCategory === category.name ? "text-[#0838E5] font-bold" : "text-black"
+              selectedCategory === category.id ? "text-[#0838E5] font-bold" : "text-black"
             }`}
             onClick={() =>
-              setSelectedCategory(selectedCategory === category.name ? null : category.name)
+              setSelectedCategory(selectedCategory === category.id ? null : category.id)
             }
           >
             <span
@@ -47,7 +47,7 @@ const Sidebar: React.FC<{
               aria-hidden="true"
             />
             <span>{category.name}</span>
-            {selectedCategory === category.name && (
+            {selectedCategory === category.id && (
               <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
             )}
           </li>
@@ -78,7 +78,10 @@ const InputDesign: React.FC = () => {
       selectedCategory === null || caseItem.case_type === selectedCategory;
     const matchesSearch =
       caseItem.title.toLowerCase().includes(query) ||
-      caseItem.category.name.toLowerCase().includes(query);
+      (caseItem.case_type?.toLowerCase() || '').includes(query);
+    
+    console.log('Case:', caseItem.title, 'Category:', caseItem.case_type, 'Selected:', selectedCategory, 'Matches:', matchesCategory);
+    
     return matchesCategory && matchesSearch;
   });
 
@@ -97,6 +100,7 @@ const InputDesign: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
+          console.log('Fetched cases:', response.data);
           setCases(response.data);
         } else {
           setCasesError(response.message || "Failed to load cases");
