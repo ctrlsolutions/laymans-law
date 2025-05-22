@@ -35,7 +35,7 @@ const DiscussionForm: React.FC<{
         lg:overflow-y-auto sm:max-h-[calc(50vh-156px)] sm:max-w-[58dvw] 
         md:max-h-[calc(50vh-156px)] md:max-w-[54dvw] 
         lg:max-h-[calc(90vh-156px)] lg:max-w-[70dvw] 
-        xl:max-h-[calc(95vh-200px)] my-2"
+        xl:max-h-[calc(95vh-200px)] my-2 ml-9"
       >
         <div className="flex items-center space-x-4 mt-2">
           <BaseFormInput
@@ -66,9 +66,13 @@ const DiscussionForm: React.FC<{
             value={forumDetails}
             onChange={(e) => setForumDetails(e.target.value)}
             placeholder="Enter Forum Details"
-            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[0.9rem] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
+            className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[0.95rem] placeholder:text-[0.95rem] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[70dvw] xl:max-w-[60dvw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
             aria-label="Forum Details"
+            maxLength={500}
           />
+          <span className="absolute bottom-2 right-12 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
+            {forumDetails.length}/500
+          </span>
         </div>
       </div>
     </div>
