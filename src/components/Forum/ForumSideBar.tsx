@@ -10,6 +10,8 @@ const ForumSideBar: React.FC<SideBar> = ({
   categories,
 }) => {
   const router = useRouter();
+  const userType =
+    typeof window !== "undefined" ? localStorage.getItem("user_type") : null;
   return (
     <aside
       className="ml-5 w-[23%] max-md:ml-0 max-md:w-full"
@@ -17,12 +19,14 @@ const ForumSideBar: React.FC<SideBar> = ({
     >
       <nav className="flex flex-col mt-3 w-full text-xs font-medium">
         {/* Start a Discussion Button */}
-        <button
-          className="bg-red text-white text-md py-4 px-4 rounded-lg font-semibold mb-4 hover:bg-red-700 transition shadow-xl"
-          onClick={() => router.push("/forum/create")}
-        >
-          Start a Discussion
-        </button>
+        {userType === "lawyer" && (
+          <button
+            className="bg-red text-white text-md py-4 px-4 rounded-lg font-semibold mb-4 hover:bg-red-700 transition shadow-xl"
+            onClick={() => router.push("/forum/create")}
+          >
+            Start a Discussion
+          </button>
+        )}
         {/* Navigation Buttons */}
         <button
           onClick={() => setSelectedCaseType("all")}

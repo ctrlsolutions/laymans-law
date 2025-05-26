@@ -171,7 +171,7 @@ const ForumPage: React.FC = () => {
                     key={forumItem.id}
                     forumItem={forumItem}
                     categories={categories}
-                    onClick={() => router.push(`/forum/show/`)}
+                    onClick={() => router.push(`/forum/${forumItem.id}/`)}
                     onBookmarkToggle={handleBookmarkToggle}
                     bookmarked={forumItem.bookmark}
                   />

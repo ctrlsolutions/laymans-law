@@ -134,3 +134,50 @@ export const fetchBookmarkedForumPosts = async () => {
     return [];
   }
 };
+
+export const fetchForumById = async (postId: number): Promise<Forum | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${postId}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch forum post:", response.statusText);
+      return null;
+    }
+
+    // return await response.json();
+    const data = await response.json();
+    console.log("Fetched forum post data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching forum post:", error);
+    return null;
+  }
+};
+
+export async function updateForumPost(
+  postId: number,
+  updatedPost: { content: string }
+) {
+  const res = await fetch(`${API_BASE_URL}/${postId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(updatedPost),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    console.error("Update error details:", err);
+    throw new Error("Failed to update post");
+  }
+
+  return res.json();
+}

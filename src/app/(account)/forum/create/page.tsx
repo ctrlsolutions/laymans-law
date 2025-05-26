@@ -85,7 +85,7 @@ const DiscussionPage: React.FC = () => {
   );
   const [forumTitle, setForumTitle] = useState("");
   const [forumDetails, setForumDetails] = useState("");
-  const [forumCategory, setForumCategory] = useState("General");
+  const [forumCategory, setForumCategory] = useState("family");
 
   const router = useRouter();
 

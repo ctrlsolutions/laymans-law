@@ -38,3 +38,22 @@ export interface SubmitCaseFormData {
   details: string;
   file: File | null;
 }
+
+export interface Comment {
+  id: number;
+  post: number;
+  author: number;
+  author_username: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  replies: Reply[];
+}
+
+export interface Reply {
+  id: number;
+  author: number;
+  author_username: string;
+  content: string;
+  created_at: string;
+}
