@@ -123,17 +123,20 @@ export default function AccountLayout({
             <Link
               href={tab.path(userId)}
               key={index}
-              className={`w-full h-[5vh] p-7 hover:text-2xl transition-all duration-350 ease-in-out flex items-center justify-center ml-4 rounded-l-3xl ${
+              className={`w-full h-[5vh] p-6 hover:text-xl transition-all duration-350 ease-in-out flex items-center justify-center ml-4 rounded-l-3xl ${
                 activeTab === tab.name
                   ? "bg-white text-black text-[1.3rem]"
-                  : "bg-transparent text-white"
+                  : "bg-transparent text-white hover:bg-white hover:text-black hover:font-bold hover:shadow-lg"
               }`}
             >
               {tab.name}
             </Link>
           ))}
         </div>
-        <button className="text-[1.1rem] ml-4" onClick={handleLogout}>
+        <button
+          className="text-[1.1rem] ml-4 hover:text-xl hover:font-bold hover"
+          onClick={handleLogout}
+        >
           {" "}
           Logout
         </button>
