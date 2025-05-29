@@ -81,7 +81,6 @@ const ForumPage: React.FC = () => {
       } else {
         const all = await fetchAllForums();
         if (all.success && all.data) {
-          // Check bookmarks for each forum post after fetching
           const forumsWithBookmarks = await Promise.all(
             all.data.map(async (item: Forum) => {
               try {
@@ -156,8 +155,6 @@ const ForumPage: React.FC = () => {
                 textSize="text-xs"
               />
             </div>
-
-            {/* Scrollable Case List */}
             <div className="flex-1 overflow-y-auto pr-5">
               {forumLoading ? (
                 <p className="text-center text-gray-500 mt-20">

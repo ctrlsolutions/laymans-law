@@ -78,11 +78,6 @@ const ForumCard: React.FC<{
                   <FaRegBookmark size={20} />
                 )}
               </button>
-
-              <div className="flex items-center gap-1 text-xs text-black font-medium">
-                <FaRegCommentDots size={16} />
-                <span>{0} Comments</span>
-              </div>
             </div>
           </div>
         </div>

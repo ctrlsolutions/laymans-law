@@ -2,87 +2,20 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import CommentBox from "@/components/Forum/CommentBox";
-import { Comment } from "@/interface/ComponentTypes";
 import { useRouter, useParams } from "next/navigation";
-// import { useRouter } from "next/router";
 
 import { FaBookmark } from "react-icons/fa";
-import { fetchForumById, updateForumPost } from "@/services/ForumServices";
+import {
+  fetchForumById,
+  updateForumPost,
+  deleteForumPost,
+} from "@/services/ForumServices";
 import { Forum } from "@/interface/ForumTypes";
 import { categories } from "@/constants/caseConstants";
-
-// Initial comments data
-const initialComments: Comment[] = [
-  {
-    author: {
-      name: "Alessandra",
-      avatar: "/1582663e-4415-4962-9a2c-30ed1183e132.png",
-    },
-    createdAt: "2 days ago",
-    content:
-      "I don’t know about divorce, but do you sell hollow blocks? Earth is flat guys, I can explain why it is not round using the power of my eyes!",
-    replies: [
-      {
-        author: {
-          name: "Caleb Berandoy",
-          avatar: "/1582663e-4415-4962-9a2c-30ed1183e132.png",
-        },
-        createdAt: "1 day ago",
-        content: "Bro stop trolling :-(",
-        replies: [],
-      },
-    ],
-  },
-  {
-    author: {
-      name: "Nico Bello",
-      avatar: "/1582663e-4415-4962-9a2c-30ed1183e132.png",
-    },
-    createdAt: "2 days ago",
-    content: "Who tf is that troll??",
-    replies: [],
-  },
-];
-
-// Helper to count all comments and replies recursively
-function countAllComments(comments: Comment[]): number {
-  return comments.reduce(
-    (total, comment) =>
-      total + 1 + (comment.replies ? countAllComments(comment.replies) : 0),
-    0
-  );
-}
-
-// Helper to add a reply at a given path
-function addReplyAtPath(
-  comments: Comment[],
-  path: number[],
-  reply: Comment
-): Comment[] {
-  if (path.length === 0) return comments;
-  const [idx, ...rest] = path;
-  return comments.map((comment, i) => {
-    if (i !== idx) return comment;
-    if (rest.length === 0) {
-      return {
-        ...comment,
-        replies: [...(comment.replies || []), reply],
-      };
-    }
-    return {
-      ...comment,
-      replies: addReplyAtPath(comment.replies || [], rest, reply),
-    };
-  });
-}
 
 const Page: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState("");
-  const [comments, setComments] = useState<Comment[]>(initialComments);
-  const [newComment, setNewComment] = useState("");
-
   const params = useParams();
   const id = params?.forum_id;
 
@@ -116,6 +49,28 @@ const Page: React.FC = () => {
     }
   };
 
+  const handleDeleteClick = async () => {
+    if (!post) return;
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const success = await deleteForumPost(post.id);
+      if (success) {
+        alert("Post deleted successfully.");
+        router.push("/forum"); // or wherever your list page is
+      } else {
+        alert("Failed to delete post.");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("An error occurred while deleting the post.");
+    }
+  };
+
   useEffect(() => {
     if (!isNaN(forumId)) {
       const fetchPost = async () => {
@@ -133,34 +88,12 @@ const Page: React.FC = () => {
       console.error("Invalid forum ID:", params.forum_id);
     }
   }, [forumId]);
-  // Add new top-level comment
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-    setComments([
-      ...comments,
-      {
-        author: {
-          name: "You",
-          avatar: "/profile.png",
-        },
-        createdAt: "just now",
-        content: newComment,
-        replies: [],
-      },
-    ]);
-    setNewComment("");
-  };
 
   useEffect(() => {
     if (post?.content) {
       setContent(post.content);
     }
   }, [post]);
-
-  // Add reply to a comment at a given path
-  const handleAddReply = (path: number[], reply: Comment) => {
-    setComments((prev) => addReplyAtPath(prev, path, reply));
-  };
 
   const handleEditClick = () => setIsEditing(true);
   const handleCancelClick = () => setIsEditing(false);
@@ -176,18 +109,16 @@ const Page: React.FC = () => {
     const createdAt = new Date(post.timestamp);
     const now = new Date();
 
-    const sameDay = updatedAt.toDateString() === now.toDateString(); // updated today
+    const sameDay = updatedAt.toDateString() === now.toDateString();
     const sameDayAsCreated =
-      updatedAt.toDateString() === createdAt.toDateString(); // updated same day as created
+      updatedAt.toDateString() === createdAt.toDateString();
 
     if (sameDay || sameDayAsCreated) {
-      // Show time only with "Edited at"
       return `Edited at ${updatedAt.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       })}`;
     } else {
-      // Show full date with "Edited on"
       return `Edited on ${updatedAt.toLocaleDateString()}`;
     }
   }
@@ -215,7 +146,7 @@ const Page: React.FC = () => {
           className="flex flex-col items-center"
         >
           <Image
-            src="/profile.png"
+            src="/blank-profile.svg"
             alt="Profile"
             width={120}
             height={120}
@@ -281,7 +212,7 @@ const Page: React.FC = () => {
                   Edit
                 </button>
                 <button
-                  // onClick={handleDeleteClick}
+                  onClick={handleDeleteClick}
                   className="px-4 py-2 bg-red text-white rounded-md hover:bg-red-700 text-xs"
                 >
                   Delete
@@ -319,41 +250,6 @@ const Page: React.FC = () => {
                 </button>
               </div>
             )}
-          </div>
-
-          <div
-            style={{ gridArea: "comment-section" }}
-            className="bg-gray-10 p-2 rounded-lg"
-          >
-            <h2 className="text-sm text-gray-600 font-semibold mb-2">
-              {countAllComments(comments)} Comments
-            </h2>
-            <div className="space-y-4">
-              {comments.map((comment, index) => (
-                <CommentBox
-                  key={index}
-                  comment={comment}
-                  commentPath={[index]}
-                  onAddReply={handleAddReply}
-                />
-              ))}
-            </div>
-
-            <div className="mt-6 flex items-center gap-2">
-              <textarea
-                placeholder="Reply"
-                className="flex-grow text-black border rounded-md p-3 text-sm resize-none"
-                rows={3}
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <button
-                className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue-700 text-sm"
-                onClick={handleAddComment}
-              >
-                Add Comment
-              </button>
-            </div>
           </div>
         </div>
       </div>
