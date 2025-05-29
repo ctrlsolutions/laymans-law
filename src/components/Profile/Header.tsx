@@ -107,14 +107,19 @@ const Header: React.FC<HeaderProps> = ({
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <header className="p-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
+    <header className="p-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]
+      max-md:pr-6 max-md:pl-6 max-md:pt-4 max-md:pb-2 
+      max-lg:px-5 max-lg:rounded-[20px_20px_0px_0px]">
       <div className="flex max-md:flex-col">
         <div className="w-[77%] max-md:w-full">
-          <div className="flex flex-wrap gap-6 text-xs">
+          <div className="flex text-xs mr-3 gap-6 
+            max-md:flex-wrap max-md:gap-2 max-md:justify-center max-md:items-center">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/5676b5cbc1d09b6b170298efcc84d833fd17cbb2?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
               alt="Logo"
-              className="w-[139px] object-contain cursor-pointer"
+              className="w-[139px] object-contain cursor-pointer
+                max-md:w-[100px] max-md:mt-2
+                max-sm:w-[80px] max-sm:mt-2"
               onClick={() => router.push("/dashboard/home")}
             />
             <SearchBar
@@ -123,7 +128,7 @@ const Header: React.FC<HeaderProps> = ({
             />
           </div>
         </div>
-        <div className="flex gap-5">
+        <div className="flex gap-2 max-md:gap-0 max-md:items-center max-md:w-full max-md:justify-between max-sm:justify-start">
           <div
             className={`relative transition-transform duration-100 ${
               isOpen ? "" : "hover:scale-90"
@@ -136,15 +141,17 @@ const Header: React.FC<HeaderProps> = ({
             />
           </div>
           <div
-            className="z-0 flex gap-4 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105"
+            className="z-0 flex gap-4 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105
+              max-md:pt-3.5 max-md:ml-2"
             onClick={() => router.push("/dashboard/account")}
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/e5990c8fddf80298658964bf5d965e28f274456d?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
               alt="Profile"
-              className="z-10 w-[60px] rounded-full mt-3"
+              className="z-10 w-[60px] rounded-full mt-3 max-sm:hidden max-md:w-[28px]"
             />
-            <span className="my-auto">{user?.first_name || "Guest"}</span>
+            <span className="my-auto max-md:pt-4
+              max-sm:pt-4">{user?.first_name || "Guest"}</span>
           </div>
         </div>
       </div>
