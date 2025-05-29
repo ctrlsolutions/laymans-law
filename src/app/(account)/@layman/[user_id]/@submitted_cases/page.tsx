@@ -8,7 +8,15 @@ export default function LaymanNotifs() {
       <>
         <Card className="h-[90vh]">
           <ActiveCasesContainer count={5} color="red">
-            <ActiveCasesComponent />
+            <ActiveCasesComponent caseItem={{
+              id: 1,
+              caseTitle: "Sample Case",
+              username: "@user123",
+              timeAgo: "2 hours ago",
+              description: "This is a sample case description",
+              category: "Civil Rights",
+              link: "/cases/1"
+            }} />
           </ActiveCasesContainer>
         </Card>
       </>

@@ -8,7 +8,14 @@ export default function LaymanNotifs() {
       <>
         <Card>
           <NotificationContainer count={5} color="red">
-            <NotificationComponent />
+            <NotificationComponent notification={{
+              id: 1,
+              title: "New Case Update",
+              username: "@user123",
+              description: "Your case has been updated with new information",
+              timeAgo: "2 hours ago",
+              category: "Case Updates"
+            }} />
           </NotificationContainer>
         </Card>
       </>
