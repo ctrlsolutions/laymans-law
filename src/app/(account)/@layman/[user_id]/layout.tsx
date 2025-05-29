@@ -24,14 +24,12 @@ export default function LaymanHomePage({
       {isSettingsPage || isCasesPage ? (
         children
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 px-6 py-10">
           <div className="flex flex-col space-y-4">
             {details}
             {notifications}
           </div>
-          <div className="row-span-2 h-full">
-            {submitted_cases}
-          </div>
+          <div className="row-span-2 h-full">{submitted_cases}</div>
         </div>
       )}
     </div>
