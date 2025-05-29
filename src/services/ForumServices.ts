@@ -181,3 +181,22 @@ export async function updateForumPost(
 
   return res.json();
 }
+
+export const deleteForumPost = async (postId: number): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${postId}/`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to delete forum post:", response.statusText);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting forum post:", error);
+    return false;
+  }
+};
