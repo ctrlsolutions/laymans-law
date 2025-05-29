@@ -39,7 +39,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     });
     setReplyText("");
     setIsReplying(false);
-    setShowReplies(true); // Show replies after adding
+    setShowReplies(true);
   };
 
   return (

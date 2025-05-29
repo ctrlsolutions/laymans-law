@@ -61,7 +61,7 @@ const Page: React.FC = () => {
       const success = await deleteForumPost(post.id);
       if (success) {
         alert("Post deleted successfully.");
-        router.push("/forum"); // or wherever your list page is
+        router.push("/forum");
       } else {
         alert("Failed to delete post.");
       }
