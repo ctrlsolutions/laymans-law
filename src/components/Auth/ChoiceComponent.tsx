@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 interface SignUpPageProps {
   onChoose: (type: "lawyer" | "layman") => void;
@@ -24,6 +26,13 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
       }`}
     >
       <div className="bg-white rounded-2xl shadow-lg p-8 w-[40vw] text-black">
+        <Link
+          href="/"
+          className="top-6 left-6 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
+        >
+          <FaArrowLeft className="mr-2" />
+          Back
+        </Link>
         <h1 className="text-[50px] font-black tracking-tight mt-1">Sign Up</h1>
         <p className="mb-6">
           Before proceeding, please choose between the two options below.
