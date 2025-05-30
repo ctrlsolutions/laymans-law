@@ -12,8 +12,8 @@ import { useRouter, useParams } from "next/navigation";
 import AcceptCaseModal from "@/components/Case/AcceptCaseModal";
 
 const sortingOptions = [
-  { label: "Latest first", value: "latest" },
-  { label: "Oldest first", value: "oldest" },
+  { label: "Latest", value: "latest" },
+  { label: "Oldest", value: "oldest" },
 ];
 
 const categories: Category[] = [
@@ -221,7 +221,8 @@ const InputDesign: React.FC = () => {
             value={sortOrder}
             choices={sortingOptions}
             onChange={(e) => setSortOrder(e.target.value)}
-            width="130px"
+            width="150px"
+            textSize="text-xs"
           />
         </div>
 
@@ -247,7 +248,7 @@ const InputDesign: React.FC = () => {
               />
             ))
           ) : (
-            <p className="text-center text-gray-500 mt-20">No cases found</p>
+            <p className="text-center text-gray-500 mt-20">No active cases</p>
           )}
         </div>
       </div>
