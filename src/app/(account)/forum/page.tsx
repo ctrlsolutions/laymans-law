@@ -7,6 +7,8 @@ import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import ForumCard from "@/components/Forum/ForumCard";
 import ForumSideBar from "@/components/Forum/ForumSideBar";
 import Header from "@/components/Profile/Header";
+import ForumModal from "@/components/Forum/ForumModal";
+import ForumModalContent from "@/components/Forum/ForumModalContent";
 
 import { getProfile } from "@/services/ProfileServices";
 import {
@@ -36,12 +38,18 @@ const ForumPage: React.FC = () => {
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
   const ForumCount = filteredForum.filter((f) => f.title).length;
 
+  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
 
   const openModal = (forumItem: Forum) => {
     setSelectedForum(forumItem);
     setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedForum(null);
   };
 
   const handleBookmarkToggle = (id: number) => {
@@ -62,7 +70,6 @@ const ForumPage: React.FC = () => {
         sortOrder,
         selectedCaseType
       );
-      console.log("Filtered forums:", filtered);
       setFilteredForum(filtered);
     }
   }, [forum, searchQuery, selectedCaseType, sortOrder]);
@@ -155,7 +162,7 @@ const ForumPage: React.FC = () => {
                 textSize="text-xs"
               />
             </div>
-            <div className="flex-1 overflow-y-auto pr-5">
+            <div className="flex-1 overflow-y-auto pr-5 p-3">
               {forumLoading ? (
                 <p className="text-center text-gray-500 mt-20">
                   Loading forums...
@@ -168,7 +175,7 @@ const ForumPage: React.FC = () => {
                     key={forumItem.id}
                     forumItem={forumItem}
                     categories={categories}
-                    onClick={() => router.push(`/forum/${forumItem.id}/`)}
+                    onClick={() => openModal(forumItem)}
                     onBookmarkToggle={handleBookmarkToggle}
                     bookmarked={forumItem.bookmark}
                   />
@@ -187,6 +194,16 @@ const ForumPage: React.FC = () => {
           />
         </div>
       </section>
+
+      {isModalOpen && selectedForum && (
+        <ForumModal onClose={closeModal}>
+          <ForumModalContent
+            post={selectedForum}
+            onClose={closeModal}
+            user={user}
+          />
+        </ForumModal>
+      )}
     </main>
   );
 };
