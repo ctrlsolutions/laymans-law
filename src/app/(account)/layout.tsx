@@ -54,7 +54,7 @@ export default function AccountLayout({
             name: "Submitted Cases",
             path: (id: string) => `/${id}/submitted-cases`,
           },
-          { key: "wiki", name: "Wiki", path: () => `/wiki` },
+          { key: "wiki", name: "Lawbase", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "ofw-support",
@@ -75,7 +75,7 @@ export default function AccountLayout({
             name: "Active Cases",
             path: (id: string) => `/${id}/active-cases`,
           },
-          { key: "wiki", name: "Wiki", path: () => `/wiki` },
+          { key: "wiki", name: "Lawbase", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "settings",
@@ -84,7 +84,7 @@ export default function AccountLayout({
           },
           {
             key: "ofw-support",
-            name: "OFW Support Section Details",
+            name: "OFW Support",
             path: () => `/wiki/ofw-support`,
           },
         ];

@@ -5,20 +5,17 @@ import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { fetchAllLaws } from "@/services/WikiServices";
-import { getProfile } from "@/services/ProfileServices";
 import BaseButton from "@/components/Global/BaseButton";
 import { useRouter } from "next/navigation";
 
 type WikiHeaderProps = {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
-  userType: "lawyer" | "layman";
 };
 
 const WikiHeader: React.FC<WikiHeaderProps> = ({
   searchQuery,
   setSearchQuery,
-  userType,
 }) => {
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("Summary");
@@ -42,67 +39,8 @@ const WikiHeader: React.FC<WikiHeaderProps> = ({
           Wiki
         </h1>
 
-        {userType === "lawyer" ? (
-          <div className="flex text-sm content-center items-center gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-            <div className="mt-5 flex gap-4">
-              <BaseButton
-                color="blue"
-                textColor="white"
-                width="125px"
-                height="40px"
-                textSize="text-sm"
-                onClick={handleButtonClick}
-              >
-                Summary
-              </BaseButton>
-              <BaseButton
-                textColor="white"
-                width="125px"
-                height="40px"
-                textSize="text-sm"
-                onClick={handleButtonClick}
-              >
-                Translation
-              </BaseButton>
-            </div>
-            <BaseFormInput
-              label=""
-              name="Search"
-              type="text"
-              color="black"
-              width="w-[260px]"
-              height="h-[2.5rem]"
-              value={searchQuery}
-              icon="search"
-              placeholder="Search in Wiki"
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        ) : (
-          <div className="flex text-sm content-center items-end gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto">
-            <BaseButton
-              textColor="white"
-              width="125px"
-              height="40px"
-              textSize="text-sm"
-              onClick={handleButtonClick}
-            >
-              Vote Summary
-            </BaseButton>
-            <BaseFormInput
-              label=""
-              name="Search"
-              type="text"
-              color="black"
-              width="w-[260px]"
-              height="h-[2.5rem]"
-              value={searchQuery}
-              icon="search"
-              placeholder="Search in Wiki"
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        )}
+        {/* Removed userType condition, no extra content here now */}
+        <div className="flex text-sm content-center items-end gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto"></div>
       </nav>
       <div
         className="mx-auto my-0 mt-1.5 w-full h-px bg-black bg-opacity-60 max-w-[1002px]"
@@ -198,28 +136,6 @@ const Page: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const [selectedLanguage, setSelectedLanguage] = useState("Tagalog");
-  const [userType, setUserType] = useState<"layman" | "lawyer">("layman");
-  const [profile, setProfile] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await getProfile();
-      if (response.success) {
-        setProfile(response.data);
-      } else {
-        console.error("Error fetching profile:", response.message);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  useEffect(() => {
-    const storedUserType = localStorage.getItem("user_type");
-    if (storedUserType === "layman" || storedUserType === "lawyer") {
-      setUserType(storedUserType);
-    }
-  }, []);
 
   const openCaseCount = cases.filter((c) => c.status.isOpen).length;
 
@@ -275,13 +191,6 @@ const Page: React.FC = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
-        user={profile}
-      />
-
-      <WikiHeader
-        searchQuery={wikiSearchQuery}
-        setSearchQuery={setWikiSearchQuery}
-        userType={userType}
       />
 
       <section
