@@ -6,6 +6,7 @@ import BaseButton from '@/components/Global/BaseButton';
 import * as React from "react";
 import { fetchCaseById, updateCase } from '@/services/CaseService';
 import { Category } from '@/interface/CaseTypes';
+import Header from "@/components/Profile/Header";
 
 interface Case {
   id: string;
@@ -50,6 +51,7 @@ export default function EditCasePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchCaseData = async () => {
@@ -89,7 +91,7 @@ export default function EditCasePage() {
   if (error) return (
     <div className="p-8 text-center">
       <p className="text-red-600 mb-4">{error}</p>
-      <BaseButton color="violet" textColor="white" onClick={() => router.back()}>
+      <BaseButton color="red" textColor="white" onClick={() => router.back()}>
         Go Back
       </BaseButton>
     </div>
@@ -173,10 +175,17 @@ export default function EditCasePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-violet-950 text-white px-8 py-4 sticky top-0 z-10">
+    <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
+        <div className="pb-2 px-0 rounded-b-2xl">
+          <Header 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery} 
+            openCaseCount={caseData?.openCaseCount || 0} 
+            user={caseData?.user || { firstName: "Unknown User", email: "unknown@example.com" }} 
+          />
+        </div>
+        <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-10 mb-20">
+          <div className="bg-red text-white px-8 py-4 sticky top-0 z-10">
             <button
               onClick={() => router.push(`/${user_id}/submitted-cases/${caseId}`)}
               className="text-white hover:underline flex items-center gap-2"
@@ -185,10 +194,10 @@ export default function EditCasePage() {
             </button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 p-6">
+          <div className="grid md:grid-cols-3 gap-6 px-6 pt-6 pb-0">
             {/* Left Section */}
-            <div className="md:col-span-2 space-y-6 overflow-y-auto max-h-[calc(100vh-12rem)]">
-              <div>
+            <div className="md:col-span-2 space-y-6 overflow-y-auto max-h-[calc(100vh-25rem)] rounded-sm">
+              <div className=''>
                 <input
                   type="text"
                   value={title}
@@ -259,22 +268,6 @@ export default function EditCasePage() {
                 </div>
               )}
 
-              <div className="flex justify-end gap-4">
-                <BaseButton
-                  color="gray"
-                  textColor="black"
-                  onClick={() => router.back()}
-                >
-                  Cancel
-                </BaseButton>
-                <BaseButton
-                  color="violet"
-                  textColor="white"
-                  onClick={handleSave}
-                >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
-                </BaseButton>
-              </div>
             </div>
 
             {/* Right Section */}
@@ -323,9 +316,29 @@ export default function EditCasePage() {
                 </div>
               )}
             </div>
+            {/* Bottom Row (Full Width) */}
+            <div className="md:col-span-3">
+              <div className="rounded">
+                <div className="flex justify-end gap-4">
+                  <BaseButton
+                    color="gray"
+                    textColor="black"
+                    onClick={() => router.back()}
+                  >
+                    Cancel
+                  </BaseButton>
+                  <BaseButton
+                    color="red"
+                    textColor="white"
+                    onClick={handleSave}
+                  >
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </BaseButton>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

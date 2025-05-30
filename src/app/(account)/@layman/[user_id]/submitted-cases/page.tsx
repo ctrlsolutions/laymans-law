@@ -11,8 +11,8 @@ import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
 
 const sortingOptions = [
-  { label: "Latest first", value: "latest" },
-  { label: "Oldest first", value: "oldest" },
+  { label: "Latest", value: "latest" },
+  { label: "Oldest", value: "oldest" },
 ];
 
 const categories: Category[] = [
@@ -159,7 +159,8 @@ const InputDesign: React.FC = () => {
                 value={sortOrder}
                 choices={sortingOptions}
                 onChange={(e) => setSortOrder(e.target.value)}
-                width="130px"
+                width="150px"
+                textSize="text-xs"
               />
             </div>
 

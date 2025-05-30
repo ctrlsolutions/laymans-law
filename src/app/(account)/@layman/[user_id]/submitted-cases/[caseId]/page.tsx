@@ -1,267 +1,349 @@
-// app/(pages)/cases/[caseId]/page.tsx
-
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchCaseById } from "@/services/CaseService";
-import Image from "next/image";
-import { X } from "lucide-react";
+import { Case } from "@/interface/CaseTypes";
+import { fetchCases } from "@/services/CaseService";
+import Header from "@/components/Profile/Header";
+import BaseButton from "@/components/Global/BaseButton";
+import AcceptCaseModal from "@/components/Case/AcceptCaseModal";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
 import { FaEdit } from "react-icons/fa";
+import { FaExchangeAlt } from "react-icons/fa";
 
-interface CaseData {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-  created_date: string;
-  media?: string[];
-  files?: string[];
-  layman?: {
-    name: string;
-    address: string;
-    contact_number?: string;
-    email?: string;
-    profile_image?: string;
+const getCategoryColor = (category: string | undefined) => {
+  if (!category) return "bg-gray-200 text-black"; // fallback
+
+  switch (category.toLowerCase()) {
+    case "divorce cases":
+      return "bg-green-800 text-white";
+    case "land ownership":
+      return "bg-orange-600 text-white";
+    case "business disputes":
+      return "bg-yellow-600 text-black";
+    default:
+      return "bg-gray-200 text-black";
   }
-}
+};
+
 
 export default function SubmittedCasePage() {
-  const { caseId, user_id } = useParams();
-  const router = useRouter();
-  const [caseData, setCaseData] = useState<CaseData | null>(null);
+  const [caseData, setCaseData] = useState<Case | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // const [showAllMedia, setShowAllMedia] = useState(false);
   const [showAllFiles, setShowAllFiles] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showingImage, setShowingImage] = useState(true);
+
+  const router = useRouter();
+  const params = useParams();
+  const case_id = params.caseId as string;
+  const userId = params?.user_id as string;
+  const API_CASES_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cases`;
+
 
   useEffect(() => {
-    if (!caseId) return;
-
-    const getCase = async () => {
-      setLoading(true);
-      const response = await fetchCaseById(caseId as string);
-      if (response.success) {
-        setCaseData(response.data);
-      } else {
-        console.error("Failed to fetch case:", response.message);
-        setCaseData(null);
+    async function loadCase() {
+      const response = await fetchCases();
+      console.log("API response:", response); // ✅ log data
+      console.log("Case ID from params:", case_id); // ✅ log case_id
+  
+      if (response.success && response.data) {
+        const foundCase = response.data.find((c: Case) => {
+          console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
+          // Convert API ID to string for comparison OR URL ID to number
+          return String(c.id) === case_id; // Safest: Compare as strings
+          // OR return c.id === parseInt(case_id, 10); // If you know c.id is always a number
+        });
+        console.log("Found case:", foundCase); // ✅ log matched case
+  
+        if (foundCase) {
+          console.log("!!! Inspecting foundCase before setting state:", JSON.stringify(foundCase, null, 2));
+          console.log("Setting case data...");
+          setCaseData({
+            ...foundCase,
+          });
+        }
+        else {
+          console.error(`Case with ID ${case_id} not found in the fetched list.`);
+          // Consider setting an error state here
+        }
       }
+  
       setLoading(false);
-    };
+    }
+  
+    loadCase();
+  }, [case_id]);
 
-    getCase();
-  }, [caseId]);
+  const handleCancelCase = async () => {
+    try {
+      const url = `${API_CASES_URL}/${case_id}/delete/`;
 
-  if (loading) {
-    return <div className="p-8 text-center text-gray-500">Loading case data...</div>;
-  }
+      const res = await fetch(url, {
+        method: "DELETE",
+        credentials: "include", // to send cookies if you're using session or token in cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  if (!caseData) {
-    return <div className="p-8 text-center text-red-500">Case not found or failed to load.</div>;
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Approved":
-        return "bg-green-500";
-      case "Pending":
-        return "bg-yellow-500";
-      default:
-        return "bg-red-500";
+      const data = await res.json();
+      if (data.success) {
+        alert("Case successfully deleted.");
+        router.push(`/${userId}/submitted-cases`);
+      } else {
+        alert("Failed to delete case: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error deleting case:", error);
+      alert("An unexpected error occurred.");
     }
   };
 
-  const handleCancelCase = () => {
-    if (confirm("Are you sure you want to cancel this case? This action cannot be undone.")) {
-      console.log("Case cancelled:", caseId);
-      router.push(`/${user_id}/submitted-cases`);
-    }
-  };
-
-  const goToPreviousImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? (caseData.media?.length || 0) - 1 : prevIndex - 1
-    );
-  };
-
-  const goToNextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === (caseData.media?.length || 0) - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const handleDotClick = (index: number) => {
-    setCurrentImageIndex(index);
-  };
-
-  const filesToShow = showAllFiles ? caseData.files : caseData.files?.slice(0, 3);
+  if (loading || !caseData) return <p className="p-8">Loading...</p>;
+  console.log("caseData:", caseData);
 
   return (
-    <div className="container mx-auto mt-8 mb-8 px-4 max-w-5xl">
-      <Link href={`/${user_id}/submitted-cases`} className="text-gray-600 hover:underline flex items-center mb-6">
-         ← Back to Submitted Cases
-      </Link>
+    <>
+      <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
+        <div className="pb-2 px-0 rounded-b-2xl">
+          <Header 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery} 
+            openCaseCount={caseData?.openCaseCount || 0} 
+            user={caseData?.user || { firstName: "Unknown User", email: "unknown@example.com" }} 
+          />
+        </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden md:grid md:grid-cols-3 gap-6 p-6 min-h-[calc(100vh-150px)]">
-        <div className="md:col-span-2">
-          <div className="flex items-center justify-between mb-2">
-             <h1 className="text-2xl font-bold text-gray-800">{caseData.title}</h1>
-             <Link href={`/${user_id}/submitted-cases/${caseId}/edit`} className="text-blue-600 hover:underline flex items-center text-sm">
-                Edit <FaEdit className="ml-1" />
-             </Link>
+        <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-10 mb-20">
+          <div className="bg-red text-white px-8 py-4 flex justify-between items-center">
+            <button
+              onClick={() => router.push(`/${userId}/submitted-cases`)}
+              className="text-white hover:underline"
+            >
+              ← Back
+            </button>
+            <Link href={`/${userId}/submitted-cases/${case_id}/edit`} className="text-blue-600 hover:underline flex items-center text-sm">
+              Edit <FaEdit className="ml-1" />
+            </Link>
           </div>
-          {caseData.created_date && (
-            <p className="text-sm text-gray-600 mb-4">Submitted: {new Date(caseData.created_date).toLocaleDateString()}</p>
-          )}
 
-          <div className="prose max-w-none text-gray-700 mb-6">
-             <p>{caseData.description}</p>
-          </div>
+          <div className="grid md:grid-cols-3 gap-1 pr-0 pl-8">
+            {/* Left Panel */}
+            <div className="md:col-span-2 h-[65vh] flex flex-col rounded-xl pr-15 pt-15 overflow-hidden">
+              {/* Title */}
+              <div className="shrink-0 pt-6 pl-8 pb-0">
+                <h2 className="text-3xl font-bold text-black mt-5 mb-2">
+                  {caseData.title}
+                </h2>
+                <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-black">
+                  <p>
+                    <span className="font-medium">Submitted:</span>{" "}
+                    <strong>
+                      {new Date(caseData.created_date).toLocaleDateString()}
+                    </strong>
+                  </p>
+                  <p>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(
+                        caseData.case_type
+                      )}`}
+                    >
+                      {caseData.case_type}
+                    </span>
+                  </p>
+                  <p>
+                    <span
+                      className={`px-2 py-1 rounded-full text-white text-xs font-semibold ${
+                        caseData.status === "open"
+                          ? "bg-green-500"
+                          : caseData.status === "ongoing"
+                          ? "bg-yellow-500"
+                          : "bg-red"
+                      }`}
+                    >
+                      {caseData.status.toUpperCase()}
+                    </span>
+                  </p>
+                </div>
+              </div>
 
-          {caseData.media && caseData.media.length > 0 && (
-            <div className="relative mb-6">
-              <div className="w-full h-80 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
-                <Image
-                  src={caseData.media[currentImageIndex]}
-                  alt={`Case media ${currentImageIndex + 1}`}
-                  width={600}
-                  height={320}
-                  objectFit="cover"
+              {/* Scrollable Middle Panel */}
+              <div className="flex-grow overflow-y-auto pr-10 pt-0 pl-8">
+                <div className="mb-4">
+                  <p
+                    className={`text-black leading-relaxed whitespace-pre-line transition-all ${
+                      isExpanded ? "" : "max-h-20 overflow-hidden"
+                    }`}
+                  >
+                    {caseData.description}
+                  </p>
+                  <button
+                    className="mt-0 text-sm text-gray-500 hover:text-gray-700 font-medium"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
+                    {isExpanded ? "Show less" : "Read more"}
+                  </button>
+                </div>
+
+                {/* Media Display */}
+                <div className="mb-0 flex justify-center">
+                  <div className="relative mb-0 h-[26vh] w-[22vw]">
+                    {showingImage && caseData.image ? (
+                      caseData.image.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
+                        <img
+                          src={caseData.image}
+                          alt="case visual"
+                          className="rounded-md object-cover h-full w-full cursor-pointer"
+                          onClick={() => setSelectedImage(caseData.image)}
+                        />
+                      ) : (
+                        <video
+                          controls
+                          className="rounded-md object-cover h-full w-full"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <source src={caseData.image} />
+                        </video>
+                      )
+                    ) : caseData.video ? (
+                      <video
+                        controls
+                        className="rounded-md object-cover h-full w-full"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <source src={caseData.video} />
+                      </video>
+                    ) : null}
+
+                    {/* Navigation - Only show if we have both image and video */}
+                    {caseData.image && caseData.video && (
+                      <button
+                        onClick={() => setShowingImage(!showingImage)}
+                        className="absolute top-1/2 left-2 -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 text-black p-2 rounded-full shadow"
+                      >
+                        <FaExchangeAlt />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Thumbnail Toggle */}
+                <div className="flex justify-center gap-4 mt-3">
+                  {caseData.image && (
+                    <button
+                      onClick={() => setShowingImage(true)}
+                      className={`h-12 w-12 rounded-md overflow-hidden ${
+                        showingImage ? "ring-2 ring-blue-500" : ""
+                      }`}
+                    >
+                      {caseData.image.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
+                        <img 
+                          src={caseData.image} 
+                          alt="Preview" 
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-xs">Video</span>
+                        </div>
+                      )}
+                    </button>
+                  )}
+                  
+                  {caseData.video && (
+                    <button
+                      onClick={() => setShowingImage(false)}
+                      className={`h-12 w-12 rounded-md overflow-hidden ${
+                        !showingImage ? "ring-2 ring-blue-500" : ""
+                      }`}
+                    >
+                      <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-xs">Video</span>
+                      </div>
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex justify-center gap-2 mt-3">
+                  {(caseData.media ?? []).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`h-2 w-2 rounded-full transition-all ${
+                        currentImageIndex === index ? "bg-black" : "bg-gray-300"
+                      }`}                      
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Panel - Action Buttons */}
+              <div className="shrink-0 mt-0 mb-8 ml-8 flex justify-between items-center pr-10">
+
+                <BaseButton
+                  color="red"
+                  textColor="white"
+                  onClick={handleCancelCase}
+                >
+                  Delete Case
+                </BaseButton> 
+              </div>
+            </div>
+
+            {/* Right Panel */}
+            
+            <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
+              <div className="text-center mb-4 shrink-0">
+                <img
+                  src="/blank-profile.svg"
+                  alt="avatar"
+                  className="rounded-full w-20 h-20 mx-auto mb-2"
                 />
+                <h3 className="text-lg text-black font-semibold">
+                  { caseData.created_by 
+                  ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
+                  : "Unknown User" }
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">Layman</p>
+                <div className="text-sm text-gray-700 text-left ml-3">
+                  <p className="font-semibold">Contact Number</p>
+                  <p className="mb-2">{caseData.created_by?.contact_number}</p>
+                  <p className="font-semibold">Email Address</p>
+                  <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not Provided"}</p>
+                </div>
               </div>
-              {caseData.media.length > 1 && (
-                 <>
-                    <button
-                       onClick={goToPreviousImage}
-                       className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
-                    >
-                       &lt;
-                    </button>
-                    <button
-                       onClick={goToNextImage}
-                       className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
-                    >
-                       &gt;
-                    </button>
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-                       {caseData.media.map((_, index) => (
-                          <button
-                             key={index}
-                             onClick={() => handleDotClick(index)}
-                             className={`w-2 h-2 rounded-full ${
-                                index === currentImageIndex ? "bg-white" : "bg-gray-400"
-                             }`}
-                          ></button>
-                       ))}
-                    </div>
-                 </>
-              )}
             </div>
-          )}
-
-          <div className="mt-6 text-right">
-            <button
-              onClick={handleCancelCase}
-              className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-            >
-              Cancel Case
-            </button>
           </div>
         </div>
 
-        <div className="md:col-span-1 bg-gray-50 p-4 rounded-lg">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Submitted By</h2>
-          {caseData.layman && (
-            <div className="space-y-3 text-gray-700">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Name</p>
-                <p>{caseData.layman.name}</p>
-              </div>
-               {caseData.layman.address && (
-                  <div>
-                     <p className="text-sm font-medium text-gray-500">Address</p>
-                     <p>{caseData.layman.address}</p>
-                  </div>
-               )}
-               {caseData.layman.contact_number && (
-                  <div>
-                     <p className="text-sm font-medium text-gray-500">Contact Number</p>
-                     <p>{caseData.layman.contact_number}</p>
-                  </div>
-               )}
-               {caseData.layman.email && (
-                  <div>
-                     <p className="text-sm font-medium text-gray-500">Email Address</p>
-                     <p>{caseData.layman.email}</p>
-                  </div>
-               )}
+        {/* Fullscreen Image Viewer */}
+        {selectedImage && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+            onClick={() => setSelectedImage(null)}
+          >
+            <div className="relative">
+              <img
+                src={selectedImage}
+                alt="enlarged media"
+                className="max-h-[80vh] max-w-[80vw] rounded-md"
+              />
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute top-2 right-2 bg-white text-black px-2 py-[-2] rounded-full shadow hover:bg-gray-300"
+              >
+                X
+              </button>
             </div>
-          )}
-
-          <div className="mt-6">
-              <h3 className="text-md font-semibold text-gray-800 mb-2">Media</h3>
-              <div className="grid grid-cols-3 gap-2">
-                 {Array(6).fill(0).map((_, index) => (
-                    <div key={index} className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 text-xs">
-                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
-                    </div>
-                 ))}
-                 {caseData.media && caseData.media.length > 6 && (
-                    <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-800 font-bold text-sm">
-                       +{caseData.media.length - 6}
-                    </div>
-                 )}
-              </div>
-           </div>
-
-          {caseData.files && caseData.files.length > 0 && (
-              <div className="mt-6">
-                 <h3 className="text-md font-semibold text-gray-800 mb-2">Files</h3>
-                 <ul className="space-y-2 text-blue-600 underline">
-                    {filesToShow?.map((file, index) => (
-                       <li key={index}>
-                          <a href={`/path/to/your/files/${file}`} download>{file}</a>
-                       </li>
-                    ))}
-                 </ul>
-                 {caseData.files.length > 3 && (
-                    <button
-                       onClick={() => setShowAllFiles(!showAllFiles)}
-                       className="mt-2 text-blue-600 hover:underline text-sm"
-                    >
-                       {showAllFiles ? "Show less files" : "Show more files"}
-                    </button>
-                 )}
-              </div>
-           )}
-
-        </div>
+          </div>
+        )}
       </div>
-
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-3xl max-h-[90vh] w-full">
-            <Image
-              src={selectedImage}
-              alt="Selected Media"
-              className="w-full h-auto rounded shadow-lg"
-              width={1200}
-              height={800}
-            />
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-2 right-2 text-white bg-black/50 rounded-full p-2"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
