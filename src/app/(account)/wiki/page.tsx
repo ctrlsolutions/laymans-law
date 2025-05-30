@@ -3,53 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { cases, LawData } from "@/interface/CaseTypes";
 import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import BaseFormInput from "@/components/Global/BaseFormInput";
 import { fetchAllLaws } from "@/services/WikiServices";
-import BaseButton from "@/components/Global/BaseButton";
-import { useRouter } from "next/navigation";
-
-type WikiHeaderProps = {
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
-};
-
-const WikiHeader: React.FC<WikiHeaderProps> = ({
-  searchQuery,
-  setSearchQuery,
-}) => {
-  const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState("Summary");
-
-  const handleSelectChange = (value: string) => {
-    setSelectedOption(value);
-    console.log("Selected option:", value);
-  };
-
-  const handleButtonClick = () => {
-    router.push("/wiki/vote-summary");
-  };
-
-  return (
-    <>
-      <nav
-        className="flex relative justify-between items-center px-0 py-2.5 mx-auto my-0 w-full max-w-[1002px] max-md:px-5 max-md:py-2.5 max-sm:flex-wrap max-sm:gap-2.5 max-sm:pb-0.5 max-sm:ml-auto"
-        role="navigation"
-      >
-        <h1 className="mt-auto mr-auto text-base text-black max-sm:my-auto">
-          Wiki
-        </h1>
-
-        {/* Removed userType condition, no extra content here now */}
-        <div className="flex text-sm content-center items-end gap-2 max-sm:pl-14 max-sm:mr-0 max-sm:ml-auto"></div>
-      </nav>
-      <div
-        className="mx-auto my-0 mt-1.5 w-full h-px bg-black bg-opacity-60 max-w-[1002px]"
-        role="separator"
-        aria-hidden="true"
-      />
-    </>
-  );
-};
 
 const TagChip: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex items-center px-3 py-1.5 text-xs bg-white rounded-lg shadow">
@@ -92,7 +46,7 @@ const MainContent: React.FC<
   selectedLanguage,
   setSelectedLanguage,
 }) => (
-  <article className="h-full flex-1 p-10 bg-white border border-gray rounded-2xl shadow-sm overflow-y-auto max-h-[calc(72vh-156px)] shadow-sm max-sm:hidden">
+  <article className="h-full flex-1 p-10 bg-white border border-gray rounded-2xl shadow-sm overflow-y-auto max-h-[100vh] shadow-sm max-sm:hidden">
     <h1 className="mb-5 text-xl font-semibold">{title}</h1>
     <p className="mb-5 text-xs">{chapter}</p>
     <div className="mb-20 text-xs px-1.5 leading-relaxed overflow-y-auto">
@@ -195,11 +149,11 @@ const Page: React.FC = () => {
 
       <section
         ref={sectionRef}
-        className={`flex gap-10 p-10 mx-20 max-w-none max-md:flex-col max-sm:p-2.5 h-[calc(74vh-100px)] ${
+        className={`flex gap-10 p-10 my-8 mx-20 max-w-none max-md:flex-col max-sm:p-2.5 h-[calc(86vh-100px)] ${
           isOverflowing ? "overflow-y-auto" : "overflow-hidden"
         }`}
       >
-        <aside className="flex flex-col px-4 gap-5 w-[350px] max-md:w-full overflow-y-auto overflow-x-hidden max-h-full rounded-lg">
+        <aside className="flex flex-col px-4 gap-5 w-[400px] max-md:w-full overflow-y-auto overflow-x-hidden h-[calc(100vh0)] rounded-lg">
           {filteredLaws.map((law) => (
             <LawCard
               key={law.id}
