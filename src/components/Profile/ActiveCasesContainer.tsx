@@ -11,7 +11,7 @@ interface ActiveCasesContainerProps {
 
 const ActiveCasesContainer: React.FC<ActiveCasesContainerProps> = ({ children, count, color = "blue" }) => {
     return (
-        <div className="w-full h-full flex flex-col rounded-3xl p-[.25rem]">
+        <div className="w-full h-full flex flex-col rounded-3xl p-[1.25rem]">
             
             {/* Header with Icon and Text */}
             <div className="flex justify-between items-center pl-[.5rem]">

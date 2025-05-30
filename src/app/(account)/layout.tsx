@@ -57,14 +57,14 @@ export default function AccountLayout({
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
           {
+            key: "ofw-support",
+            name: "OFW Support",
+            path: () => `/wiki/ofw-support`,
+          },
+          {
             key: "settings",
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
-          },
-          {
-            key: "ofw-support",
-            name: "OFW Support Section Details",
-            path: () => `/wiki/ofw-support`,
           },
         ]
       : [
@@ -93,7 +93,7 @@ export default function AccountLayout({
     tabs.find((tab) => pathname === tab.path(userId))?.name || "";
 
   let contentToShow;
-  const standaloneRoutes = ["/wiki", "/forum", "/submit-case"];
+  const standaloneRoutes = ["/wiki", "/forum"];
   const isStandalonePage = standaloneRoutes.some((prefix) =>
     pathname.startsWith(prefix)
   );

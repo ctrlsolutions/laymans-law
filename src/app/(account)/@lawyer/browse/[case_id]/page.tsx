@@ -333,34 +333,7 @@ export default function AcceptCasePage() {
               </div>
 
 
-              {/* Files */}
-              <div>
-                <p className="font-semibold text-black text-sm mb-2 ml-3">Files</p>
-                <ul className="space-y-2">
-                  {(showAllFiles ? caseData.files : caseData.files?.slice(0, 1))?.map(
-                    (file, i) => (
-                      <li
-                        key={i}
-                        onClick={() => handleDownload(file)}
-                        className="bg-gray-200 text-sm text-black cursor-pointer px-4 py-2 ml-3 mr-3 rounded-md hover:bg-gray-300 transition-colors"
-                      >
-                        {file}
-                      </li>
-                    )
-                  )}
-                </ul>
-
-                {caseData.files && caseData.files.length > 3 && (
-                  <button
-                    className="mt-2 mb-0 text-sm ml-3 text-gray-700 hover:underline"
-                    onClick={() => setShowAllFiles((prev) => !prev)}
-                  >
-                    {showAllFiles
-                      ? "Show less"
-                      : `+${caseData.files.length - 1}`}
-                  </button>
-                )}
-              </div>
+              
 
               </div>
             </div>
