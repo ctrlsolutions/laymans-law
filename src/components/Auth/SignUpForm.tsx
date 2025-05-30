@@ -9,10 +9,12 @@ import { useRouter } from "next/navigation";
 import { SignupData } from "@/interface/AuthTypes";
 import { validateField } from "@/utils/AuthValidators";
 import { UserSignup } from "@/services/AuthServices";
+import TermsAndConditions from "@/app/(auth)/signup/TermsAndConditions";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
 import { FaSpinner } from "react-icons/fa";
+import React from "react";
 
 export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const router = useRouter();
@@ -35,6 +37,8 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false); // Add state for checkbox
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   useEffect(() => {
     setForm((prevForm) => ({
@@ -57,6 +61,10 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!agreed) {
+      toast.error("You must agree with the Terms & Conditions.");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -97,6 +105,8 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
     <div className="p-4 text-black w-full mx-auto h-full flex flex-col">
       <ToastContainer />
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
+
+      <TermsAndConditions show={showTermsModal} onClose={() => setShowTermsModal(false)} />
 
       <form className="overflow-y-auto p-4" onSubmit={handleSubmit}>
         {/* First & Last Name */}
@@ -227,6 +237,28 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         {errors.confirm_password && (
           <p className="text-red-500 text-sm">{errors.confirm_password}</p>
         )}
+
+        {/* Terms & Conditions Checkbox */}
+        <div className="flex items-center mt-4 mb-2">
+          <input
+            id="terms"
+            type="checkbox"
+            checked={agreed}
+            onChange={() => setAgreed(!agreed)}
+            className="mr-2 accent-red-800"
+          />
+          <label htmlFor="terms" className="text-sm">
+            I agree with the{" "}
+            <button
+              type="button"
+              className="font-semibold underline text-red-800 hover:text-red-600 focus:outline-none"
+              onClick={() => setShowTermsModal(true)}
+              tabIndex={0}
+            >
+              Terms & Conditions
+            </button>
+          </label>
+        </div>
 
         <div className="mt-5">
           <BaseButton
