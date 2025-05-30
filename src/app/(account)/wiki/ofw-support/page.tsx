@@ -92,6 +92,32 @@ const CountryCard: React.FC<{
   </article>
 );
 
+const CommaSeparatedList: React.FC<{
+  data: string | undefined;
+  fallbackText?: string;
+}> = ({ data, fallbackText = "N/A" }) => {
+  if (!data || data.trim() === "") {
+    return <li>{fallbackText}</li>;
+  }
+
+  const items = data
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item !== "");
+
+  if (items.length === 0) {
+    return <li>{fallbackText}</li>;
+  }
+
+  return (
+    <>
+      {items.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </>
+  );
+};
+
 const MainContent: React.FC<CountryData & { flagUrl: string }> = ({
   country,
   support_name,
@@ -145,24 +171,14 @@ const MainContent: React.FC<CountryData & { flagUrl: string }> = ({
         <div>
           <h2 className="text-sm font-medium text-gray-500">Embassy Number</h2>
           <ul className="list-disc text-base font-semibold space-y-1 pl-6 mt-2">
-            {contact_number ? (
-              contact_number
-                .split(";")
-                .map((number, index) => <li key={index}>{number.trim()}</li>)
-            ) : (
-              <li>N/A</li>
-            )}
+            <CommaSeparatedList data={contact_number} />
           </ul>
         </div>
 
         <div>
           <h2 className="text-sm font-medium text-gray-500">Embassy Email</h2>
           <ul className="list-disc text-base font-semibold space-y-1 pl-6 mt-2">
-            {email_address
-              ?.split(";")
-              .map((email, index) => <li key={index}>{email.trim()}</li>) || (
-              <li>N/A</li>
-            )}
+            <CommaSeparatedList data={email_address} />
           </ul>
         </div>
       </div>
@@ -190,9 +206,7 @@ const MainContent: React.FC<CountryData & { flagUrl: string }> = ({
             Available Services
           </h2>
           <ul className="list-disc text-base font-semibold space-y-1 pl-6 mt-2">
-            {available_services.split(";").map((service, index) => (
-              <li key={index}>{service.trim()}</li>
-            ))}
+            <CommaSeparatedList data={available_services} />
           </ul>
         </div>
         <div>

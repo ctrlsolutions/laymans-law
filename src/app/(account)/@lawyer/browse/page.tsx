@@ -12,7 +12,6 @@ import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
 
-
 const CasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
@@ -134,7 +133,7 @@ const CasePage: React.FC = () => {
                   />
                 ))
               ) : (
-                <p className="text-center text-gray-500 mt-20">
+                <p className="justify-center text-center text-gray-500 mt-20">
                   No cases found
                 </p>
               )}
