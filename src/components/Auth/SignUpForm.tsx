@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { SignupData } from "@/interface/AuthTypes";
 import { validateField } from "@/utils/AuthValidators";
 import { UserSignup } from "@/services/AuthServices";
-import TermsAndConditions from "@/app/(auth)/signup/TermsAndConditions";
+import TermsAndConditions from "@/components/Global/TermsAndConditions";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
@@ -106,7 +106,10 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
       <ToastContainer />
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
-      <TermsAndConditions show={showTermsModal} onClose={() => setShowTermsModal(false)} />
+      <TermsAndConditions
+        show={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+      />
 
       <form className="overflow-y-auto p-4" onSubmit={handleSubmit}>
         {/* First & Last Name */}

@@ -79,6 +79,10 @@ export const UserLogout = async () => {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
+
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("user_type");
+
     return response;
   } catch (error) {
     console.error("Logout failed:", error);
