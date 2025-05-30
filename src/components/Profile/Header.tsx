@@ -140,7 +140,7 @@ const Header: React.FC<HeaderProps> = ({
             onClick={() => router.push("/dashboard/account")}
           >
             <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/e5990c8fddf80298658964bf5d965e28f274456d?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
+              src="/blank-profile.svg"
               alt="Profile"
               className="z-10 w-[60px] rounded-full mt-3"
             />
