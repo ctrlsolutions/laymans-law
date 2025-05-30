@@ -51,7 +51,7 @@ export default function Home() {
             animateNav ? "animate-move-up animation-delay-100" : ""
           }`}
         >
-          LAWBASE
+          WIKI
         </a>
         <a
           href="/about"

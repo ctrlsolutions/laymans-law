@@ -75,7 +75,7 @@ export default function AccountLayout({
             name: "Active Cases",
             path: (id: string) => `/${id}/active-cases`,
           },
-          { key: "wiki", name: "Lawbase", path: () => `/wiki` },
+          { key: "wiki", name: "Wiki", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "settings",
