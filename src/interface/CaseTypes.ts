@@ -4,21 +4,33 @@ export interface UserType{
   email: string;
   contact_number?: string;
 }
+
+export interface CaseAttachment {
+  id: string;
+  file_url: string;
+  description: string;
+  uploaded_at: string;
+}
 export interface Case {
   id: string;
   title: string;
+  description: string;
   category: Category;
   status: string;
-  avatar: string;
-  description: string;
   case_type: string;
   created_date: string;
   created_by: UserType;
-  assigned_to: number | string | null;
-  media?: string[];
-  files?: string[];
+  assigned_to: UserType | null;
   openCaseCount?: number; 
   user?: { firstName: string; email: string };
+  image: string | null;         
+  document: string | null;      
+  video: string | null;         
+  attachments: CaseAttachment[];
+
+  avatar: string;
+  media?: string[];
+  files?: string[];
 }
 
 export interface Category {
@@ -64,4 +76,9 @@ export interface LawData {
     language_bisaya: string;
     language_waray: string;
   };
+}
+export interface SubmitCaseFormData {
+  title: string;
+  case_type: string;
+  description: string;
 }
