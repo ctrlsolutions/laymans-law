@@ -1,4 +1,5 @@
 export interface UserType{
+  user_id: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -7,7 +8,7 @@ export interface UserType{
 
 export interface CaseAttachment {
   id: string;
-  file_url: string;
+  file: string;
   description: string;
   uploaded_at: string;
 }
@@ -20,6 +21,7 @@ export interface Case {
   case_type: string;
   created_date: string;
   created_by: UserType;
+  created_by_id: string;
   assigned_to: UserType | null;
   openCaseCount?: number; 
   user?: { firstName: string; email: string };

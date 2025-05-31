@@ -144,7 +144,7 @@ export default function CaseSubmissionForm() {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
           </div>
-          <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto">
+          <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto" style={{ maxHeight: '7.5rem' }}>
             {otherData.files && otherData.files.length > 0 ? (
               <ul className="text-md text-gray-700 text-center space-y-1 w-full mt-3 px-8 py-2">
                 {otherData.files.map((file, index) => (
@@ -169,11 +169,11 @@ export default function CaseSubmissionForm() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <BaseButton color="red" onClick={handleCancel} width="150px">
+        <div className="mt-8 flex flex-col gap-4 justify-end">
+          <BaseButton color="gray-200" textColor="gray-500" onClick={handleCancel} width="100%">
             Cancel
           </BaseButton>
-          <BaseButton color="blue" type="submit" width="150px">
+          <BaseButton color="red" type="submit" width="100%">
             Submit
           </BaseButton>
         </div>
