@@ -1,33 +1,34 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { Case } from "@/interface/CaseTypes";
-import { fetchCases } from "@/services/CaseService";
+import * as React from "react";
+import BaseFormSelect from "@/components/Global/BaseFormSelect";
+import { Case, Category } from "@/interface/CaseTypes";
+import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import Sidebar from "@/components/Cases/Sidebar";
-import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
+import { fetchCases } from "@/services/CaseService";
+import { useRouter, useParams } from "next/navigation";
 
-const CasePage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("latest");
+const BrowseCasesPage: React.FC = () => {
+  const router = useRouter();
+  const params = useParams();
+  const userId = params.user_id as string;
+
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [sortOrder, setSortOrder] = React.useState("latest");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCaseType, setSelectedCaseType] = useState("all");
 
   const [cases, setCases] = useState<Case[]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const [filteredCases, setFilteredCases] = useState<Case[]>([]);
   const [status, setStatus] = useState<string | "">("all");
 
-  const router = useRouter();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     if (cases.length > 0) {
@@ -52,6 +53,7 @@ const CasePage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
+          console.log('Fetched cases:', response.data);
           setCases(response.data);
         } else {
           setCasesError(response.message || "Failed to load cases");
@@ -61,6 +63,7 @@ const CasePage: React.FC = () => {
     };
 
     loadCases();
+
     return () => {
       isMounted = false;
     };
@@ -77,46 +80,44 @@ const CasePage: React.FC = () => {
         } else {
           console.error("Error fetching user data:", response.message);
         }
-        setLoading(false);
       }
     };
 
     fetchUserProfile();
+
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
-
   return (
-    <main
-      className="flex flex-col text-black w-full font-[Poppins]"
-      role="main"
-    >
+    <main className="flex flex-col text-black w-full font-[Poppins]" role="main">
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        openCaseCount={openCaseCount}
+        openCaseCount={cases.length}
         user={user}
       />
 
       <section
-        className="self-center mt-10 pb-10 w-full max-w-[976px] h-[calc(100vh-40px)] max-h-[65vh] flex flex-row justify-between"
+        className="self-center mt-10 pb-10 w-full h-[75vh] max-w-[976px] flex gap-5 max-md:flex-col"
         aria-label="Case listings"
       >
-        <div className="flex flex-col gap-2">
-          <BaseFormSelect
-            label=""
-            name="sortOrder"
-            value={sortOrder}
-            choices={sortingOptions}
-            onChange={(e) => setSortOrder(e.target.value)}
-            width="150px"
-            textSize="text-xs"
-          />
-          <div className="flex gap-5 max-md:flex-col pb-5 overflow-y-auto overflow-x-hidden scrollbar-hide">
-            <div className="w-full max-md:w-full">
+        <div className="flex gap-5 max-md:flex-col pb-5 w-full">
+          <div className="w-[90%] max-md:w-full flex flex-col p-0">
+            <div className="mb-4">
+              <BaseFormSelect
+                label=""
+                name="sortOrder"
+                value={sortOrder}
+                choices={sortingOptions}
+                onChange={(e) => setSortOrder(e.target.value)}
+                width="150px"
+                textSize="text-xs"
+              />
+            </div>
+
+            <div className="overflow-y-auto max-h-[calc(75vh-3rem)] pr-1">
               {casesLoading ? (
                 <p className="text-center text-gray-500 mt-20">
                   Loading cases...
@@ -133,23 +134,22 @@ const CasePage: React.FC = () => {
                   />
                 ))
               ) : (
-                <p className="justify-center text-center text-gray-500 mt-20">
-                  No cases found
-                </p>
+                <p className="text-center text-gray-500 mt-20">No cases found</p>
               )}
             </div>
           </div>
+
+          <Sidebar
+            selectedCaseType={selectedCaseType}
+            setSelectedCaseType={setSelectedCaseType}
+            categories={categories}
+            selectedStatus={status}
+            setSelectedStatus={setStatus}
+          />
         </div>
-        <Sidebar
-          selectedCaseType={selectedCaseType}
-          setSelectedCaseType={setSelectedCaseType}
-          categories={categories}
-          selectedStatus={status}
-          setSelectedStatus={setStatus}
-        />
       </section>
     </main>
   );
 };
 
-export default CasePage;
+export default BrowseCasesPage;
