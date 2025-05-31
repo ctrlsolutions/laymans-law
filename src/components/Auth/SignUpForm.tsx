@@ -13,6 +13,8 @@ import TermsAndConditions from "@/components/Global/TermsAndConditions";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import React from "react";
 
@@ -104,6 +106,13 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   return (
     <div className="p-4 text-black w-full mx-auto h-full flex flex-col">
       <ToastContainer />
+      <Link
+        href="/"
+        className="top-6 left-6 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
+      >
+        <FaArrowLeft className="mr-2" />
+        Back
+      </Link>
       <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
 
       <TermsAndConditions
