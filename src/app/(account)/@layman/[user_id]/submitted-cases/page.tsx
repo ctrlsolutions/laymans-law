@@ -1,63 +1,19 @@
 "use client";
 import * as React from "react";
-import { IoMdCheckmark } from "react-icons/io";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { Case, Category } from "@/interface/CaseTypes";
 import LaymanCaseCard from "@/components/Cases/CaseCard";
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
+import Sidebar from "@/components/Cases/Sidebar";
+import CaseCard from "@/components/Cases/CaseCard";
+import { sortingOptions, categories } from "@/constants/caseConstants";
+import { filterCases } from "@/utils/caseFilters";
 import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
 
-const sortingOptions = [
-  { label: "Latest", value: "latest" },
-  { label: "Oldest", value: "oldest" },
-];
-
-const categories: Category[] = [
-  { id: "faq", name: "FAQ's", color: "bg-yellow-400" },
-  { id: "divorce", name: "Divorce Cases", color: "bg-lime-800" },
-  { id: "land", name: "Land Ownership", color: "bg-teal-400" },
-  { id: "civil", name: "Civil Rights", color: "bg-blue" },
-  { id: "environmental", name: "Environmental Law", color: "bg-fuchsia-600" },
-  { id: "human", name: "Human Rights", color: "bg-pink-600" },
-];
-
-const Sidebar: React.FC<{
-  selectedCategory: string | null;
-  setSelectedCategory: (category: string | null) => void;
-}> = ({ selectedCategory, setSelectedCategory }) => (
-  <aside className="ml-5 w-[23%] max-md:ml-0 max-md:w-full" role="complementary">
-    <nav className="flex flex-col mt-3 w-full text-xs font-medium">
-      <hr className="mt-3 border-black border-opacity-30" />
-      <ul className="mt-5" role="list">
-        {categories.map((category) => (
-          <li
-            key={category.id}
-            className={`flex gap-3 mt-6 ml-3.5 hover:underline cursor-pointer ${
-              selectedCategory === category.id ? "text-[#0838E5] font-bold" : "text-black"
-            }`}
-            onClick={() =>
-              setSelectedCategory(selectedCategory === category.id ? null : category.id)
-            }
-          >
-            <span
-              className={`flex self-center shrink-0 w-2 h-2 ${category.color} rounded-full`}
-              aria-hidden="true"
-            />
-            <span>{category.name}</span>
-            {selectedCategory === category.id && (
-              <IoMdCheckmark className="ml-auto text-blue-600 text-xl" />
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
-  </aside>
-);
-
-const InputDesign: React.FC = () => {
+const SubmittedCasesPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const userId = params.user_id as string;
@@ -65,33 +21,31 @@ const InputDesign: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("latest");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCaseType, setSelectedCaseType] = useState("all");
 
   const [cases, setCases] = useState<Case[]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
+  const [filteredCases, setFilteredCases] = useState<Case[]>([]);
+  const [status, setStatus] = useState<string | "">("all");
 
   const [user, setUser] = useState(null);
 
-  const filteredCases = cases.filter((caseItem) => {
-    const query = searchQuery.toLowerCase();
-    const matchesCategory =
-      selectedCategory === null || caseItem.case_type === selectedCategory;
-    const matchesSearch =
-      caseItem.title.toLowerCase().includes(query) ||
-      (caseItem.case_type?.toLowerCase() || '').includes(query);
-    
-    console.log('Case:', caseItem.title, 'Category:', caseItem.case_type, 'Selected:', selectedCategory, 'Matches:', matchesCategory);
-    
-    return matchesCategory && matchesSearch;
-  });
-
-  const sortedCases = [...filteredCases].sort((a, b) => {
-    if (sortOrder === "latest") {
-      return new Date(b.created_date).getTime() - new Date(a.created_date).getTime();
-    } else {
-      return new Date(a.created_date).getTime() - new Date(b.created_date).getTime();
+  useEffect(() => {
+    if (cases.length > 0) {
+      const filtered = filterCases(
+        cases,
+        searchQuery,
+        sortOrder,
+        selectedCaseType,
+        status
+      );
+      console.log("Filtered cases:", filtered);
+      setFilteredCases(filtered);
     }
-  });
+  }, [cases, searchQuery, selectedCaseType, sortOrder, status]);
+
+  const openCaseCount = filteredCases.filter((c) => c.status === "open").length;
 
   useEffect(() => {
     let isMounted = true;
@@ -100,8 +54,11 @@ const InputDesign: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log('Fetched cases:', response.data);
-          setCases(response.data);
+          const userCases = response.data.filter((caseItem: Case) => {
+            return caseItem.created_by?.user_id?.toString() === userId?.toString();
+          });
+
+          setCases(userCases);
         } else {
           setCasesError(response.message || "Failed to load cases");
         }
@@ -114,7 +71,7 @@ const InputDesign: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -142,7 +99,7 @@ const InputDesign: React.FC = () => {
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        openCaseCount={cases.length}
+        openCaseCount={openCaseCount}
         user={user}
       />
 
@@ -166,12 +123,14 @@ const InputDesign: React.FC = () => {
 
             <div className="overflow-y-auto max-h-[calc(75vh-3rem)] pr-1">
               {casesLoading ? (
-                <p className="text-center text-gray-500 mt-20">Loading cases...</p>
+                <p className="text-center text-gray-500 mt-20">
+                  Loading cases...
+                </p>
               ) : casesError ? (
                 <p className="text-center text-red-500 mt-20">{casesError}</p>
-              ) : sortedCases.length > 0 ? (
-                sortedCases.map((caseItem) => (
-                  <LaymanCaseCard
+              ) : filteredCases.length > 0 ? (
+                filteredCases.map((caseItem) => (
+                  <CaseCard
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
@@ -185,8 +144,11 @@ const InputDesign: React.FC = () => {
           </div>
 
           <Sidebar
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            selectedCaseType={selectedCaseType}
+            setSelectedCaseType={setSelectedCaseType}
+            categories={categories}
+            selectedStatus={status}
+            setSelectedStatus={setStatus}
           />
         </div>
       </section>
@@ -194,4 +156,4 @@ const InputDesign: React.FC = () => {
   );
 };
 
-export default InputDesign;
+export default SubmittedCasesPage;
