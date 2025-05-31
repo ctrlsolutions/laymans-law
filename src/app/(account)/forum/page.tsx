@@ -15,7 +15,7 @@ import {
   fetchAllForums,
   fetchBookmarkedForumPosts,
 } from "@/services/ForumServices";
-import { checkIfBookmarked } from "@/services/ForumServices";
+import { checkIfBookmarked, toggleBookmark } from "@/services/ForumServices";
 
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterForum } from "@/utils/filterForum";
@@ -43,7 +43,9 @@ const ForumPage: React.FC = () => {
   const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
 
   const openModal = (forumItem: Forum) => {
-    setSelectedForum(forumItem);
+    // Find the latest forum object from state
+    const latestForum = forum.find((f) => f.id === forumItem.id) || forumItem;
+    setSelectedForum(latestForum);
     setIsModalOpen(true);
   };
 
@@ -52,13 +54,46 @@ const ForumPage: React.FC = () => {
     setSelectedForum(null);
   };
 
-  const handleBookmarkToggle = (id: number) => {
-    setForum((prevCases) =>
-      prevCases.map((forumItem) =>
-        forumItem.id === id
-          ? { ...forumItem, bookmark: !forumItem.bookmark }
-          : forumItem
+  const handleForumDelete = (deletedId: number) => {
+    setForum((prevForums) => prevForums.filter((f) => f.id !== deletedId));
+    setSelectedForum(null);
+    setIsModalOpen(false);
+  };
+
+  const handleForumUpdate = (updatedForum: Forum) => {
+    setForum((prevForums) =>
+      prevForums.map((f) =>
+        f.id === updatedForum.id ? { ...f, ...updatedForum } : f
       )
+    );
+    setSelectedForum((prev) =>
+      prev && prev.id === updatedForum.id ? { ...prev, ...updatedForum } : prev
+    );
+  };
+  const handleBookmarkToggle = async (id: number) => {
+    const result = await toggleBookmark(id);
+    if (!result) {
+      return;
+    }
+    setForum((prevForums) =>
+      prevForums.map((f) =>
+        f.id === id
+          ? {
+              ...f,
+              bookmark: result.bookmarked,
+              bookmark_count: result.bookmark_count,
+            }
+          : f
+      )
+    );
+    setSelectedForum((prev) =>
+      prev && prev.id === id
+        ? {
+            ...prev,
+            bookmark: result.bookmarked,
+            bookmark_count: result.bookmark_count,
+          }
+        : prev
     );
   };
 
@@ -148,9 +183,7 @@ const ForumPage: React.FC = () => {
         aria-label="Case listings"
       >
         <div className="flex gap-5 max-md:flex-col h-full overflow-hidden">
-          {/* Left Content */}
           <div className="w-[77%] h-[98%] max-md:w-full flex flex-col">
-            {/* Top Controls */}
             <div className="flex justify-between gap-2 max-md:flex-col mr-6">
               <BaseFormSelect
                 label=""
@@ -200,7 +233,8 @@ const ForumPage: React.FC = () => {
           <ForumModalContent
             post={selectedForum}
             onClose={closeModal}
-            user={user}
+            onUpdate={handleForumUpdate}
+            onDelete={handleForumDelete}
           />
         </ForumModal>
       )}

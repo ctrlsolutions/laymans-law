@@ -54,7 +54,7 @@ export default function AccountLayout({
             name: "Submitted Cases",
             path: (id: string) => `/${id}/submitted-cases`,
           },
-          { key: "wiki", name: "Lawbase", path: () => `/wiki` },
+          { key: "wiki", name: "Wiki", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
           {
             key: "ofw-support",
@@ -111,13 +111,10 @@ export default function AccountLayout({
       className="flex h-screen items-center bg-cover bg-center relative"
       style={{ backgroundImage: `url("/bg-base.png")` }}
     >
-      {/* Sidebar */}
-
       <div
         className={`absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[22vw] ${sidebarBg} ml-8 p-6 pl-0 rounded-3xl flex flex-col justify-between font-extrabold`}
       >
         <img src="/logo.png" alt="Logo" className="max-w-full h-auto m-10" />
-        {/* navlinks */}
         <div className="flex flex-col text-center pb-[10vh] text-[1.1rem]">
           {tabs.map((tab, index) => (
             <Link

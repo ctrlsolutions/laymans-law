@@ -67,7 +67,7 @@ export const createForum = async (
 
 export const toggleBookmark = async (
   postId: number
-): Promise<{ bookmarked: boolean } | null> => {
+): Promise<{ bookmarked: boolean; bookmark_count: number } | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/${postId}/bookmark/`, {
       method: "POST",
@@ -82,7 +82,16 @@ export const toggleBookmark = async (
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+    if (
+      typeof data.bookmarked === "boolean" &&
+      typeof data.bookmark_count === "number"
+    ) {
+      return data;
+    } else {
+      console.error("API did not return expected bookmark data:", data);
+      return null;
+    }
   } catch (error) {
     console.error("Error toggling bookmark:", error);
     return null;
@@ -106,7 +115,7 @@ export const checkIfBookmarked = async (
       return null;
     }
 
-    return await response.json(); // { bookmarked: true/false }
+    return await response.json();
   } catch (error) {
     console.error("Error checking bookmark status:", error);
     return null;
@@ -128,7 +137,7 @@ export const fetchBookmarkedForumPosts = async () => {
       return [];
     }
 
-    return await response.json(); // returns an array of bookmarked ForumPost objects
+    return await response.json();
   } catch (error) {
     console.error("Error fetching bookmarked posts:", error);
     return [];
@@ -162,7 +171,9 @@ export const fetchForumById = async (postId: number): Promise<Forum | null> => {
 
 export async function updateForumPost(
   postId: number,
-  updatedPost: { content: string }
+  updatedPost:
+    | { title: string; content: string; category: string }
+    | { title?: string; content?: string; category?: string } = {}
 ) {
   const res = await fetch(`${API_BASE_URL}/${postId}/`, {
     method: "PATCH",

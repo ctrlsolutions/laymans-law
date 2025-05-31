@@ -1,21 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBookmark } from "react-icons/fa";
 import { Forum } from "@/interface/ForumTypes";
 import { categories } from "@/constants/caseConstants";
 import { updateForumPost, deleteForumPost } from "@/services/ForumServices";
+import BaseFormSelect from "@/components/Global/BaseFormSelect";
 
-const ForumModalContent: React.FC<{ post: Forum; onClose: () => void }> = ({
-  post,
-  onClose,
-}) => {
+const ForumModalContent: React.FC<{
+  post: Forum;
+  onClose: () => void;
+  onUpdate: (updated: Forum) => void;
+  onDelete: (deletedId: number) => void;
+}> = ({ post, onClose, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(post.content);
   const [title, setTitle] = useState(post.title);
-
-  const userId = parseInt(localStorage.getItem("user_id") || "-1");
+  const [category, setCategory] = useState(post.category);
+  const categoryOptions = categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
+  const userId = parseInt(localStorage.getItem("user_id") || "");
   const userType = localStorage.getItem("user_type");
+
+  useEffect(() => {
+    setTitle(post.title);
+    setContent(post.content);
+    setCategory(post.category);
+  }, [post]);
 
   const isAuthorLawyer =
     post?.author.user_id === userId && userType === "lawyer";
@@ -31,30 +44,31 @@ const ForumModalContent: React.FC<{ post: Forum; onClose: () => void }> = ({
       })
     : "";
 
-  function formatUpdatedAtDisplay(post: Forum) {
-    const updatedAt = new Date(post.updated_at);
-    const createdAt = new Date(post.timestamp);
+  function timeAgo(dateString: string) {
+    const date = new Date(dateString);
     const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    const sameDay = updatedAt.toDateString() === now.toDateString();
-    const sameDayAsCreated =
-      updatedAt.toDateString() === createdAt.toDateString();
-
-    if (sameDay || sameDayAsCreated) {
-      return `Edited at ${updatedAt.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else {
-      return `Edited on ${updatedAt.toLocaleDateString()}`;
-    }
+    if (seconds < 60) return "Edited just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60)
+      return `Edited ${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `Edited ${hours} hour${hours > 1 ? "s" : ""} ago`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return "Edited yesterday";
+    if (days < 7) return `Edited ${days} day${days > 1 ? "s" : ""} ago`;
+    return `Edited on ${date.toLocaleDateString()}`;
   }
 
   const handleSaveClick = async () => {
     try {
-      await updateForumPost(post.id, { title, content });
-      post.title = title;
-      post.content = content;
+      const updated = await updateForumPost(post.id, {
+        title,
+        content,
+        category,
+      });
+      onUpdate(updated);
       setIsEditing(false);
     } catch (err) {
       alert("Failed to update post.");
@@ -71,7 +85,7 @@ const ForumModalContent: React.FC<{ post: Forum; onClose: () => void }> = ({
       const success = await deleteForumPost(post.id);
       if (success) {
         alert("Post deleted successfully.");
-        onClose();
+        onDelete(post.id);
       } else {
         alert("Failed to delete post.");
       }
@@ -85,20 +99,26 @@ const ForumModalContent: React.FC<{ post: Forum; onClose: () => void }> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center w-full">
           {isEditing ? (
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="text-2xl font-bold text-gray-600 w-full border rounded-md px-2 py-1 mb-2"
-              maxLength={100}
-            />
+            <>
+              <div className="relative mb-2">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-[570px] text-2xl font-bold text-gray-600 border rounded-md px-2 py-1 mb-2"
+                  maxLength={20}
+                />
+                <span className="absolute bottom-0 right-2 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
+                  {title.length}/100
+                </span>
+              </div>
+            </>
           ) : (
             <h1 className="text-2xl font-bold text-gray-600 mr-4 flex-1">
               {post?.title}
             </h1>
           )}
-          {/* {isAuthorLawyer && !isEditing && ( */}
-          {!isEditing && (
+          {isAuthorLawyer && !isEditing && (
             <div className="flex gap-2 ml-2">
               <button
                 onClick={() => setIsEditing(true)}
@@ -121,26 +141,52 @@ const ForumModalContent: React.FC<{ post: Forum; onClose: () => void }> = ({
         <strong>
           {post?.author.first_name + " " + post?.author.last_name}
         </strong>{" "}
-        on {formattedDate} · {post?.updated_at && formatUpdatedAtDisplay(post)}
+        on {formattedDate} · {post?.updated_at && timeAgo(post.updated_at)}
       </p>
       <p className="text-xs text-gray-600 flex items-center gap-1">
         <FaBookmark className="text-yellow-500" />
-        Favorited by <strong>{post?.bookmark_count}</strong> users
+        {post?.bookmark_count === 0 ? (
+          "No users have favorited this"
+        ) : (
+          <>
+            Favorited by <strong>{post?.bookmark_count}</strong>{" "}
+            {post?.bookmark_count === 1 ? "user" : "users"}
+          </>
+        )}
       </p>
       <div className="mt-2 flex flex-col items-start gap-2">
-        <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">
-          {categoryName}
-        </span>
+        {isEditing ? (
+          <BaseFormSelect
+            label=""
+            name="forumCategory"
+            width="260px"
+            textSize="text-xs"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            choices={categoryOptions}
+          />
+        ) : (
+          <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">
+            {categoryName}
+          </span>
+        )}
         <hr className="w-full border-t border-gray-300 mt-2" />
       </div>
       <div className="mt-4">
         {isEditing ? (
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full text-xs text-gray-800 border rounded-md p-2"
-            rows={10}
-          />
+          <>
+            <div className="relative mb-2">
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="w-full text-xs text-gray-800 border rounded-md p-2"
+                maxLength={2500}
+              />
+              <span className="absolute bottom-0 right-3 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
+                {content.length}/2500
+              </span>
+            </div>
+          </>
         ) : (
           <p className="text-xs text-gray-800 whitespace-pre-line">
             {post?.content}
