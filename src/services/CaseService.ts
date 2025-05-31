@@ -9,7 +9,7 @@ export const fetchCases = async (): Promise<ApiResponse> => {
             headers: { 
                 "Content-Type": "application/json",
             },
-            credentials: "include", // Important: send cookies automatically
+            credentials: "include",
         });
 
         console.log('API Response Status:', response.status);
@@ -25,11 +25,21 @@ export const fetchCases = async (): Promise<ApiResponse> => {
         }
 
         const data = await response.json();
-        console.log('API Data:', data); // Log the received data
+        console.log('API Data:', data);
+
+        const cases = data.results || data;
+        
+        const normalizedCases = Array.isArray(cases) 
+            ? cases.map(c => ({
+                ...c,
+                attachments: c.attachments || []
+            }))
+            : [];
+
         return { 
             success: true, 
             message: "Cases fetched successfully!", 
-            data 
+            data: normalizedCases 
         };
     } catch (error) {
         console.error("Network Error:", error);
@@ -145,6 +155,7 @@ export const updateCase = async (caseId: string, caseData: UpdateCaseData): Prom
             method: "PATCH",
             headers: { 
                 "Content-Type": "application/json",
+                "Accept": "application/json",
             },
             credentials: "include",
             body: JSON.stringify(caseData),

@@ -53,6 +53,7 @@ export default function AccountLayout({
             key: "submitted",
             name: "Submitted Cases",
             path: (id: string) => `/${id}/submitted-cases`,
+            matchNested: true
           },
           { key: "wiki", name: "Lawbase", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
@@ -69,11 +70,12 @@ export default function AccountLayout({
         ]
       : [
           { key: "home", name: "Home", path: (id: string) => `/${id}` },
-          { key: "browse", name: "Browse Cases", path: () => `/browse` },
+          { key: "browse", name: "Browse Cases", path: () => `/browse`,  matchNested: true},
           {
             key: "active",
             name: "Active Cases",
             path: (id: string) => `/${id}/active-cases`,
+            matchNested: true
           },
           { key: "wiki", name: "Wiki", path: () => `/wiki` },
           { key: "forum", name: "Forum", path: () => `/forum` },
@@ -89,8 +91,10 @@ export default function AccountLayout({
           },
         ];
 
-  const activeTab =
-    tabs.find((tab) => pathname === tab.path(userId))?.name || "";
+  const activeTab = tabs.find((tab) => {
+    const tabPath = tab.path(userId);
+    return tab.matchNested ? pathname.startsWith(tabPath) : pathname === tabPath;
+  })?.name || "";
 
   let contentToShow;
   const standaloneRoutes = ["/wiki", "/forum"];

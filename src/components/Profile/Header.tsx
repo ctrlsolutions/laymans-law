@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { CiBellOn, CiSearch } from "react-icons/ci";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { cases } from "@/interface/CaseTypes";
 import { HeaderProps } from "@/interface/CaseTypes";
+
 
 const SearchBar: React.FC<{
   searchQuery: string;
@@ -75,7 +76,7 @@ const NotificationIcon: React.FC<{
                   <div>
                     <p
                       className="font-semibold cursor-pointer"
-                      onClick={() => router.push("/dashboard/home")}
+                      onClick={() => router.push("/")}
                     >
                       {c.title}
                     </p>
@@ -105,6 +106,8 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
+  const params = useParams();
+  const userId = params?.user_id as string;
 
   return (
     <header className="p-2.5 w-full bg-white rounded-[30px_30px_0px_0px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]">
@@ -115,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/5676b5cbc1d09b6b170298efcc84d833fd17cbb2?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
               alt="Logo"
               className="w-[139px] object-contain cursor-pointer"
-              onClick={() => router.push("/dashboard/home")}
+              onClick={() => router.push("/")}
             />
             <SearchBar
               searchQuery={searchQuery}
@@ -137,7 +140,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
           <div
             className="z-0 flex gap-4 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105"
-            onClick={() => router.push("/dashboard/account")}
+            onClick={() => router.push(`/${userId}`)}
           >
             <img
               src="/blank-profile.svg"
