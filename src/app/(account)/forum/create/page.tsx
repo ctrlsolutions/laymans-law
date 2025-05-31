@@ -38,21 +38,26 @@ const DiscussionForm: React.FC<{
         xl:max-h-[calc(95vh-200px)] my-2"
       >
         <div className="flex items-center space-x-4 mt-2">
-          <BaseFormInput
-            label=""
-            name="forumTitle"
-            type="text"
-            value={forumTitle}
-            width="50px"
-            onChange={(e) => setForumTitle(e.target.value)}
-            placeholder="Enter Forum Title"
-            className="w-[51vw] flex-grow h-12 border border-black rounded-lg p-4 text-[0.90rem] text-black-200 focus:outline-none focus:ring-0"
-          />
-
+          <div className="relative">
+            <BaseFormInput
+              label=""
+              name="forumTitle"
+              type="text"
+              value={forumTitle}
+              width="50px"
+              onChange={(e) => setForumTitle(e.target.value)}
+              placeholder="Enter Forum Title"
+              className="w-[722px] h-12 border border-black rounded-lg p-4 text-[0.90rem] text-black-200 focus:outline-none focus:ring-0"
+              maxLength={100}
+            />
+            <span className="absolute bottom-0 right-2 text-[0.60rem] text-gray-500 bg-white bg-opacity-100 px-1 rounded">
+              {forumTitle.length}/100
+            </span>
+          </div>
           <BaseFormSelect
             label=""
             name="forumCategory"
-            width="200px"
+            width="260px"
             textSize="text-xs"
             value={forumCategory}
             onChange={(e) => setForumCategory(e.target.value)}
@@ -68,10 +73,10 @@ const DiscussionForm: React.FC<{
             placeholder="Enter Forum Details"
             className="w-full h-[50dvh] border border-black rounded-lg mt-2.5 p-4 text-[0.95rem] placeholder:text-[0.95rem] text-black text-start align-text-top md:max-w-[80dvw] lg:max-w-[100dvw] xl:max-w-[100vw] focus:outline-none focus-visible:ring-1 focus-visible:ring-black"
             aria-label="Forum Details"
-            maxLength={500}
+            maxLength={2500}
           />
-          <span className="absolute bottom-2 right-20 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
-            {forumDetails.length}/500
+          <span className="absolute bottom-0 right-5 text-xs text-gray-500 bg-white bg-opacity-100 px-1 rounded">
+            {forumDetails.length}/2500
           </span>
         </div>
       </div>
@@ -105,8 +110,11 @@ const DiscussionPage: React.FC = () => {
         author: {
           first_name: user?.first_name || "Anonymous",
           last_name: user?.last_name || "User",
+          user_id: 0,
         },
         bookmark: false,
+        updated_at: "",
+        bookmark_count: 0,
       });
 
       if (!newPost) {
@@ -128,6 +136,7 @@ const DiscussionPage: React.FC = () => {
   const handleCancel = () => {
     setForumTitle("");
     setForumDetails("");
+    router.push("/forum");
   };
 
   return (
@@ -140,8 +149,6 @@ const DiscussionPage: React.FC = () => {
             role="separator"
             aria-hidden="true"
           />
-
-          {/* Wrap entire form including buttons */}
           <form onSubmit={handleSubmit}>
             <DiscussionForm
               forumTitle={forumTitle}

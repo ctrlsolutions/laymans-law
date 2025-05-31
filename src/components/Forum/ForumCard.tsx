@@ -22,12 +22,9 @@ const ForumCard: React.FC<{
     return category ? category.name : caseTypeId;
   };
 
-  const handleBookmarkClick = async (e: React.MouseEvent) => {
+  const handleBookmarkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const result = await toggleBookmark(forumItem.id);
-    if (result) {
-      onBookmarkToggle(forumItem.id);
-    }
+    onBookmarkToggle(forumItem.id);
   };
 
   return (
