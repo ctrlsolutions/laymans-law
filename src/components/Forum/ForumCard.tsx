@@ -2,7 +2,7 @@ import React from "react";
 import { Category } from "@/interface/CategoryTypes";
 import { Forum } from "@/interface/ForumTypes";
 import Card from "@/components/Profile/Card";
-import { FaRegBookmark, FaBookmark, FaRegCommentDots } from "react-icons/fa";
+import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { toggleBookmark } from "@/services/ForumServices";
 
 const ForumCard: React.FC<{
@@ -32,7 +32,7 @@ const ForumCard: React.FC<{
 
   return (
     <Card className="bg-transparent shadow-none">
-      <article className="mt-8 relative z-0">
+      <article className="mt-8 relative z-0" onClick={onClick}>
         <div className="absolute top-[-15px] right-2 flex justify-center items-center px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm z-10">
           <span
             className={`mr-2 flex shrink-0 w-2 h-2 ${getCategoryColor(
@@ -45,10 +45,7 @@ const ForumCard: React.FC<{
           </span>
         </div>
 
-        <div
-          className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-lg border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-xl"
-          onClick={onClick}
-        >
+        <div className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-sm border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-lg">
           <img
             src={"https://www.w3schools.com/howto/img_avatar.png"}
             alt="Avatar"
