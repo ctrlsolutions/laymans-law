@@ -433,14 +433,25 @@ export default function AcceptCasePage() {
 
               {/* Bottom Panel - Action Buttons */}
               <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
-
-                <BaseButton
-                  color="blue"
-                  textColor="white"
-                  onClick={handleAcceptCase}
-                >
-                  Accept Case
-                </BaseButton> 
+                {caseData.status === 'closed' ? (
+                  <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
+                    Case has been closed
+                  </div>
+                ) : caseData.status === 'ongoing' ? (
+                  <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
+                    {caseData.assigned_to 
+                      ? "Case has been accepted by another lawyer"
+                      : "Case is already ongoing"}
+                  </div>
+                ) : (
+                  <BaseButton
+                    color="blue"
+                    textColor="white"
+                    onClick={handleAcceptCase}
+                  >
+                    Accept Case
+                  </BaseButton>
+                )}
               </div>
             </div>
 

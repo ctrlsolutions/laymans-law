@@ -4,13 +4,18 @@ import { UserType, Comment } from "@/interface/CaseTypes";
 interface CommentCardProps {
   comment: Comment;
   currentUserId?: string;
+  isCaseAccepted?: boolean;
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ comment, currentUserId }) => {
+const CommentCard: React.FC<CommentCardProps> = ({ 
+    comment, 
+    currentUserId ,
+    isCaseAccepted = false,
+}) => {
     const isCurrentUser = comment.author.user_id.toString() === currentUserId;
-    const isAnonymous = !comment.is_lawyer && !isCurrentUser;
     console.log("Raw comment data:", comment);
     console.log("Timestamp value:", comment.created_at); 
+    const showAnonymous = !isCurrentUser && !comment.is_lawyer && !isCaseAccepted;
 
     const formatDate = (isoString: string) => {
         try {
@@ -33,14 +38,14 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, currentUserId }) => 
         <div className="mr-2">
             <img 
                 src={"/blank-profile.svg"} 
-                alt={isAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
+                alt={showAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
                 className="w-6 h-6 rounded-full object-cover"
             />
         </div>
         <div className="flex-1">
             <div className="flex items-center gap-2">
                 <p className="font-semibold text-gray-700 text-xxs">
-                    {isAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
+                    {showAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
                     {comment.is_lawyer && (
                         <span className="ml-2 px-1.5 py-0.5 bg-blue text-white text-xxxs rounded-full">
                             Lawyer
