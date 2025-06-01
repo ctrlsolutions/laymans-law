@@ -5,7 +5,7 @@ import { Case } from "@/interface/CaseTypes";
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
-import Sidebar from "@/components/Cases/Sidebar";
+import ActiveCasesSidebar from "@/components/Cases/ActiveCasesSidebar";
 import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { fetchCases } from "@/services/CaseService";
@@ -143,7 +143,7 @@ const ActiveCasesPage: React.FC = () => {
             </div>
           </div>
 
-          <Sidebar
+          <ActiveCasesSidebar
             selectedCaseType={selectedCaseType}
             setSelectedCaseType={setSelectedCaseType}
             categories={categories}

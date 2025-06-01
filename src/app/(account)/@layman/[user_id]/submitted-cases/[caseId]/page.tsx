@@ -33,7 +33,8 @@ export default function SubmittedCasePage() {
   const [comments, setComments] = useState<Comment[]>([]); 
   const [newComment, setNewComment] = useState('');
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  
+  const isCaseAccepted = caseData?.status === 'ongoing' && caseData?.assigned_to !== null;
+
   const router = useRouter();
   const params = useParams();
   const case_id = params.caseId as string;

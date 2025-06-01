@@ -24,7 +24,7 @@ const BrowseCasesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filteredCases, setFilteredCases] = useState<Case[]>([]);
-  const [status, setStatus] = useState<string | "">("all");
+  const [status, setStatus] = useState<string | "">("open");
 
   const [user, setUser] = useState<User | null>(null);
 

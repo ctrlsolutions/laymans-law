@@ -32,6 +32,8 @@ export default function AcceptCasePage() {
   const [newComment, setNewComment] = useState('');
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
+  const isCaseAccepted = caseData?.status === 'ongoing' && caseData?.assigned_to !== null;
+
   const router = useRouter();
   const params = useParams();
   const case_id = params.case_id as string;
@@ -154,7 +156,7 @@ export default function AcceptCasePage() {
 
       const data = await res.json();
       if (data.success) {
-        toast.success("Case submitted");
+        toast.success("Case successfully closed.");
         setTimeout(() => {
           router.push(`/${userId}/active-cases/`);
         }, 3000);
@@ -399,14 +401,20 @@ export default function AcceptCasePage() {
 
               {/* Bottom Panel - Action Buttons */}
               <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
-
-                <BaseButton
-                  color="blue"
-                  textColor="white"
-                  onClick={handleCloseCase}
-                >
-                  Close Case
-                </BaseButton> 
+                {caseData.status === 'closed' ? (
+                  <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
+                    Case has been closed
+                  </div>
+                ) : (
+                  <BaseButton
+                    color="blue"
+                    textColor="white"
+                    onClick={handleCloseCase}
+                    disabled={caseData.status === 'closed'}
+                  >
+                    Close Case
+                  </BaseButton>
+                )}
               </div>
             </div>
 
@@ -450,6 +458,7 @@ export default function AcceptCasePage() {
                         key={comment.id} 
                         comment={comment} 
                         currentUserId={currentUser?.user_id?.toString()} 
+                        isCaseAccepted={isCaseAccepted}
                       />
                     ))
                   ) : (

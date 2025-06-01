@@ -38,6 +38,8 @@ export interface FormButtonProps {
   type?: "button" | "submit" | "reset";
   className?: string;
   textSize?: string;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 export interface SubmitCaseFormData {
