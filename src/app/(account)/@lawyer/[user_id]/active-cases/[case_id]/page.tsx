@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Case } from "@/interface/CaseTypes";
-import { fetchCases, acceptCase } from "@/services/CaseService";
+import { fetchCases } from "@/services/CaseService";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
 import { categories } from "@/constants/caseConstants";
