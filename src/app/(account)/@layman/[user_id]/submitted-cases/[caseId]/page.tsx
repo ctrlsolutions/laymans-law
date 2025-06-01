@@ -3,17 +3,21 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Case } from "@/interface/CaseTypes";
+import { Case, Comment, UserType } from "@/interface/CaseTypes";
 import { fetchCases } from "@/services/CaseService";
+import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { IoSend } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
+import CommentCard from "@/components/Case/CommentCard";
 import { getProfile } from "@/services/ProfileServices";
 import { categories } from "@/constants/caseConstants";
 import { User } from "@/interface/AuthTypes";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function SubmittedCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -26,7 +30,10 @@ export default function SubmittedCasePage() {
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-
+  const [comments, setComments] = useState<Comment[]>([]); 
+  const [newComment, setNewComment] = useState('');
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  
   const router = useRouter();
   const params = useParams();
   const case_id = params.caseId as string;
@@ -156,6 +163,21 @@ export default function SubmittedCasePage() {
     loadCase();
   }, [case_id]);
 
+  useEffect(() => {
+    async function loadComments() {
+      if (case_id) {
+        const response = await fetchComments(case_id);
+        if (response.success) {
+          setComments(response.data);
+        }
+      }
+    }
+    
+    if (caseData) {
+      loadComments();
+    }
+  }, [case_id, caseData]);
+
   const getFileType = (filename: string) => {
     const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
     const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
@@ -180,54 +202,70 @@ export default function SubmittedCasePage() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Case successfully deleted.");
-        router.push(`/${userId}/submitted-cases`);
+        toast.success("Case deleted");
+        setTimeout(() => {
+          router.push(`/${userId}/submitted-cases/`);
+        }, 3000);
       } else {
-        alert("Failed to delete case: " + data.error);
+        toast.error("Failed to delete case: " + (data.error || "Unknown error"));
       }
     } catch (error) {
       console.error("Error deleting case:", error);
-      alert("An unexpected error occurred.");
+      toast.error("An unexpected error occurred.");
     }
   };
 
-const handlePrev = () => {
-  if (!caseData || !caseData.attachments?.length) return;
-  
-  if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
-    const video = videoRefs.current[currentMediaIndex];
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
+  const handlePrev = () => {
+    if (!caseData || !caseData.attachments?.length) return;
+    
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+      const video = videoRefs.current[currentMediaIndex];
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
     }
-  }
-  
-  const newIndex = currentMediaIndex === 0 
-    ? caseData.attachments.length - 1 
-    : currentMediaIndex - 1;
-  setCurrentMediaIndex(newIndex);
-};
+    
+    const newIndex = currentMediaIndex === 0 
+      ? caseData.attachments.length - 1 
+      : currentMediaIndex - 1;
+    setCurrentMediaIndex(newIndex);
+  };
 
-const handleNext = () => {
-  if (!caseData || !caseData.attachments?.length) return;
-  
-  if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
-    const video = videoRefs.current[currentMediaIndex];
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
+  const handleNext = () => {
+    if (!caseData || !caseData.attachments?.length) return;
+    
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+      const video = videoRefs.current[currentMediaIndex];
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
     }
-  }
-  
-  const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
-  setCurrentMediaIndex(newIndex);
-};
+    
+    const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
+    setCurrentMediaIndex(newIndex);
+  };
+
+  const handleAddComment = async () => {
+    if (newComment.trim() === '') return;
+    
+    const response = await addComment(case_id, newComment);
+    if (response.success) {
+      setComments([...comments, response.data]);
+      setNewComment('');
+      toast.success(response.message);
+    } else {
+      toast.error(response.error || "Failed to add comment");
+    }
+  };
 
   if (loading || !caseData) return <p className="p-8">Loading...</p>;
   console.log("caseData:", caseData);
 
   return (
     <>
+      <ToastContainer />
       <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
         <div className="pb-2 px-0 rounded-b-2xl text-black">
           <Header 
@@ -449,6 +487,22 @@ const handleNext = () => {
                   <p className="font-semibold">Email Address</p>
                   <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not Provided"}</p>
                 </div>
+              </div>
+              <div className="flex mb-4 gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Enter a comment..." 
+                  className="rounded-md w-full px-2 py-1 text-xs text-black"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
+                />
+                <button 
+                  className="flex bg-red rounded-full items-center p-2"
+                  onClick={handleAddComment}
+                >
+                  <IoSend color="white"/>
+                </button>
               </div>
             </div>
           </div>

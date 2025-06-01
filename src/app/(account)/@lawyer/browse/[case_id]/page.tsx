@@ -2,17 +2,21 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Case } from "@/interface/CaseTypes";
+import { Case, Comment, UserType } from "@/interface/CaseTypes";
 import { fetchCases, acceptCase } from "@/services/CaseService";
+import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
 import { categories } from "@/constants/caseConstants";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { IoSend } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { HiLightBulb } from "react-icons/hi";
+import CommentCard from "@/components/Case/CommentCard";
 import Image from 'next/image';
 
 export default function AcceptCasePage() {
@@ -27,7 +31,11 @@ export default function AcceptCasePage() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
-  
+
+  const [comments, setComments] = useState<Comment[]>([]); 
+  const [newComment, setNewComment] = useState('');
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
   const router = useRouter();
   const params = useParams();
   const case_id = params.case_id as string;
@@ -46,6 +54,21 @@ export default function AcceptCasePage() {
     const category = categories.find((c) => c.id === caseTypeId);
     return category ? category.name : caseTypeId;
   };
+
+    useEffect(() => {
+    async function loadComments() {
+      if (case_id) {
+        const response = await fetchComments(case_id);
+        if (response.success) {
+          setComments(response.data);
+        }
+      }
+    }
+    
+    if (caseData) {
+      loadComments();
+    }
+  }, [case_id, caseData]);
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -153,7 +176,6 @@ export default function AcceptCasePage() {
   if (error) return <p className="p-8 text-red-500">Error: {error}</p>; // Show specific error
   if (!caseData) return <p className="p-8">Case not found.</p>; // Specific message if no data after loading/no error
 
-
   return (
     <>
       <ToastContainer />
@@ -168,12 +190,22 @@ export default function AcceptCasePage() {
         </div>
 
         <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-5 mb-10">
-          <div className="bg-violet-950 text-white px-8 py-4 flex justify-between items-center">
+          <div className="bg-blue text-white px-8 py-4 flex justify-between items-center">
             <button
               onClick={() => router.push(`/browse`)}
               className="text-white hover:underline"
             >
               ← Back
+            </button>
+
+            <button
+              className="flex items-center gap-2 text-blue text-sm font-semibold bg-white border-none px-2 py-1 rounded-md transition hover:opacity-80 hover:shadow-md"
+              // onClick={handleInterested}
+            >
+              <HiLightBulb 
+                size={20}
+              /> 
+              Interested
             </button>
           </div>
 
@@ -386,9 +418,57 @@ export default function AcceptCasePage() {
                   className="rounded-full mx-auto mb-2"
                 />
                 <h3 className="text-lg text-black font-semibold">
+              <p className="text-xxs text-black font-semibold mb-2">Posted by:</p>
+              <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
+                <div>
+                  <img
+                    src="/blank-profile.svg"
+                    alt="avatar"
+                    className="rounded-full w-10 h-10 mx-auto mb-2"
+                  />
+                </div>
+                <div className="text-gray-700 text-left ml-3">
                   <p>Anonymous</p>
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">Layman</p>
+                </div>
+              </div>
+              <div className="flex flex-col h-full mb-2 bg-gray-200 rounded-md p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="text-sm text-gray-500 font-semibold">
+                    Comments 
+                  </p>
+                  <div className="bg-blue rounded-full text-xxs px-1.5 py-0.5 font-semibold">
+                    {comments.length}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-[36vh]">
+                  {comments.length > 0 ? (
+                    comments.map(comment => (
+                      <CommentCard 
+                        key={comment.id} 
+                        comment={comment} 
+                        currentUserId={currentUser?.user_id?.toString()} 
+                      />
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-500 text-center py-4">No comments yet</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex mb-4 gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Enter a comment..." 
+                  className="rounded-md w-full px-2 py-1 text-xs text-black"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
+                />
+                <button 
+                  className="flex bg-blue rounded-full items-center p-2"
+                  onClick={handleAddComment}
+                >
+                  <IoSend color="white"/>
+                </button>
               </div>
             </div>
           </div>

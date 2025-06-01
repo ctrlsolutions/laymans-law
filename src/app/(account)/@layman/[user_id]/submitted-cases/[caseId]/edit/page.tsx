@@ -9,9 +9,11 @@ import Header from "@/components/Profile/Header";
 import { FaCirclePlay } from "react-icons/fa6";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { FaEdit } from "react-icons/fa";
 import { getProfile } from "@/services/ProfileServices";
 import Image from 'next/image';
 import { User } from "@/interface/AuthTypes";
+import { toast, ToastContainer } from "react-toastify";
 
 
 interface Attachment {
@@ -138,8 +140,10 @@ export default function EditCasePage() {
       if (!response.success) {
         throw new Error(response.message || 'Failed to update case');
       }
-
-      router.push(`/${user_id}/submitted-cases/${caseId}`);
+      toast.success("Case edited successfully.");
+      setTimeout(() => {
+        router.push(`/${user_id}/submitted-cases/${caseId}`);
+      }, 3000);
     } catch (error) {
       console.error('Error updating case:', error);
       setError(error instanceof Error ? error.message : 'Failed to update case');
@@ -198,302 +202,301 @@ export default function EditCasePage() {
   if (!caseData) return null;
 
   return (
-    <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
-      <div className="pb-2 px-0 rounded-b-2xl text-black">
-        <Header 
-          searchQuery={searchQuery} 
-          setSearchQuery={setSearchQuery} 
-          openCaseCount={0} 
-          user={user ? { firstName: user.first_name } : null}
-        />
-      </div>
-
-      <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-5 mb-10">
-        <div className="bg-red text-white px-8 py-4 flex justify-between items-center">
-          <button
-            onClick={() => router.push(`/${user_id}/submitted-cases/${caseId}`)}
-            className="text-white hover:underline"
-          >
-            ← Back to Case
-          </button>
+    <>
+      <ToastContainer />
+      <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
+        <div className="pb-2 px-0 rounded-b-2xl text-black">
+          <Header 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery} 
+            openCaseCount={0} 
+            user={user ? { firstName: user.first_name } : null}
+          />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-1 pr-0 pl-8">
-          {/* Left Panel */}
-          <div className="md:col-span-2 h-[65vh] flex flex-col rounded-xl pr-15 pt-15 overflow-hidden">
-            {/* Title */}
-            <div className="shrink-0 pt-3 pl-3 pb-0">
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="text-3xl font-bold text-black mt-5 mb-2 w-full bg-transparent border-b border-gray-300 focus:border-gray-500 outline-none"
-              />
-              <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-black">
-                <p>
-                  <span className="font-medium">Submitted:</span>{" "}
-                  <strong>
-                    {new Date(caseData.created_date).toLocaleDateString()}
-                  </strong>
-                </p>
-                <p>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(category)}`}
-                  >
-                    {categories.map((cat) => (
-                      <option 
-                        key={cat.id} 
-                        value={cat.id}
-                        className="bg-white text-black"
-                      >
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </p>
-              </div>
-            </div>
+        <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-5 mb-10">
+          <div className="bg-red text-white px-8 py-4 flex gap-4 items-center">
+            <FaEdit className="ml-1" /> <p>Edit Case Details</p>
+          </div>
 
-            {/* Scrollable Middle Panel */}
-            <div className="flex-grow overflow-y-auto pr-10 pt-0 pl-3">
-              <div className="mb-4">
-                <label className="block font-bold text-black mb-2">Description</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={6}
-                  className="w-full border text-black border-gray-300 rounded-md p-3"
-                  placeholder="Enter case description"
+          <div className="grid md:grid-cols-3 gap-1 pr-0 pl-8">
+            {/* Left Panel */}
+            <div className="md:col-span-2 h-[65vh] flex flex-col rounded-xl pr-15 pt-15 overflow-hidden">
+              {/* Title */}
+              <div className="shrink-0 pt-3 pl-3 pb-0">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-3xl font-bold text-black mt-5 mb-2 w-full bg-transparent border-b border-gray-300 focus:border-gray-500 outline-none"
                 />
+                <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-black">
+                  <p>
+                    <span className="font-medium">Submitted:</span>{" "}
+                    <strong>
+                      {new Date(caseData.created_date).toLocaleDateString()}
+                    </strong>
+                  </p>
+                  <p>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(category)}`}
+                    >
+                      {categories.map((cat) => (
+                        <option 
+                          key={cat.id} 
+                          value={cat.id}
+                          className="bg-white text-black"
+                        >
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  </p>
+                </div>
               </div>
 
-              {/* Media Display */}
-              {caseData.attachments?.length > 0 && (
-                <>
-                  <div className="mb-0 flex justify-center items-center">
-                    {caseData.attachments.length > 1 && (
-                      <button 
-                        onClick={handlePrev}
-                        className="p-2 mr-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
-                      >
-                        <IoIosArrowBack color="black"/>
-                      </button>
-                    )}
-
-                    <div className="relative mb-0 h-[26vh] w-[22vw]">
-                      {caseData.attachments.map((attachment, index) => {
-                        const fileType = getFileType(attachment.file);
-                        
-                        return (
-                          <div 
-                            key={attachment.id}
-                            className={`absolute inset-0 transition-opacity duration-300 ${
-                              currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                            }`}
-                          >
-                            {fileType === 'image' ? (
-                              <div className="relative h-full w-full">
-                                <Image
-                                  src={attachment.file}
-                                  alt="case attachment"
-                                  fill
-                                  sizes="(max-width: 768px) 100vw, 50vw"
-                                  className="rounded-md object-cover cursor-pointer"
-                                  onClick={() => {
-                                    setSelectedImage(attachment.file);
-                                    setCurrentMediaIndex(index);
-                                  }}
-                                />
-                              </div>
-                            ) : fileType === 'video' ? (
-                              <div className="relative h-full w-full">
-                                <video
-                                  ref={el => {
-                                    if (el) {
-                                      videoRefs.current[index] = el;
-                                    }
-                                  }}
-                                  controls
-                                  className="rounded-md object-cover h-full w-full"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    setSelectedImage(attachment.file);
-                                    setCurrentMediaIndex(index);
-                                  }}
-                                  preload="metadata"
-                                >
-                                  <source src={attachment.file} />
-                                  Your browser does not support the video tag.
-                                </video>
-                              </div>
-                            ) : (
-                              <div className="h-full w-full bg-gray-100 flex items-center justify-center">
-                                <span>Unsupported file type</span>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {caseData.attachments.length > 1 && (
-                      <button 
-                        onClick={handleNext}
-                        className="p-2 ml-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
-                      >
-                        <IoIosArrowForward color="black"/>
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="flex justify-center gap-4 mt-3">
-                    {caseData.attachments.map((attachment, index) => (
-                      <button
-                        key={attachment.id}
-                        onClick={() => {
-                          setSelectedImage(attachment.file);
-                          setCurrentMediaIndex(index);
-                        }}
-                        className={`h-12 w-12 rounded-md overflow-hidden ${
-                          currentMediaIndex === index ? "ring-2 ring-blue-500" : ""
-                        }`}
-                      >
-                        {getFileType(attachment.file) === 'image' ? (
-                          <div className="relative h-full w-full">
-                            <Image
-                              src={attachment.file}
-                              alt="Preview"
-                              fill
-                              sizes="(max-width: 768px) 100vw, 50vw"
-                              className="rounded-md object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                            <FaCirclePlay color="white"/>
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Bottom Panel - Action Buttons */}
-            <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
-              <BaseButton
-                color="gray"
-                textColor="black"
-                onClick={() => router.push(`/${user_id}/submitted-cases/${caseId}`)}
-              >
-                Cancel
-              </BaseButton>
-              <BaseButton
-                color="red"
-                textColor="white"
-                onClick={handleSave}
-                // disabled={isSaving}
-              >
-                {isSaving ? 'Saving...' : 'Save Changes'}
-              </BaseButton>
-            </div>
-          </div>
-
-          {/* Right Panel */}
-          <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
-            <div className="text-center mb-4 shrink-0">
-              <Image
-                src="/blank-profile.svg"
-                alt="avatar"
-                width={80}
-                height={80}
-                className="rounded-full mx-auto mb-2"
-              />
-              <h3 className="text-lg text-black font-semibold">
-                {caseData.created_by 
-                  ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
-                  : "Unknown User"}
-              </h3>
-              <p className="text-sm text-gray-500 mb-4">Layman</p>
-              <div className="text-sm text-gray-700 text-left ml-3">
-                <p className="font-semibold">Contact Number</p>
-                <p className="mb-2">{caseData.created_by?.contact_number || "Not provided"}</p>
-                <p className="font-semibold">Email Address</p>
-                <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not provided"}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Fullscreen Image Viewer */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative flex">
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                const newIndex = (currentMediaIndex - 1 + caseData.attachments.length) % caseData.attachments.length;
-                setCurrentMediaIndex(newIndex);
-                setSelectedImage(caseData.attachments[newIndex].file);
-              }}
-              className="p-4 mr-4 text-white text-2xl"
-            >
-              <IoIosArrowBack/>
-            </button>
-            
-            <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
-              {getFileType(selectedImage) === 'image' ? (
-                <div className="relative w-full h-full">
-                  <Image
-                    src={selectedImage}
-                    alt="enlarged media"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 80vw"
-                    className="rounded-md object-contain"
+              {/* Scrollable Middle Panel */}
+              <div className="flex-grow overflow-y-auto pr-10 pt-0 pl-3">
+                <div className="mb-4">
+                  <label className="block font-bold text-black mb-2">Description</label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={6}
+                    className="w-full border text-black border-gray-300 rounded-md p-3"
+                    placeholder="Enter case description"
                   />
                 </div>
-              ) : (
-                <video
-                  controls
-                  autoPlay
-                  playsInline
-                  className="rounded-md h-full w-full"
-                  key={selectedImage}
+
+                {/* Media Display */}
+                {caseData.attachments?.length > 0 && (
+                  <>
+                    <div className="mb-0 flex justify-center items-center">
+                      {caseData.attachments.length > 1 && (
+                        <button 
+                          onClick={handlePrev}
+                          className="p-2 mr-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
+                        >
+                          <IoIosArrowBack color="black"/>
+                        </button>
+                      )}
+
+                      <div className="relative mb-0 h-[26vh] w-[22vw]">
+                        {caseData.attachments.map((attachment, index) => {
+                          const fileType = getFileType(attachment.file);
+                          
+                          return (
+                            <div 
+                              key={attachment.id}
+                              className={`absolute inset-0 transition-opacity duration-300 ${
+                                currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                              }`}
+                            >
+                              {fileType === 'image' ? (
+                                <div className="relative h-full w-full">
+                                <Image
+                                    src={attachment.file}
+                                    alt="case attachment"
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="rounded-md object-cover cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedImage(attachment.file);
+                                      setCurrentMediaIndex(index);
+                                    }}
+                                  />
+                              </div>
+                              ) : fileType === 'video' ? (
+                                <div className="relative h-full w-full">
+                                  <video
+                                    ref={el => {
+                                      if (el) {
+                                        videoRefs.current[index] = el;
+                                      }
+                                    }}
+                                    controls
+                                    className="rounded-md object-cover h-full w-full"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setSelectedImage(attachment.file);
+                                      setCurrentMediaIndex(index);
+                                    }}
+                                    preload="metadata"
+                                  >
+                                    <source src={attachment.file} />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                </div>
+                              ) : (
+                                <div className="h-full w-full bg-gray-100 flex items-center justify-center">
+                                  <span>Unsupported file type</span>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {caseData.attachments.length > 1 && (
+                        <button 
+                          onClick={handleNext}
+                          className="p-2 ml-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
+                        >
+                          <IoIosArrowForward color="black"/>
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex justify-center gap-4 mt-3">
+                      {caseData.attachments.map((attachment, index) => (
+                        <button
+                          key={attachment.id}
+                          onClick={() => {
+                            setSelectedImage(attachment.file);
+                            setCurrentMediaIndex(index);
+                          }}
+                          className={`h-12 w-12 rounded-md overflow-hidden ${
+                            currentMediaIndex === index ? "ring-2 ring-blue-500" : ""
+                          }`}
+                        >
+                          {getFileType(attachment.file) === 'image' ? (
+                            <div className="relative h-full w-full">
+                            <Image
+                                src={attachment.file}
+                                alt="Preview"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                                className="rounded-md object-cover"
+                              />
+                          </div>
+                          ) : (
+                            <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                              <FaCirclePlay color="white"/>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Bottom Panel - Action Buttons */}
+              <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
+                <BaseButton
+                  color="gray"
+                  textColor="black"
+                  onClick={() => router.push(`/${user_id}/submitted-cases/${caseId}`)}
                 >
-                  <source src={selectedImage} />
-                  Your browser does not support the video tag.
-                </video>
-              )}
+                  Cancel
+                </BaseButton>
+                <BaseButton
+                  color="red"
+                  textColor="white"
+                  onClick={handleSave}
+                  // disabled={isSaving}
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </BaseButton>
+              </div>
             </div>
-            
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
-                setCurrentMediaIndex(newIndex);
-                setSelectedImage(caseData.attachments[newIndex].file);
-              }}
-              className="p-4 ml-4 text-white text-2xl"
-            >
-              <IoIosArrowForward/>
-            </button>
-            
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-2 right-2 bg-white text-black p-2 rounded-full shadow hover:bg-gray-300"
-            >
-              <IoClose />
-            </button>
+
+            {/* Right Panel */}
+            <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
+              <p className="text-xs text-black font-semibold mb-2">Posted by:</p>
+              <div className="text-center mb-4 shrink-0">
+                <Image
+                  src="/blank-profile.svg"
+                  alt="avatar"
+                width={80}
+                height={80}
+                  className="rounded-full mx-auto mb-2"
+                />
+                <h3 className="text-lg text-black font-semibold">
+                  {caseData.created_by 
+                    ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
+                    : "Unknown User"}
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">Layman</p>
+                <div className="text-sm text-gray-700 text-left ml-3">
+                  <p className="font-semibold">Contact Number</p>
+                  <p className="mb-2">{caseData.created_by?.contact_number || "Not provided"}</p>
+                  <p className="font-semibold">Email Address</p>
+                  <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not provided"}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Fullscreen Image Viewer */}
+        {selectedImage && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+            onClick={() => setSelectedImage(null)}
+          >
+            <div className="relative flex">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newIndex = (currentMediaIndex - 1 + caseData.attachments.length) % caseData.attachments.length;
+                  setCurrentMediaIndex(newIndex);
+                  setSelectedImage(caseData.attachments[newIndex].file);
+                }}
+                className="p-4 mr-4 text-white text-2xl"
+              >
+                <IoIosArrowBack/>
+              </button>
+              
+              <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
+                {getFileType(selectedImage) === 'image' ? (
+                  <div className="relative w-full h-full">
+                  <Image
+                      src={selectedImage}
+                      alt="enlarged media"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                      className="rounded-md object-contain"
+                    />
+                </div>
+                ) : (
+                  <video
+                    controls
+                    autoPlay
+                    playsInline
+                    className="rounded-md h-full w-full"
+                    key={selectedImage}
+                  >
+                    <source src={selectedImage} />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+              </div>
+              
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
+                  setCurrentMediaIndex(newIndex);
+                  setSelectedImage(caseData.attachments[newIndex].file);
+                }}
+                className="p-4 ml-4 text-white text-2xl"
+              >
+                <IoIosArrowForward/>
+              </button>
+              
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute top-2 right-2 bg-white text-black p-2 rounded-full shadow hover:bg-gray-300"
+              >
+                <IoClose />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
