@@ -20,7 +20,7 @@ const CustomTextarea = React.forwardRef<
         </label>
       )}
       <textarea
-        className={`px-4 py-5 border rounded-xl text-black w-full leading-none z-0 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+        className={`px-4 py-5 border rounded-xl text-black w-full leading-none z-0 resize-none focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent ${
           error ? "border-red-500" : "border-gray-500"
         } ${className || ""}`}
         ref={ref}
