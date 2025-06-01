@@ -2,14 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Case } from "@/interface/CaseTypes";
-import { fetchCases, acceptCase } from "@/services/CaseService";
+import { Case, Comment, UserType } from "@/interface/CaseTypes";
+import { fetchCases } from "@/services/CaseService";
+import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
+import CommentCard from "@/components/Case/CommentCard";
 import { categories } from "@/constants/caseConstants";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { IoSend } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -45,7 +48,12 @@ export default function AcceptCasePage() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
-  
+  const [comments, setComments] = useState<Comment[]>([]); 
+  const [newComment, setNewComment] = useState('');
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
+  const isCaseAccepted = caseData?.status === 'ongoing' && caseData?.assigned_to !== null;
+
   const router = useRouter();
   const params = useParams();
   const case_id = params.case_id as string;
@@ -107,6 +115,21 @@ export default function AcceptCasePage() {
     loadCase();
   }, [case_id]);
 
+  useEffect(() => {
+    async function loadComments() {
+      if (case_id) {
+        const response = await fetchComments(case_id);
+        if (response.success) {
+          setComments(response.data);
+        }
+      }
+    }
+    
+    if (caseData) {
+      loadComments();
+    }
+  }, [case_id, caseData]);
+
   const getFileType = (filename: string) => {
     const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
     const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
@@ -163,7 +186,7 @@ export default function AcceptCasePage() {
 
       const data = await res.json();
       if (data.success) {
-        toast.success("Case submitted");
+        toast.success("Case successfully closed.");
         setTimeout(() => {
           router.push(`/${userId}/active-cases/`);
         }, 3000);
@@ -173,6 +196,19 @@ export default function AcceptCasePage() {
     } catch (error) {
       console.error("Error closing case:", error);
       toast.error("An unexpected error occurred.");
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (newComment.trim() === '') return;
+    
+    const response = await addComment(case_id, newComment);
+    if (response.success) {
+      setComments([...comments, response.data]);
+      setNewComment('');
+      toast.success(response.message);
+    } else {
+      toast.error(response.error || "Failed to add comment");
     }
   };
 
@@ -382,38 +418,84 @@ export default function AcceptCasePage() {
 
               {/* Bottom Panel - Action Buttons */}
               <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
-
-                <BaseButton
-                  color="blue"
-                  textColor="white"
-                  onClick={handleCloseCase}
-                >
-                  Close Case
-                </BaseButton> 
+                {caseData.status === 'closed' ? (
+                  <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
+                    Case has been closed
+                  </div>
+                ) : (
+                  <BaseButton
+                    color="blue"
+                    textColor="white"
+                    onClick={handleCloseCase}
+                    disabled={caseData.status === 'closed'}
+                  >
+                    Close Case
+                  </BaseButton>
+                )}
               </div>
             </div>
 
             {/* Right Panel */}
             
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
-              <div className="text-center mb-4 shrink-0">
-                <img
-                  src="/blank-profile.svg"
-                  alt="avatar"
-                  className="rounded-full w-20 h-20 mx-auto mb-2"
-                />
-                <h3 className="text-lg text-black font-semibold">
-                  { caseData.created_by 
-                  ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
-                  : "Unknown User" }
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">Layman</p>
-                <div className="text-sm text-gray-700 text-left ml-3">
-                  <p className="font-semibold">Contact Number</p>
-                  <p className="mb-2">{caseData.created_by?.contact_number}</p>
-                  <p className="font-semibold">Email Address</p>
-                  <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not Provided"}</p>
+              <p className="text-xxs text-black font-semibold mb-2">Posted by:</p>
+              <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
+                <div>
+                  <img
+                    src="/blank-profile.svg"
+                    alt="avatar"
+                    className="rounded-full w-10 h-10 mx-auto mb-2"
+                  />
                 </div>
+                <div className="text-gray-700 text-left ml-3">
+                  <h3 className="text-black">
+                    <b>Name:</b> { caseData.created_by 
+                    ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
+                    : "Unknown User" }
+                  </h3>
+                  <p className="mb-0"><b>Contact Number:</b> {caseData.created_by?.contact_number}</p>
+                  <p className="mb-2"><b>Email:</b> {caseData.created_by?.email || "Not Provided"}</p>
+                </div>
+              </div>
+              <div className="flex flex-col h-full mb-2 bg-gray-200 rounded-md p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="text-sm text-gray-500 font-semibold">
+                    Comments 
+                  </p>
+                  <div className="bg-blue rounded-full text-xxs px-1.5 py-0.5 font-semibold">
+                    {comments.length}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-[36vh]">
+                  {comments.length > 0 ? (
+                    comments.map(comment => (
+                      <CommentCard 
+                        key={comment.id} 
+                        comment={comment} 
+                        currentUserId={currentUser?.user_id?.toString()} 
+                        isCaseAccepted={isCaseAccepted}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-500 text-center py-4">No comments yet</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex mb-4 gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Enter a comment..." 
+                  className="rounded-md w-full px-2 py-1 text-xs text-black"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
+                />
+                <button 
+                  className="flex bg-blue rounded-full items-center p-2"
+                  onClick={handleAddComment}
+                >
+                  <IoSend color="white"/>
+                </button>
               </div>
             </div>
           </div>

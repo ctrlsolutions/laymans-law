@@ -26,9 +26,12 @@ export interface FormButtonProps {
   children: React.ReactNode;
   color?: string;
   textColor?: string;
+  textSize?: string;
   width?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 export interface SubmitCaseFormData {

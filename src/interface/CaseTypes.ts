@@ -84,3 +84,11 @@ export interface SubmitCaseFormData {
   case_type: string;
   description: string;
 }
+
+export interface Comment {
+  id: string;
+  author: UserType;
+  content: string;
+  created_at: string;
+  is_lawyer: boolean;
+}

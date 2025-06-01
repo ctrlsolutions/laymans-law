@@ -29,7 +29,7 @@ export default function LawyerDetails() {
         {loading ? (
             <p>Loading...</p>
         ) : user ? (
-          <Card className="h-[48.4vh]">
+          <Card className="h-[57vh]">
             <InformationContainer>
               <InformationComponent userData={user} />
             </InformationContainer>
