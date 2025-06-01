@@ -13,6 +13,7 @@ import { IoClose } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Image from "next/image";
 
 
 const getCategoryColor = (category: string) => {
@@ -291,10 +292,12 @@ export default function AcceptCasePage() {
                             }`}
                           >
                             {fileType === 'image' ? (
-                              <img
+                              <Image
                                 src={attachment.file}
                                 alt="case attachment"
                                 className="rounded-md object-cover h-full w-full cursor-pointer"
+                                width={200}
+                                height={200}
                                 onClick={() => {
                                   setSelectedImage(attachment.file);
                                   setCurrentMediaIndex(index);
@@ -365,10 +368,12 @@ export default function AcceptCasePage() {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <img 
+                        <Image 
                           src={attachment.file} 
                           alt="Preview" 
                           className="h-full w-full object-cover"
+                          width={48}
+                          height={48}
                         />
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
@@ -397,10 +402,12 @@ export default function AcceptCasePage() {
             
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
-                <img
+                <Image
                   src="/blank-profile.svg"
                   alt="avatar"
                   className="rounded-full w-20 h-20 mx-auto mb-2"
+                  width={80}
+                  height={80}
                 />
                 <h3 className="text-lg text-black font-semibold">
                   { caseData.created_by 
@@ -442,10 +449,12 @@ export default function AcceptCasePage() {
               {/* Media display */}
               <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
                 {getFileType(selectedImage) === 'image' ? (
-                  <img
+                  <Image
                     src={selectedImage}
                     alt="enlarged media"
                     className="rounded-md h-full w-full object-contain"
+                    width={800}
+                    height={800}
                   />
                 ) : (
                   <video
