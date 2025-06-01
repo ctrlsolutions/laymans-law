@@ -1,4 +1,4 @@
-export interface UserType{
+export interface UserType {
   user_id: number;
   first_name: string;
   last_name: string;
@@ -23,11 +23,11 @@ export interface Case {
   created_by: UserType;
   created_by_id: string;
   assigned_to: UserType | null;
-  openCaseCount?: number; 
+  openCaseCount?: number;
   user?: { firstName: string; email: string };
-  image: string | null;         
-  document: string | null;      
-  video: string | null;         
+  image: string | null;
+  document: string | null;
+  video: string | null;
   attachments: CaseAttachment[];
 
   avatar: string;

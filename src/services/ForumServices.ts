@@ -158,8 +158,6 @@ export const fetchForumById = async (postId: number): Promise<Forum | null> => {
       console.error("Failed to fetch forum post:", response.statusText);
       return null;
     }
-
-    // return await response.json();
     const data = await response.json();
     console.log("Fetched forum post data:", data);
     return data;

@@ -1,39 +1,47 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { cases, LawData } from "@/interface/CaseTypes";
+import { cases } from "@/interface/CaseTypes";
+import { LawData } from "@/interface/WikiLawTypes";
 import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { fetchAllLaws } from "@/services/WikiServices";
 import { User } from "@/interface/AuthTypes";
 import { getProfile } from "@/services/ProfileServices";
+import { wikiLaw } from "@/constants/caseConstants";
 
-const TagChip: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex items-center px-3 py-1.5 text-xs bg-white rounded-lg shadow">
-    <div className="mr-2 w-2 h-2 bg-green-700 rounded-full" />
-    <span>{label}</span>
-  </div>
-);
+function getCategoryById(case_type: string) {
+  return wikiLaw.find((cat) => cat.id === case_type);
+}
 
 const LawCard: React.FC<{
   law: LawData;
   onClick: () => void;
   selected: boolean;
-}> = ({ law, onClick, selected }) => (
-  <article
-    className={`p-6 w-full rounded-2xl border border-gray cursor-pointer transition-transform transform ${
-      selected ? "bg-violet-100 shadow-md" : "bg-white shadow-sm"
-    } hover:shadow-lg hover:-translate-y-1`}
-    onClick={onClick}
-  >
-    <h2 className="mb-4 text-lg font-semibold">{law.title}</h2>
-    <p className="mb-6 text-sm">{law.chapter}</p>
-    <div className="flex flex-wrap gap-2">
-      {law.tags.map((tag, index) => (
-        <TagChip key={`${tag}-${index}`} label={tag} />
-      ))}
-    </div>
-  </article>
-);
+}> = ({ law, onClick, selected }) => {
+  const category = getCategoryById(law.case_type);
+
+  return (
+    <article
+      className={`p-6 w-full rounded-2xl border border-gray cursor-pointer transition-transform transform ${
+        selected ? "border-1 border-black shadow-md" : "bg-white shadow-sm"
+      } hover:shadow-lg hover:-translate-y-1`}
+      onClick={onClick}
+    >
+      <h2 className="mb-0 text-lg font-semibold">{law.title}</h2>
+      <p className="mb-0 text-sm italic">{law.code}</p>
+      {category && (
+        <span
+          className={`inline-block px-2 py-1 rounded text-white text-xs font-bold ${category.color}`}
+        >
+          {category.name}
+        </span>
+      )}
+      <p className="mt-10 text-sm">
+        <strong>Tags:</strong> {law.tags}
+      </p>
+    </article>
+  );
+};
 
 const MainContent: React.FC<
   LawData & {
@@ -42,46 +50,80 @@ const MainContent: React.FC<
   }
 > = ({
   title,
-  chapter,
-  content,
+  code,
+  full_law,
+  case_type,
+  tags,
+  summary,
   translation,
   selectedLanguage,
   setSelectedLanguage,
-}) => (
-  <article className="h-full flex-1 p-10 bg-white border border-gray rounded-2xl shadow-sm overflow-y-auto max-h-[100vh] shadow-sm max-sm:hidden">
-    <h1 className="mb-5 text-xl font-semibold">{title}</h1>
-    <p className="mb-5 text-xs">{chapter}</p>
-    <div className="mb-20 text-xs px-1.5 leading-relaxed overflow-y-auto">
-      {content}
-    </div>
-    <hr className="my-8 h-px bg-black bg-opacity-60" />
-    <div className="flex justify-between items-center">
-      <h2 className="text-base items-start">Translation</h2>
-      <BaseFormSelect
-        label=""
-        name="Language"
-        color="[#0D0330]"
-        width="w-30"
-        value={selectedLanguage}
-        choices={[
-          { label: "Tagalog", value: "Tagalog" },
-          { label: "Cebuano", value: "Cebuano" },
-          { label: "Waray", value: "Waray" },
-        ]}
-        onChange={(e) => setSelectedLanguage(e.target.value)}
-      />
-    </div>
-    <div className="text-xs leading-relaxed mt-4">
-      {selectedLanguage === "Tagalog"
-        ? translation.language_tagalog
-        : selectedLanguage === "Cebuano"
-        ? translation.language_bisaya
-        : selectedLanguage === "Waray"
-        ? translation.language_waray
-        : "No translation available"}
-    </div>
-  </article>
-);
+}) => {
+  const ctg = getCategoryById(case_type);
+
+  return (
+    <article className="h-full flex-1 p-10 bg-white border border-gray rounded-2xl shadow-sm overflow-y-auto max-h-[100vh] shadow-sm max-sm:hidden">
+      <h1 className="mb-0 text-xl font-semibold">{title}</h1>
+      {ctg && (
+        <span
+          className={`inline-block px-2 py-1 rounded text-white text-xs font-bold ${ctg.color}`}
+        >
+          {ctg.name}
+        </span>
+      )}
+      <p className="mb-4 text-sm">
+        <strong>Read more: </strong>
+        {full_law ? (
+          <a
+            href={full_law}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="italic text-blue-600 underline hover:text-teal-600"
+          >
+            {code}
+          </a>
+        ) : (
+          <span className="italic text-gray-500">No link available</span>
+        )}
+      </p>
+      <div className="mb-10 text-xs px-1.5 leading-relaxed overflow-y-auto">
+        {summary ? <p>{summary.summary}</p> : <p>No summary available</p>}
+      </div>
+      <p className="mt-10 mb-10 text-sm">
+        <strong>Tags:</strong> {tags}
+      </p>
+      <hr className="my-4 h-px bg-black bg-opacity-60" />
+      <div className="flex justify-between items-center">
+        <h2 className="text-base items-start">Translation</h2>
+        <BaseFormSelect
+          label=""
+          name="Language"
+          color="[#0D0330]"
+          width="w-30"
+          value={selectedLanguage}
+          choices={[
+            { label: "Tagalog", value: "Tagalog" },
+            { label: "Cebuano", value: "Cebuano" },
+            { label: "Waray", value: "Waray" },
+            { label: "Chavacano", value: "Chavacano" },
+          ]}
+          onChange={(e) => setSelectedLanguage(e.target.value)}
+        />
+      </div>
+      <div className="text-xs leading-relaxed mt-4">
+        {selectedLanguage === "Tagalog"
+          ? translation?.language_tagalog
+          : selectedLanguage === "Cebuano"
+          ? translation?.language_bisaya
+          : selectedLanguage === "Waray"
+          ? translation?.language_waray
+          : selectedLanguage === "Chavacano"
+          ? translation?.language_chavacano
+          : "No translation available"}
+      </div>
+    </article>
+  );
+};
 
 const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,10 +144,8 @@ const Page: React.FC = () => {
   const filteredLaws = laws.filter(
     (law) =>
       law.title.toLowerCase().includes(wikiSearchQuery.toLowerCase()) ||
-      law.chapter.toLowerCase().includes(wikiSearchQuery.toLowerCase()) ||
-      law.tags.some((tag) =>
-        tag.toLowerCase().includes(wikiSearchQuery.toLowerCase())
-      )
+      law.code.toLowerCase().includes(wikiSearchQuery.toLowerCase()) ||
+      law.full_law.toLowerCase().includes(wikiSearchQuery.toLowerCase())
   );
 
   useEffect(() => {
@@ -124,9 +164,11 @@ const Page: React.FC = () => {
           result.map((law: LawData) => ({
             id: law.id,
             title: law.title,
-            chapter: law.code || "",
+            code: law.code || "",
+            full_law: law.full_law,
+            case_type: law.case_type || "",
             tags: law.tags || [],
-            content: law.full_law || law.summary?.summary || "",
+            summary: law.summary,
             translation: {
               language_tagalog:
                 law.translation?.language_tagalog || "Walang Tagalog na salin.",
@@ -134,6 +176,9 @@ const Page: React.FC = () => {
                 law.translation?.language_bisaya || "Walay Bisaya nga hubad.",
               language_waray:
                 law.translation?.language_waray || "Waray hin Waray nga hubad.",
+              language_chavacano:
+                law.translation?.language_chavacano ||
+                "Walang Chavacano na salin.",
             },
           }))
         );
