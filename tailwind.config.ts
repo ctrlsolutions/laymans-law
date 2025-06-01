@@ -9,6 +9,7 @@ export default {
   safelist: [
     "text-red",
     "text-blue",
+    "text-blue-500",
     "text-black",
     "bg-red",
     "bg-blue",
@@ -23,6 +24,11 @@ export default {
     "bg-teal-400",
     "bg-fuchsia-600",
     "bg-pink-600",
+    "bg-yellow-500",
+    "bg-lime-700",
+    "bg-teal-500",
+    "bg-fuchsia-800",
+    "bg-pink-800",
   ],
   theme: {
     extend: {
