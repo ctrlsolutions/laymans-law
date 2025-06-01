@@ -10,6 +10,7 @@ import { FaCirclePlay } from "react-icons/fa6";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { getProfile } from "@/services/ProfileServices";
+import Image from 'next/image';
 
 
 interface Attachment {
@@ -43,11 +44,6 @@ const getCategoryColor = (categoryId: string) => {
   return `${category.color} ${isDark ? 'text-white' : 'text-black'}`;
 };
 
-const getCategoryName = (caseTypeId: string): string => {
-  const category = categories.find((c) => c.id === caseTypeId);
-  return category ? category.name : caseTypeId;
-};
-
 const getFileType = (filename: string) => {
   const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
   const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
@@ -73,7 +69,6 @@ export default function EditCasePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState(null);
-  const [cases, setCases] = useState<Case[]>([]);
   
 
   useEffect(() => {
@@ -207,7 +202,7 @@ export default function EditCasePage() {
         <Header 
           searchQuery={searchQuery} 
           setSearchQuery={setSearchQuery} 
-          openCaseCount={cases.length} 
+          openCaseCount={0} 
           user={user}
         />
       </div>
@@ -298,15 +293,19 @@ export default function EditCasePage() {
                             }`}
                           >
                             {fileType === 'image' ? (
-                              <img
-                                src={attachment.file}
-                                alt="case attachment"
-                                className="rounded-md object-cover h-full w-full cursor-pointer"
-                                onClick={() => {
-                                  setSelectedImage(attachment.file);
-                                  setCurrentMediaIndex(index);
-                                }}
-                              />
+                              <div className="relative h-full w-full">
+                                <Image
+                                  src={attachment.file}
+                                  alt="case attachment"
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  className="rounded-md object-cover cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedImage(attachment.file);
+                                    setCurrentMediaIndex(index);
+                                  }}
+                                />
+                              </div>
                             ) : fileType === 'video' ? (
                               <div className="relative h-full w-full">
                                 <video
@@ -361,11 +360,15 @@ export default function EditCasePage() {
                         }`}
                       >
                         {getFileType(attachment.file) === 'image' ? (
-                          <img 
-                            src={attachment.file} 
-                            alt="Preview" 
-                            className="h-full w-full object-cover"
-                          />
+                          <div className="relative h-full w-full">
+                            <Image
+                              src={attachment.file}
+                              alt="Preview"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                              className="rounded-md object-cover"
+                            />
+                          </div>
                         ) : (
                           <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                             <FaCirclePlay color="white"/>
@@ -401,10 +404,12 @@ export default function EditCasePage() {
           {/* Right Panel */}
           <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
             <div className="text-center mb-4 shrink-0">
-              <img
+              <Image
                 src="/blank-profile.svg"
                 alt="avatar"
-                className="rounded-full w-20 h-20 mx-auto mb-2"
+                width={80}
+                height={80}
+                className="rounded-full mx-auto mb-2"
               />
               <h3 className="text-lg text-black font-semibold">
                 {caseData.created_by 
@@ -444,11 +449,15 @@ export default function EditCasePage() {
             
             <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
               {getFileType(selectedImage) === 'image' ? (
-                <img
-                  src={selectedImage}
-                  alt="enlarged media"
-                  className="rounded-md h-full w-full object-contain"
-                />
+                <div className="relative w-full h-full">
+                  <Image
+                    src={selectedImage}
+                    alt="enlarged media"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    className="rounded-md object-contain"
+                  />
+                </div>
               ) : (
                 <video
                   controls

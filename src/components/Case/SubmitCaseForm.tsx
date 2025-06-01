@@ -4,16 +4,16 @@ import { useState } from "react";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { SubmitCaseFormData } from "@/interface/CaseTypes";
 import Textarea from "@/components/Global/BaseTextArea";
 import { toast, ToastContainer } from "react-toastify";
 import { submitCase } from "@/services/CaseServices";
 
-export default function CaseSubmissionForm() {
-  const [formData, setFormData] = useState<SubmitCaseFormData>({
+export default function SubmitCaseForm() {
+  const [formData, setFormData] = useState({
     title: "",
-    case_type: "",
     description: "",
+    case_type: "",
+    attachments: [] as File[],
   });
 
   interface OtherData {
@@ -34,15 +34,6 @@ export default function CaseSubmissionForm() {
     { value: "labor", label: "Labor Law" },
     { value: "commercial", label: "Commercial and Business Law" },
     { value: "other", label: "Others" },
-    
-  ];
-
-  const legalTopicChoices = [
-    { value: "", label: "Case Type" },
-    { value: "litigation", label: "Litigation" },
-    { value: "consultation", label: "Consultation" },
-    { value: "document_review", label: "Document Review" },
-    { value: "mediation", label: "Mediation" },
   ];
 
   const handleChange = (
@@ -90,6 +81,7 @@ export default function CaseSubmissionForm() {
       title: "",
       case_type: "",
       description: "",
+      attachments: [],
     });
     setOtherData({ legalTopic: "", files: [] });
   };

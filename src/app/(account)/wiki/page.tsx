@@ -83,7 +83,7 @@ const MainContent: React.FC<
 
 const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [wikiSearchQuery, setWikiSearchQuery] = useState("");
+  const [wikiSearchQuery] = useState("");
   const [selectedLaw, setSelectedLaw] = useState<LawData | null>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 

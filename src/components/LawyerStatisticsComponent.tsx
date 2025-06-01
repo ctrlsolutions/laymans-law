@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface StatisticsInfoComponentProps {
     wikiContributions?: number;
     totalCasesFinished?: number;
@@ -12,7 +14,13 @@ const StatisticsInfoComponent: React.FC<StatisticsInfoComponentProps> = ({
     return (
         <div className="w-[500px] h-[323px] bg-white rounded-2xl shadow-lg p-6 border border-gray-300">
             <h2 className="pl-[1rem] pt-[.5rem] text-2xl font-bold flex items-center">
-                <img src="/StatisticsLogo.png" alt="Statistics Logo" className="w-6 h-6 mr-2" />
+                <Image 
+                    src="/StatisticsLogo.png" 
+                    alt="Statistics Logo" 
+                    width={24}
+                    height={24}
+                    className="mr-2" 
+                />
                 Statistics:
             </h2>
             <div className="mt-[1rem] pl-[1rem] space-y-2">

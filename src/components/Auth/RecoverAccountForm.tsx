@@ -11,7 +11,6 @@ export default function RecoverAccountForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
-  const [sending, setSending] = useState(false);
   const [cooldown, setCooldown] = useState<number>(0);
 
   // ⏱️ Timer countdown
@@ -34,9 +33,7 @@ export default function RecoverAccountForm() {
       return;
     }
 
-    setSending(true);
     const res = await SendRecoveryCode(email);
-    setSending(false);
 
     if (res.success) {
       toast.success("Recovery code sent successfully!");
@@ -100,7 +97,7 @@ export default function RecoverAccountForm() {
 
       {/* Resend Message */}
       <div className="text-center text-sm mt-2 text-gray-700">
-        Didn’t receive a code?{" "}
+        Didn&apos;t receive a code?{" "}
         {cooldown === 0 ? (
           <span
             className="font-bold text-black cursor-pointer underline"

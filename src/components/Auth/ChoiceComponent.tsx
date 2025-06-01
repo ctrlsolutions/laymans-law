@@ -7,12 +7,10 @@ interface SignUpPageProps {
   onChoose: (type: "lawyer" | "layman") => void;
 }
 
-const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
+export default function ChoiceComponent({ onChoose }: SignUpPageProps) {
   const [isExiting, setIsExiting] = useState(false);
-  const [choice, setChoice] = useState<"lawyer" | "layman" | null>(null);
 
   const handleChoose = (type: "lawyer" | "layman") => {
-    setChoice(type);
     setIsExiting(true);
     setTimeout(() => {
       onChoose(type);
@@ -71,6 +69,4 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
       </div>
     </div>
   );
-};
-
-export default SignUpPage;
+}

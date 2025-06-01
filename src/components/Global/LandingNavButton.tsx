@@ -42,7 +42,9 @@ export default function NavButton({
     }
 
     if (!loading) {
-      onClick?.();
+      if (onClick) {
+        onClick();
+      }
 
       if (route) {
         setTimeout(() => {

@@ -17,10 +17,9 @@ export default function AccountLayout({
   const handleLogout = async () => {
     try {
       await UserLogout();
-
       router.push("/login");
-    } catch (error) {
-      toast.error("Failed to lsog out. Please try again.");
+    } catch {
+      toast.error("Failed to log out. Please try again.");
     }
   };
 

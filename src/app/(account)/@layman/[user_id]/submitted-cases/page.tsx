@@ -1,8 +1,7 @@
 "use client";
 import * as React from "react";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { Case, Category } from "@/interface/CaseTypes";
-import LaymanCaseCard from "@/components/Cases/CaseCard";
+import { Case } from "@/interface/CaseTypes";
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
@@ -20,7 +19,6 @@ const SubmittedCasesPage: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("latest");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCaseType, setSelectedCaseType] = useState("all");
 
   const [cases, setCases] = useState<Case[]>([]);

@@ -19,11 +19,8 @@ import { checkIfBookmarked, toggleBookmark } from "@/services/ForumServices";
 
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterForum } from "@/utils/filterForum";
-import { useRouter } from "next/navigation";
 
 const ForumPage: React.FC = () => {
-  const router = useRouter();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
@@ -33,7 +30,6 @@ const ForumPage: React.FC = () => {
   const [forumError, setForumError] = useState("");
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
   const ForumCount = filteredForum.filter((f) => f.title).length;
@@ -60,16 +56,6 @@ const ForumPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleForumUpdate = (updatedForum: Forum) => {
-    setForum((prevForums) =>
-      prevForums.map((f) =>
-        f.id === updatedForum.id ? { ...f, ...updatedForum } : f
-      )
-    );
-    setSelectedForum((prev) =>
-      prev && prev.id === updatedForum.id ? { ...prev, ...updatedForum } : prev
-    );
-  };
   const handleBookmarkToggle = async (id: number) => {
     const result = await toggleBookmark(id);
     if (!result) {
@@ -115,7 +101,7 @@ const ForumPage: React.FC = () => {
       if (selectedCaseType === "bookmarked") {
         const bookmarked = await fetchBookmarkedForumPosts();
         setForum(
-          (bookmarked || []).map((forumItem: any) => ({
+          (bookmarked || []).map((forumItem: Forum) => ({
             ...forumItem,
             bookmark: true,
           }))
@@ -156,7 +142,6 @@ const ForumPage: React.FC = () => {
         } else {
           console.error("Error fetching user data:", response.message);
         }
-        setLoading(false);
       }
     };
 
@@ -232,8 +217,6 @@ const ForumPage: React.FC = () => {
         <ForumModal onClose={closeModal}>
           <ForumModalContent
             post={selectedForum}
-            onClose={closeModal}
-            onUpdate={handleForumUpdate}
             onDelete={handleForumDelete}
           />
         </ForumModal>

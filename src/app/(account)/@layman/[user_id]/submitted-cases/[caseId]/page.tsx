@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { Case } from "@/interface/CaseTypes";
 import { fetchCases } from "@/services/CaseService";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
-import Link from "next/link";
-import { FaEdit } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
@@ -23,7 +22,6 @@ export default function SubmittedCasePage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState(null);
-  const [cases, setCases] = useState<Case[]>([]);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -234,22 +232,19 @@ const handleNext = () => {
           <Header 
             searchQuery={searchQuery} 
             setSearchQuery={setSearchQuery} 
-            openCaseCount={cases.length} 
-            user={user} 
+            openCaseCount={0} 
+            user={user}
           />
         </div>
 
         <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-5 mb-10">
-          <div className="bg-red text-white px-8 py-4 flex justify-between items-center">
+          <div className="bg-violet-950 text-white px-8 py-4 flex justify-between items-center">
             <button
               onClick={() => router.push(`/${userId}/submitted-cases`)}
               className="text-white hover:underline"
             >
               ← Back
             </button>
-            <Link href={`/${userId}/submitted-cases/${case_id}/edit`} className="text-blue-600 hover:underline flex items-center text-sm">
-              Edit <FaEdit className="ml-1" />
-            </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-1 pr-0 pl-8">
@@ -276,46 +271,32 @@ const handleNext = () => {
                       {getCategoryName(caseData.case_type)}
                     </span>
                   </p>
-                  <p>
-                    <span
-                      className={`px-2 py-1 rounded-full text-white text-xs font-semibold ${
-                        caseData.status === "open"
-                          ? "bg-green-500"
-                          : caseData.status === "ongoing"
-                          ? "bg-yellow-500"
-                          : "bg-red"
-                      }`}
-                    >
-                      {caseData.status.toUpperCase()}
-                    </span>
-                  </p>
                 </div>
               </div>
 
-              {/* Scrollable Middle Panel */}
-              <div className="flex-grow overflow-y-auto pr-10 pt-0 pl-3">
-                <div className="mb-4">
-                  <p
-                    ref={descriptionRef}
-                    className={`text-black leading-relaxed whitespace-pre-line transition-all ${
-                      isExpanded ? "" : "max-h-20 overflow-hidden"
-                    }`}
+              {/* Description */}
+              <div className="flex-1 overflow-y-auto px-3">
+                <p
+                  ref={descriptionRef}
+                  className={`text-sm text-gray-700 ${
+                    hasOverflow ? "line-clamp-3" : ""
+                  }`}
+                >
+                  {caseData.description}
+                </p>
+                {hasOverflow && (
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-blue-500 text-sm mt-1"
                   >
-                    {caseData.description}
-                  </p>
-                  {hasOverflow && (
-                    <button
-                      className="mt-0 text-xs text-gray-500 hover:text-gray-700 font-medium"
-                      onClick={() => setIsExpanded(!isExpanded)}
-                    >
-                      {isExpanded ? "Show less" : "Read more"}
-                    </button>
-                  )}
-                </div>
+                    {isExpanded ? "Show less" : "Show more"}
+                  </button>
+                )}
+              </div>
 
-                {/* Media Display */}
-                <div className="mb-0 flex justify-center items-center">
-
+              {/* Media Gallery */}
+              <div className="shrink-0 mt-4">
+                <div className="flex items-center justify-center">
                   {/* Previous button */}
                   {caseData.attachments?.length > 1 && (
                     <button 
@@ -326,66 +307,69 @@ const handleNext = () => {
                     </button>
                   )}
 
-                  <div className="relative mb-0 h-[26vh] w-[22vw]">
-                    {caseData.attachments?.length > 0 && (
-                      caseData.attachments.map((attachment, index) => {
-                        const fileType = getFileType(attachment.file);
-                        
-                        return (
-                          <div 
-                            key={attachment.id}
-                            className={`absolute inset-0 transition-opacity duration-300 ${
-                              currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                            }`}
-                          >
-                            {fileType === 'image' ? (
-                              <img
+                  {/* Media container */}
+                  <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
+                    {caseData.attachments?.map((attachment, index) => {
+                      const fileType = getFileType(attachment.file);
+                      
+                      return (
+                        <div 
+                          key={attachment.id}
+                          className={`absolute inset-0 transition-opacity duration-300 ${
+                            currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                          }`}
+                        >
+                          {fileType === 'image' ? (
+                            <div className="relative w-full h-full">
+                              <Image
                                 src={attachment.file}
                                 alt="case attachment"
-                                className="rounded-md object-cover h-full w-full cursor-pointer"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="rounded-md object-cover cursor-pointer"
                                 onClick={() => {
                                   setSelectedImage(attachment.file);
                                   setCurrentMediaIndex(index);
                                 }}
                               />
-                            ) : fileType === 'video' ? (
-                              <div className="relative h-full w-full">
-                                <video
-                                  ref={el => {
-                                    if (el) {
-                                      videoRefs.current[index] = el;
-                                    }
-                                  }}
-                                  controls
-                                  className="rounded-md object-cover h-full w-full"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    setSelectedImage(attachment.file);
-                                    setCurrentMediaIndex(index);
-                                  }}
-                                  preload="metadata"
-                                  onPause={() => {
-                                    if (currentMediaIndex !== index && videoRefs.current[index]) {
-                                      videoRefs.current[index]!.currentTime = 0;
-                                    }
-                                  }}
-                                >
-                                  <source 
-                                    src={attachment.file} 
-                                    type={`video/${attachment.file.split('.').pop()}`}
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                              </div>
-                            ) : (
-                              <div className="h-full w-full bg-gray-100 flex items-center justify-center">
-                                <span>Unsupported file type</span>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })
-                    )}
+                            </div>
+                          ) : fileType === 'video' ? (
+                            <div className="relative h-full w-full">
+                              <video
+                                ref={el => {
+                                  if (el) {
+                                    videoRefs.current[index] = el;
+                                  }
+                                }}
+                                controls
+                                className="rounded-md object-cover h-full w-full"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setSelectedImage(attachment.file);
+                                  setCurrentMediaIndex(index);
+                                }}
+                                preload="metadata"
+                                onPause={() => {
+                                  if (currentMediaIndex !== index && videoRefs.current[index]) {
+                                    videoRefs.current[index]!.currentTime = 0;
+                                  }
+                                }}
+                              >
+                                <source 
+                                  src={attachment.file} 
+                                  type={`video/${attachment.file.split('.').pop()}`}
+                                />
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                          ) : (
+                            <div className="h-full w-full bg-gray-100 flex items-center justify-center">
+                              <span>Unsupported file type</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Next button */}
@@ -413,9 +397,11 @@ const handleNext = () => {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <img 
+                        <Image 
                           src={attachment.file} 
                           alt="Preview" 
+                          width={48}
+                          height={48}
                           className="h-full w-full object-cover"
                         />
                       ) : (
@@ -430,7 +416,6 @@ const handleNext = () => {
 
               {/* Bottom Panel - Action Buttons */}
               <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
-
                 <BaseButton
                   color="red"
                   textColor="white"
@@ -442,13 +427,14 @@ const handleNext = () => {
             </div>
 
             {/* Right Panel */}
-            
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
-                <img
+                <Image
                   src="/blank-profile.svg"
                   alt="avatar"
-                  className="rounded-full w-20 h-20 mx-auto mb-2"
+                  width={80}
+                  height={80}
+                  className="rounded-full mx-auto mb-2"
                 />
                 <h3 className="text-lg text-black font-semibold">
                   { caseData.created_by 
@@ -488,13 +474,17 @@ const handleNext = () => {
               </button>
               
               {/* Media display */}
-              <div onClick={(e) => e.stopPropagation()} className="max-h-[60vh] max-w-[60vw]">
+              <div onClick={(e) => e.stopPropagation()} className="relative max-h-[60vh] max-w-[60vw]">
                 {getFileType(selectedImage) === 'image' ? (
-                  <img
-                    src={selectedImage}
-                    alt="enlarged media"
-                    className="rounded-md h-full w-full object-contain"
-                  />
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={selectedImage}
+                      alt="enlarged media"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 60vw"
+                      className="rounded-md object-contain"
+                    />
+                  </div>
                 ) : (
                   <video
                     controls

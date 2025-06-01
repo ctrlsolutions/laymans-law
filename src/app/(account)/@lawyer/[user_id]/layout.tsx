@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { UserLogout } from "@/services/AuthServices";
-import { toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 import LawyerDetails from "@/app/(account)/@lawyer/[user_id]/@details/page";
 import LawyerNotifs from "@/app/(account)/@lawyer/[user_id]/@notifications/page";
 import LawyerCases from "@/app/(account)/@lawyer/[user_id]/@active_cases/page";
@@ -17,17 +15,7 @@ export default function AccountLayout({
   layman: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const handleLogout = async () => {
-    try {
-      await UserLogout();
-      router.push("/login");
-    } catch (error) {
-      toast.error("Failed to log out. Please try again.");
-    }
-  };
-
   const pathname = usePathname();
-  const router = useRouter();
 
   const [userType, setUserType] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);

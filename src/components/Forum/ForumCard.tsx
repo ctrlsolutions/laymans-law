@@ -3,7 +3,6 @@ import { Category } from "@/interface/CategoryTypes";
 import { Forum } from "@/interface/ForumTypes";
 import Card from "@/components/Profile/Card";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
-import { toggleBookmark } from "@/services/ForumServices";
 
 const ForumCard: React.FC<{
   forumItem: Forum;

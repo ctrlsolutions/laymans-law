@@ -7,14 +7,9 @@ import { categories } from "@/constants/caseConstants";
 import { updateForumPost, deleteForumPost } from "@/services/ForumServices";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 
-const ForumModalContent: React.FC<{
-  post: Forum;
-  onClose: () => void;
-  onUpdate: (updated: Forum) => void;
-  onDelete: (deletedId: number) => void;
-}> = ({ post, onClose, onUpdate, onDelete }) => {
+export default function ForumModalContent({ post, onDelete }: { post: Forum; onDelete: (deletedId: number) => void }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState(post.content);
+  const [editedContent, setEditedContent] = useState(post.content);
   const [title, setTitle] = useState(post.title);
   const [category, setCategory] = useState(post.category);
   const categoryOptions = categories.map((category) => ({
@@ -26,7 +21,7 @@ const ForumModalContent: React.FC<{
 
   useEffect(() => {
     setTitle(post.title);
-    setContent(post.content);
+    setEditedContent(post.content);
     setCategory(post.category);
   }, [post]);
 
@@ -63,14 +58,13 @@ const ForumModalContent: React.FC<{
 
   const handleSaveClick = async () => {
     try {
-      const updated = await updateForumPost(post.id, {
+      await updateForumPost(post.id, {
         title,
-        content,
+        content: editedContent,
         category,
       });
-      onUpdate(updated);
       setIsEditing(false);
-    } catch (err) {
+    } catch {
       alert("Failed to update post.");
     }
   };
@@ -89,7 +83,7 @@ const ForumModalContent: React.FC<{
       } else {
         alert("Failed to delete post.");
       }
-    } catch (err) {
+    } catch {
       alert("An error occurred while deleting the post.");
     }
   };
@@ -177,13 +171,13 @@ const ForumModalContent: React.FC<{
           <>
             <div className="relative mb-2">
               <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
                 className="w-full text-xs text-gray-800 border rounded-md p-2"
                 maxLength={2500}
               />
               <span className="absolute bottom-0 right-3 text-xs text-gray-500 bg-white bg-opacity-80 px-1 rounded">
-                {content.length}/2500
+                {editedContent.length}/2500
               </span>
             </div>
           </>
@@ -211,6 +205,4 @@ const ForumModalContent: React.FC<{
       </div>
     </div>
   );
-};
-
-export default ForumModalContent;
+}

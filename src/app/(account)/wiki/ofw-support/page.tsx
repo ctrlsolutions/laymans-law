@@ -5,6 +5,7 @@ import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { CountryData } from "@/interface/CountryTypes";
 import { fetchOFWSupport } from "@/services/OfwServices";
+import Image from 'next/image';
 
 type SupportSectionHeaderProps = {
   onCountryChange: (countryCode: string) => void;
@@ -134,10 +135,12 @@ const MainContent: React.FC<CountryData & { flagUrl: string }> = ({
       <h1 className="text-3xl font-semibold flex items-center gap-2">
         {country}{" "}
         {flagUrl ? (
-          <img
+          <Image
             src={flagUrl}
             alt={`${country} flag`}
-            className="w-10 h-10 rounded-full border border-black"
+            width={40}
+            height={40}
+            className="rounded-full border border-black"
             style={{
               objectFit: country === "Japan" ? "cover" : "fill",
               objectPosition: "center",

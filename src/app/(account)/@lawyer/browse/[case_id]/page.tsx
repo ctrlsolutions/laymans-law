@@ -13,37 +13,16 @@ import { IoClose } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
-const getCategoryColor = (category: string) => {
-  switch (category.toLowerCase()) {
-    case "divorce cases":
-      return "bg-green-800 text-white";
-    case "land ownership":
-      return "bg-cyan-400 border border-blue-400 text-black";
-      case "civil rights":
-        return "bg-blue text-white";
-    case "environmental law":
-      return "bg-fuchsia-600 text-white";
-    case "human rights":
-      return "bg-rose-500 text-white";
-    default:
-      return "bg-gray-400 text-white";
-  }
-};
+import Image from 'next/image';
 
 export default function AcceptCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showAllMedia, setShowAllMedia] = useState(false);
-  const [showAllFiles, setShowAllFiles] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
-  const [cases, setCases] = useState<Case[]>([]);
-  const [isAccepting, setIsAccepting] = useState(false);
+  const [user] = useState<{ firstName: string } | null>(null);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
@@ -154,7 +133,6 @@ export default function AcceptCasePage() {
       return;
     }
 
-    setIsAccepting(true);
     setError(null); 
 
     const response = await acceptCase(case_id);
@@ -167,7 +145,6 @@ export default function AcceptCasePage() {
     } else {
       setError(response.message || "Failed to accept the case. Please try again.");
       toast.error(`Error: ${response.message || "Failed to accept the case."}`);
-      setIsAccepting(false); 
     }
   };
 
@@ -185,8 +162,8 @@ export default function AcceptCasePage() {
           <Header 
             searchQuery={searchQuery} 
             setSearchQuery={setSearchQuery} 
-            openCaseCount={cases.length} 
-            user={user} 
+            openCaseCount={0} 
+            user={user}
           />
         </div>
 
@@ -287,15 +264,19 @@ export default function AcceptCasePage() {
                             }`}
                           >
                             {fileType === 'image' ? (
-                              <img
-                                src={attachment.file}
-                                alt="case attachment"
-                                className="rounded-md object-cover h-full w-full cursor-pointer"
-                                onClick={() => {
-                                  setSelectedImage(attachment.file);
-                                  setCurrentMediaIndex(index);
-                                }}
-                              />
+                              <div className="relative h-full w-full">
+                                <Image
+                                  src={attachment.file}
+                                  alt="case attachment"
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  className="rounded-md object-cover cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedImage(attachment.file);
+                                    setCurrentMediaIndex(index);
+                                  }}
+                                />
+                              </div>
                             ) : fileType === 'video' ? (
                               <div className="relative h-full w-full">
                                 <video
@@ -361,11 +342,15 @@ export default function AcceptCasePage() {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <img 
-                          src={attachment.file} 
-                          alt="Preview" 
-                          className="h-full w-full object-cover"
-                        />
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={attachment.file}
+                            alt="Preview"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="rounded-md object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                           <FaCirclePlay color="white"/>
@@ -393,10 +378,12 @@ export default function AcceptCasePage() {
             
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
-                <img
+                <Image
                   src="/blank-profile.svg"
                   alt="avatar"
-                  className="rounded-full w-20 h-20 mx-auto mb-2"
+                  width={80}
+                  height={80}
+                  className="rounded-full mx-auto mb-2"
                 />
                 <h3 className="text-lg text-black font-semibold">
                   <p>Anonymous</p>
@@ -430,11 +417,15 @@ export default function AcceptCasePage() {
               {/* Media display */}
               <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
                 {getFileType(selectedImage) === 'image' ? (
-                  <img
-                    src={selectedImage}
-                    alt="enlarged media"
-                    className="rounded-md h-full w-full object-contain"
-                  />
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={selectedImage}
+                      alt="enlarged media"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 80vw"
+                      className="rounded-md object-contain"
+                    />
+                  </div>
                 ) : (
                   <video
                     controls

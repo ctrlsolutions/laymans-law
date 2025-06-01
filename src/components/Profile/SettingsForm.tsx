@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { toast, ToastContainer } from "react-toastify";
 import Button from "@/components/Global/BaseButton";
 import { getProfile, updateProfile } from "@/services/ProfileServices";

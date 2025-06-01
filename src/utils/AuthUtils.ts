@@ -1,12 +1,3 @@
-const isCheckboxOrRadio = (
-  element: EventTarget
-): element is HTMLInputElement => {
-  return (
-    element instanceof HTMLInputElement &&
-    (element.type === "checkbox" || element.type === "radio")
-  );
-};
-
 export const handleInputChange = <T extends Record<string, any>>(
   event: React.ChangeEvent<
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement

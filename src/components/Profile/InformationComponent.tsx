@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
 
 interface UserProfileProps {
   first_name: string;
