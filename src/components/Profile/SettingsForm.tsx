@@ -27,7 +27,7 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
   const [editableFields, setEditableFields] = useState<Record<string, boolean>>(
     {}
   );
-  const [updatedFields, setUpdatedFields] = useState<Record<string, any>>({});
+  const [updatedFields, setUpdatedFields] = useState<Record<string, unknown>>({});
 
   const toggleEditable = (field: string) => {
     if (!(field in editableFields)) {

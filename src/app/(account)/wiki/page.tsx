@@ -117,7 +117,7 @@ const Page: React.FC = () => {
       const result = await fetchAllLaws();
       if (result) {
         setLaws(
-          result.map((law: any) => ({
+          result.map((law: LawData) => ({
             id: law.id,
             title: law.title,
             chapter: law.code,

@@ -1,8 +1,9 @@
 import { ApiResponse } from "@/interface/AuthTypes";
+import { SubmitCaseFormData } from "@/interface/CaseTypes";
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cases`;
 
-export const submitCase = async (caseData: any, files: File[] = []): Promise<ApiResponse> => {
+export const submitCase = async (caseData: SubmitCaseFormData, files: File[] = []): Promise<ApiResponse> => {
   try {
     const formData = new FormData();
 
