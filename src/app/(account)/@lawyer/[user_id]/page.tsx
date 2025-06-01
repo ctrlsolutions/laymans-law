@@ -1,3 +1,3 @@
-export default function LawyerUserPage({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default function LawyerUserPage() {
+  return <div>Lawyer User Page</div>;
 }

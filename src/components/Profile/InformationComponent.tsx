@@ -3,7 +3,7 @@ import * as React from "react";
 import Image from "next/image";
 import { FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
 
-interface UserProfileProps {
+export interface UserProfileProps {
   first_name: string;
   last_name: string;
   avatar: string;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import Button from "@/components/BaseButton";
+import Button from "@/components/Global/BaseButton";
 
 export default function Home() {
     const [formData, setFormData] = useState({
@@ -150,7 +150,7 @@ export default function Home() {
               type="text"
               color="gray-900"
               icon="hash"
-              value={formData.occupation}
+              value={formData.specialization}
               onChange={handleInputChange}
             />
             <div className="grid grid-cols-2 gap-4 mt-4">
@@ -171,7 +171,7 @@ export default function Home() {
                     type="date"
                     color="gray-900"
                     icon="calendar"
-                    value={formData.birthday}
+                    value={formData.rolldate}
                     onChange={handleInputChange}
                     className="font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 w-full"
                 />
@@ -179,8 +179,8 @@ export default function Home() {
           </div>
         </div> 
         <div className="flex justify-between text-sm mt-10">
-              <Button text="Delete Account" color="red" onClick={handleDeleteAccount} />
-              <Button text="Save Changes" color="red" onClick={handleSaveChanges} />
+              <Button color="red" onClick={handleDeleteAccount}>Delete Account</Button>
+              <Button color="red" onClick={handleSaveChanges}>Save Changes</Button>
         </div>
       </div>
     );

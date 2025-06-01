@@ -10,6 +10,7 @@ import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
+import { User } from "@/interface/AuthTypes";
 
 const ActiveCasesPage: React.FC = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const ActiveCasesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [sortOrder, setSortOrder] = React.useState("latest");
@@ -57,7 +58,7 @@ const ActiveCasesPage: React.FC = () => {
       if (isMounted) {
         if (response.success && response.data) {
           console.log('Fetched cases:', response.data);
-          setCases(response.data);
+          setCases(response.data as Case[]);
         } else {
           setError(response.message || "Failed to load cases");
         }
@@ -79,7 +80,7 @@ const ActiveCasesPage: React.FC = () => {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
@@ -99,7 +100,7 @@ const ActiveCasesPage: React.FC = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
-        user={user}
+        user={user ? { firstName: user.first_name } : null}
       />
 
       <section

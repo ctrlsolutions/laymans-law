@@ -1,3 +1,3 @@
-export default function LaymanUserPage({ children }: { children: React.ReactNode }) {
-    return <>{children}</>;
-  }
+export default function LaymanUserPage() {
+  return <div>Layman User Page</div>;
+}

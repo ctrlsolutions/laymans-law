@@ -12,7 +12,7 @@ type SupportSectionHeaderProps = {
   countries: CountryData[];
 };
 
-function sanitizeUrl(url: any) {
+function sanitizeUrl(url: string) {
   const trimmed = url.trim().replace(/\s+/g, "");
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     return trimmed;

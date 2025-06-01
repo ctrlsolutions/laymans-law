@@ -1,3 +1,8 @@
+interface LeftPanelProps {
+  selectedChapter: string;
+  setSelectedChapter: (chapter: string) => void;
+}
+
 export default function LeftPanel({
   selectedChapter,
   setSelectedChapter,

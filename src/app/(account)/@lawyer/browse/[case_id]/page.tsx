@@ -62,7 +62,7 @@ export default function AcceptCasePage() {
       console.log("Case ID from params:", case_id); 
   
       if (response.success && response.data) {
-        const foundCase = response.data.find((c: Case) => {
+        const foundCase = (response.data as Case[]).find((c: Case) => {
           console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
           return String(c.id) === case_id; 
         });

@@ -10,6 +10,7 @@ export default function BaseButton({
   onClick,
   type = "button",
   loading = false,
+  className,
 }: FormButtonProps & { loading?: boolean }) {
   return (
     <button
@@ -26,6 +27,7 @@ export default function BaseButton({
         xl:h-[3rem] xl:text-sm xl:rounded-[0.625rem] xl:p-2
         flex items-center justify-center
         ${loading ? "bg-gray-400 cursor-not-allowed" : ""}
+        ${className || ""}
       `}
     >
       {loading ? <FaSpinner className="animate-spin" /> : children}

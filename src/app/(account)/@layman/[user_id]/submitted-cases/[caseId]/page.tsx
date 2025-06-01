@@ -13,6 +13,7 @@ import { IoClose } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { getProfile } from "@/services/ProfileServices";
 import { categories } from "@/constants/caseConstants";
+import { User } from "@/interface/AuthTypes";
 
 export default function SubmittedCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -21,7 +22,7 @@ export default function SubmittedCasePage() {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -110,7 +111,7 @@ export default function SubmittedCasePage() {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
@@ -131,7 +132,7 @@ export default function SubmittedCasePage() {
       console.log("Case ID from params:", case_id); 
   
       if (response.success && response.data) {
-        const foundCase = response.data.find((c: Case) => {
+        const foundCase = (response.data as Case[]).find((c: Case) => {
           console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
           return String(c.id) === case_id; 
         });
@@ -233,7 +234,7 @@ const handleNext = () => {
             searchQuery={searchQuery} 
             setSearchQuery={setSearchQuery} 
             openCaseCount={0} 
-            user={user}
+            user={user ? { firstName: user.first_name } : null}
           />
         </div>
 

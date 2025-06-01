@@ -16,12 +16,13 @@ export interface SignupData {
   user_type: string;
   roll_number?: string;
   roll_signed_date?: string;
+  [key: string]: string | undefined;
 }
 
-export interface ApiResponse {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
-  data?: unknown;
+  data?: T;
   error?: string;
   [key: string]: unknown;
 }

@@ -78,6 +78,11 @@ export interface LawData {
     language_bisaya: string;
     language_waray: string;
   };
+  code?: string;
+  full_law?: string;
+  summary?: {
+    summary: string;
+  };
 }
 export interface SubmitCaseFormData {
   title: string;

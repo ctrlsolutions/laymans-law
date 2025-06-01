@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Forum } from "@/interface/ForumTypes";
+import { User } from "@/interface/AuthTypes";
 
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import ForumCard from "@/components/Forum/ForumCard";
@@ -29,7 +30,7 @@ const ForumPage: React.FC = () => {
   const [forumLoading, setForumLoading] = useState(true);
   const [forumError, setForumError] = useState("");
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
   const ForumCount = filteredForum.filter((f) => f.title).length;
@@ -110,10 +111,10 @@ const ForumPage: React.FC = () => {
         const all = await fetchAllForums();
         if (all.success && all.data) {
           const forumsWithBookmarks = await Promise.all(
-            all.data.map(async (item: Forum) => {
+            (all.data as Forum[]).map(async (item: Forum) => {
               try {
                 const result = await checkIfBookmarked(item.id);
-                return { ...item, bookmark: result?.bookmarked };
+                return { ...item, bookmark: result?.bookmarked ?? false };
               } catch (error) {
                 console.error("Error checking bookmark:", error);
                 return { ...item, bookmark: false };
@@ -138,7 +139,7 @@ const ForumPage: React.FC = () => {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
@@ -160,7 +161,7 @@ const ForumPage: React.FC = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={ForumCount}
-        user={user}
+        user={user ? { firstName: user.first_name } : null}
       />
 
       <section

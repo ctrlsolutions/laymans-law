@@ -11,6 +11,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { getProfile } from "@/services/ProfileServices";
 import Image from 'next/image';
+import { User } from "@/interface/AuthTypes";
 
 
 interface Attachment {
@@ -68,7 +69,7 @@ export default function EditCasePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   
 
   useEffect(() => {
@@ -82,10 +83,10 @@ export default function EditCasePage() {
         }
 
         const data = response.data;
-        setCaseData(data);
-        setTitle(data.title);
-        setDescription(data.description);
-        setCategory(data.case_type);
+        setCaseData(data as Case);
+        setTitle((data as Case).title);
+        setDescription((data as Case).description);
+        setCategory((data as Case).case_type);
       } catch (err) {
         console.error("Error fetching case data:", err);
         setError(err instanceof Error ? err.message : "Failed to load case data");
@@ -104,7 +105,7 @@ export default function EditCasePage() {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
@@ -203,7 +204,7 @@ export default function EditCasePage() {
           searchQuery={searchQuery} 
           setSearchQuery={setSearchQuery} 
           openCaseCount={0} 
-          user={user}
+          user={user ? { firstName: user.first_name } : null}
         />
       </div>
 

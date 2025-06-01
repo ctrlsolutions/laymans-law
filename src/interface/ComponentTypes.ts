@@ -10,6 +10,12 @@ export interface FormInputProps {
   onIconClick?: () => void;
 }
 
+export interface FormSelectChoice {
+  label: string;
+  value: string;
+  disabled?: boolean;
+}
+
 export interface FormSelectProps {
   label: string;
   name: string;
@@ -18,7 +24,7 @@ export interface FormSelectProps {
   height?: string;
   textSize?: string;
   value: string;
-  choices: { label: string; value: string }[];
+  choices: FormSelectChoice[];
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
@@ -29,6 +35,8 @@ export interface FormButtonProps {
   width?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  className?: string;
+  textSize?: string;
 }
 
 export interface SubmitCaseFormData {
@@ -56,4 +64,5 @@ export interface Reply {
   author_username: string;
   content: string;
   created_at: string;
+  replies?: Reply[];
 }

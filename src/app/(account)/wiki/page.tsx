@@ -4,6 +4,8 @@ import { cases, LawData } from "@/interface/CaseTypes";
 import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { fetchAllLaws } from "@/services/WikiServices";
+import { User } from "@/interface/AuthTypes";
+import { getProfile } from "@/services/ProfileServices";
 
 const TagChip: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex items-center px-3 py-1.5 text-xs bg-white rounded-lg shadow">
@@ -91,9 +93,11 @@ const Page: React.FC = () => {
 
   const [selectedLanguage, setSelectedLanguage] = useState("Tagalog");
 
-  const openCaseCount = cases.filter((c) => c.status.isOpen).length;
+  const openCaseCount = cases.filter((c) => c.status === "open").length;
 
   const [laws, setLaws] = useState<LawData[]>([]);
+
+  const [user, setUser] = useState<User | null>(null);
 
   const filteredLaws = laws.filter(
     (law) =>
@@ -120,7 +124,7 @@ const Page: React.FC = () => {
           result.map((law: LawData) => ({
             id: law.id,
             title: law.title,
-            chapter: law.code,
+            chapter: law.code || "",
             tags: law.tags || [],
             content: law.full_law || law.summary?.summary || "",
             translation: {
@@ -139,12 +143,33 @@ const Page: React.FC = () => {
     loadLaws();
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchUserProfile = async () => {
+      const response = await getProfile();
+      if (isMounted) {
+        if (response.success && response.data) {
+          setUser(response.data as User);
+        } else {
+          console.error("Error fetching user data:", response.message);
+        }
+      }
+    };
+
+    fetchUserProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
+        user={user ? { firstName: user.first_name } : null}
       />
 
       <section

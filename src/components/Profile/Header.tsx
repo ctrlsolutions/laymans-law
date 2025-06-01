@@ -49,7 +49,7 @@ const NotificationIcon: React.FC<{
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [setIsOpen]);
 
   return (
     <div className="relative inline-block select-none" ref={notificationRef}>
@@ -84,7 +84,7 @@ const NotificationIcon: React.FC<{
                       {c.title}
                     </p>
                     <p className="text-gray-500 text-[10px]">
-                      {c.created_by} • {c.created_by}
+                      {c.created_by.first_name} • {c.created_by.last_name}
                     </p>
                   </div>
                 </li>
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({
               height={60}
               className="z-10 rounded-full mt-3"
             />
-            <span className="my-auto">{user?.first_name || "Guest"}</span>
+            <span className="my-auto">{user?.firstName || "Guest"}</span>
           </div>
         </div>
       </div>
