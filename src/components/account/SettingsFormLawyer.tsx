@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import Button from "@/components/BaseButton";
 
@@ -38,9 +39,11 @@ export default function Home() {
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <div className="relative">
             <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200 mr-6">
-              <img
+              <Image
                 src="https://i.pinimg.com/736x/93/dd/a6/93dda651f941477847f7f74835f67288.jpg"
                 alt="Profile"
+                width={160}
+                height={160}
                 className="w-full h-full object-cover"
               />
             </div>

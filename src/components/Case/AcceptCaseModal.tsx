@@ -26,9 +26,11 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
           <p className="text-gray-700 mb-4">
             {caseData.description || "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum"}
           </p>
-          <img
+          <Image
             src="https://via.placeholder.com/400x200"
             alt="case visual"
+            width={400}
+            height={200}
             className="rounded-lg mb-4"
           />
         </div>

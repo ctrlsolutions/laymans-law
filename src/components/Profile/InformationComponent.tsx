@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import Image from "next/image";
 import { FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
 
 interface UserProfileProps {
@@ -22,9 +23,11 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
     <>
       <div className="flex flex-col items-center gap-4">
         <div className="w-28 h-28 rounded-full overflow-hidden">
-          <img
+          <Image
             src={userData.avatar || defaultAvatar}
             alt={`Profile picture of ${userData.first_name}`}
+            width={112}
+            height={112}
             className="w-full h-full object-cover"
           />
         </div>

@@ -69,9 +69,11 @@ const NotificationIcon: React.FC<{
                   key={c.id}
                   className="flex items-center space-x-3 text-xs text-gray-700 py-2 border-b last:border-b-0"
                 >
-                  <img
+                  <Image
                     src={c.avatar}
                     alt="avatar"
+                    width={32}
+                    height={32}
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
