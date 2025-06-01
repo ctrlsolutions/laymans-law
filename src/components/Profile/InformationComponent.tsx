@@ -37,8 +37,8 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
         </div>
         <div className="flex flex-col gap-3 mt-4 text-sm text-black font-bold truncate">
           {/* <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-sm" />{userData.address}</p> */}
-          <p className="flex items-center gap-3"><FaEnvelope className="text-sm" /><a href={`mailto:${userData.email}`} className="hover:underline">{userData.email}</a></p>
-          <p className="flex items-center gap-3"><FaPhone className="text-sm" /><a href={`tel:${userData.contact_number}`} className="hover:underline">{userData.contact_number}</a></p>
+          <p className="flex items-center gap-3"><FaEnvelope className="text-sm" /><a rel="noopener noreferrer" target="_blank" href={`mailto:${userData.email}`} className="hover:underline">{userData.email}</a></p>
+          <p className="flex items-center gap-3"><FaPhone className="text-sm" /><a rel="noopener noreferrer" target="_blank" href={`tel:${userData.contact_number}`} className="hover:underline">{userData.contact_number}</a></p>
           <p className="flex items-center gap-3">
             <FaUser className="text-sm" />
             {userData.gender === "M" ? "Male" : userData.gender === "F" ? "Female" : "Other"}
