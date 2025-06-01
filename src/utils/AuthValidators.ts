@@ -1,7 +1,7 @@
 export const validateField = (
   name: string,
   value: string,
-  form: any
+  form: Record<string, unknown>
 ): string => {
   const trimmedValue = value.trim();
 

@@ -53,7 +53,7 @@ export default function SubmittedCasePage() {
         const fileType = getFileType(attachment.file);
         
         if (fileType === 'image') {
-          const img = new Image();
+          const img = document.createElement('img');
           img.onload = () => console.log(`Image ${index} loaded: ${attachment.file}`);
           img.onerror = () => console.error(`Failed to load image ${index}: ${attachment.file}`);
           img.src = attachment.file;
@@ -81,7 +81,7 @@ export default function SubmittedCasePage() {
         const fileType = getFileType(attachment.file);
         
         if (fileType === 'image') {
-          const img = new Image();
+          const img = document.createElement('img');
           img.onload = () => console.log(`Image attachment ${index} loaded successfully`);
           img.onerror = () => console.error(`Failed to load image attachment ${index}`);
           img.src = attachment.file;

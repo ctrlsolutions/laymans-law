@@ -1,9 +1,9 @@
-export const handleInputChange = <T extends Record<string, any>>(
+export const handleInputChange = <T extends Record<string, unknown>>(
   event: React.ChangeEvent<
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
   >,
   setForm: React.Dispatch<React.SetStateAction<T>>,
-  setErrors?: React.Dispatch<React.SetStateAction<Partial<T>>>, // Fix: Use Partial<T>
+  setErrors?: React.Dispatch<React.SetStateAction<Partial<T>>>,
   validateField?: (name: string, value: string, form: T) => string
 ) => {
   const { name, value, type } = event.target;
@@ -19,7 +19,7 @@ export const handleInputChange = <T extends Record<string, any>>(
     if (validateField && setErrors) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: validateField(name, value, updatedForm), // Now `setErrors` accepts optional fields
+        [name]: validateField(name, value, updatedForm),
       }));
     }
 
@@ -27,7 +27,7 @@ export const handleInputChange = <T extends Record<string, any>>(
   });
 };
 
-export const handleInputBlur = <T extends Record<string, any>>(
+export const handleInputBlur = <T extends Record<string, unknown>>(
   event: React.FocusEvent<
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
   >,

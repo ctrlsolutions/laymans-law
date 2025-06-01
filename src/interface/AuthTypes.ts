@@ -21,7 +21,9 @@ export interface SignupData {
 export interface ApiResponse {
   success: boolean;
   message?: string;
-  [key: string]: any;
+  data?: unknown;
+  error?: string;
+  [key: string]: unknown;
 }
 
 export interface ProfileSettingsData {
