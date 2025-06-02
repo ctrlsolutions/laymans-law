@@ -487,7 +487,7 @@ export default function SubmittedCasePage() {
               <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
                 <div>
                   <img
-                    src="/blank-profile.svg"
+                    src="/4.svg"
                     alt="avatar"
                     className="rounded-full w-10 h-10 mx-auto mb-2"
                   />

@@ -2,6 +2,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
+import { UserType } from "@/interface/CaseTypes"
 
 interface UserProfileProps {
   first_name: string;
@@ -14,6 +15,7 @@ interface UserProfileProps {
   gender: string;
   birth_date: string;
   occupation: string;
+  user_type: string;
 };
 
 const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => {
@@ -24,7 +26,11 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
       <div className="flex flex-col items-center gap-4">
         <div className="w-28 h-28 rounded-full overflow-hidden">
           <img
-            src={userData.avatar || defaultAvatar}
+            src={
+              userData.user_type.toLowerCase() === "lawyer"
+                ? "/3.svg"
+                : "/4.svg"
+            }
             alt={`Profile picture of ${userData.first_name}`}
             className="w-full h-full object-cover"
           />
@@ -33,7 +39,9 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
           <h1 className="text-2xl font-bold text-black truncate">
             {`${userData.first_name} ${userData.last_name}`}
           </h1>
-          <p className="text-l font-bold text-red overflow-hidden">{userData.role}</p>
+          <p className="text-l font-bold text-red overflow-hidden">
+            {userData.user_type}
+          </p>
         </div>
         <div className="flex flex-col gap-3 mt-4 text-sm text-black font-bold truncate">
           {/* <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-sm" />{userData.address}</p> */}

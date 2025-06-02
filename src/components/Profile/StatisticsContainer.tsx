@@ -8,7 +8,7 @@ interface StatisticsContainerProps {
 
 const StatisticsContainer: React.FC<StatisticsContainerProps> = ({ children }) => {
     return (
-        <div className="w-full pt-[1rem] p-4">
+        <div className="w-full pt-[1rem] px-6 py-8">
             <h2 className="w-full text-2xl font-bold flex items-center gap-2 mb-4 text-black">
                 <RiDonutChartFill className="h-7 w-7"/>
                 Statistics

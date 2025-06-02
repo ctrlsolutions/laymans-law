@@ -35,7 +35,7 @@ const CaseCard: React.FC<{
       : "bg-orange-500";      // Orange for ongoing
     return (
       <span
-        className={`flex self-center shrink-0 w-4 h-4 ${color} rounded-full`}
+        className={`flex self-center shrink-0 w-2.5 h-2.5 ${color} rounded-full`}
         aria-hidden="true"
       />
     );
@@ -65,7 +65,7 @@ const CaseCard: React.FC<{
             <img
               src={
                 caseItem.avatar ||
-                "https://www.w3schools.com/howto/img_avatar.png"
+                "/4.svg"
               }
               alt="Avatar"
               className="w-[70px] rounded-full"
