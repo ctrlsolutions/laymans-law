@@ -66,7 +66,7 @@ const CaseCard: React.FC<{
             <Image
               src={
                 caseItem.avatar ||
-                "https://www.w3schools.com/howto/img_avatar.png"
+                "/avatar.png"
               }
               alt="Avatar"
               width={70}

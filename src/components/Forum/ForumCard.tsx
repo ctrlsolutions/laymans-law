@@ -44,7 +44,7 @@ const ForumCard: React.FC<{
 
         <div className="flex gap-5 justify-start items-center px-9 py-7 mt-5 w-full text-black bg-white rounded-3xl shadow-sm border border-black-100 border-opacity-90 cursor-pointer transition hover:shadow-lg">
           <Image
-            src={"https://www.w3schools.com/howto/img_avatar.png"}
+            src={"/avatar.png"}
             alt="Avatar"
             width={70}
             height={70}
