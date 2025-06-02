@@ -113,7 +113,9 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <FaArrowLeft className="mr-2" />
         Back
       </Link>
-      <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
+      <h2 className="text-xl xs:text-xl sm:text-2xl md:text-2xl lg:text-4xl font-extrabold text-center">
+        Create an account
+      </h2>
 
       <TermsAndConditions
         show={showTermsModal}
@@ -122,7 +124,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
       <form className="overflow-y-auto p-4" onSubmit={handleSubmit}>
         {/* First & Last Name */}
-        <div className="grid grid-cols-2 gap-6 mb-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
           <BaseFormInput
             label="First Name"
             name="first_name"
@@ -170,7 +172,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           onBlur={handleBlur}
         />
 
-        <div className="grid grid-cols-2 gap-6 mb-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
           <BaseFormSelect
             label="Select Gender"
             name="gender"
@@ -199,7 +201,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
         {/* Conditional Fields for Lawyers */}
         {userType === "lawyer" && (
-          <div className="grid grid-cols-2 gap-6 mb-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
             <BaseFormInput
               label="Roll No."
               name="roll_number"
@@ -251,7 +253,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         )}
 
         {/* Terms & Conditions Checkbox */}
-        <div className="flex items-center mt-4 mb-2">
+        <div className="flex items-center mt-3 mb-1 xs:mt-4 xs:mb-2 sm:mt-5 sm:mb-3 md:mt-6 md:mb-4 lg:mt-8 lg:mb-6 text-xs xs:text-sm sm:text-base">
           <input
             id="terms"
             type="checkbox"
@@ -259,7 +261,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             onChange={() => setAgreed(!agreed)}
             className="mr-2 accent-red-800"
           />
-          <label htmlFor="terms" className="text-sm">
+          <label htmlFor="terms" className="text-xs xs:text-sm sm:text-base">
             I agree with the{" "}
             <button
               type="button"
