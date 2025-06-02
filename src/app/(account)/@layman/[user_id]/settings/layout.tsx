@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 
 const tabs = [
   { name: "Profile", path: "profile" },
@@ -14,20 +14,22 @@ export default function SettingsLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const params = useParams();
+  const id = params?.id as string;
   const pathname = usePathname();
   const currentTab = pathname.split("/").pop(); // Get active tab from URL
 
   return (
-    <div className="">
+    <div className="p-8">
       {/* Tab Navigation */}
       <div className="relative flex ml-3 z-0">
         {tabs.map((tab, index) => (
           <Link
             key={tab.path}
-            href={`/dashboard/settings/${tab.path}`}
+            href={`/${id}/settings/${tab.path}`}
             className={`px-8 py-3 font-semibold z-0 -ml-3 transition-all rounded-t-xl ${
               currentTab === tab.path
-                ? "bg-[#120a3a] text-white"
+                ? "bg-red text-white"
                 : "bg-white text-black border"
             } ${index === 0 ? `z-${5 - index}` : ""}`}
             style={{

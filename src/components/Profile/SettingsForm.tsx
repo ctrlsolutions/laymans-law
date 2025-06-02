@@ -85,7 +85,11 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
         <div className="relative">
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">
             <img
-              src="/blank-profile.svg"
+              src={
+                userType.toLowerCase() === "lawyer"
+                  ? "/3.svg"
+                  : "/4.svg"
+              }
               alt="Profile"
               className="w-full h-full object-cover"
             />
