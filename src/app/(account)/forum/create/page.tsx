@@ -7,6 +7,7 @@ import Button from "@/components/Global/BaseButton";
 import Textarea from "@/components/Global/BaseTextArea";
 import { createForum } from "@/services/ForumServices";
 import { categories } from "@/constants/caseConstants";
+import toast from "react-hot-toast";
 
 const DiscussionForm: React.FC<{
   forumTitle: string;
@@ -121,15 +122,14 @@ const DiscussionPage: React.FC = () => {
         throw new Error("Failed to create forum post.");
       }
 
-      alert("Forum post created successfully!");
-      setForumTitle("");
-      setForumDetails("");
-      setForumCategory("General");
+      toast.success("Post created successfully.");
 
-      router.push("/forum");
+      setTimeout(() => {
+        router.push("/forum");
+      }, 1000);
     } catch (err) {
       console.error("Submission error:", err);
-      alert("There was an error submitting your forum post.");
+      toast.error("Failed to create post.");
     }
   };
 

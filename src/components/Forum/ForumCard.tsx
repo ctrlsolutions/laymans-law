@@ -3,7 +3,7 @@ import { Category } from "@/interface/CategoryTypes";
 import { Forum } from "@/interface/ForumTypes";
 import Card from "@/components/Profile/Card";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
-import { toggleBookmark } from "@/services/ForumServices";
+import toast from "react-hot-toast";
 
 const ForumCard: React.FC<{
   forumItem: Forum;
@@ -24,6 +24,12 @@ const ForumCard: React.FC<{
 
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (!bookmarked) {
+      toast.success("Bookmarked successfully.");
+    } else {
+      toast.error("Bookmark removed.");
+    }
     onBookmarkToggle(forumItem.id);
   };
 

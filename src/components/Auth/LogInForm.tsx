@@ -47,7 +47,7 @@ export default function LoginForm() {
       const response = await UserLogin(form.email, form.password);
 
       if (response.success) {
-        toast("Login successful. Welcome back!", {
+        toast("Login successful!", {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
