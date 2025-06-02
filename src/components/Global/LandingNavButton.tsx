@@ -57,17 +57,18 @@ export default function NavButton({
       type={type}
       onClick={handleClick}
       disabled={loading}
-      style={{ opacity, borderRadius, width, height }}
+      style={{ opacity, borderRadius }}
       className={`
         font-bold transition duration-200 ease-in-out hover:opacity-80
-      flex items-center justify-center
+        flex items-center justify-center
         ${
           loading
             ? "bg-gray-400 cursor-not-allowed"
             : `bg-${variant} text-white`
         }
+        w-32 h-10 text-base xs:w-40 xs:h-12 xs:text-lg
         ${className}
-      `}
+    `}
     >
       {loading ? <FaSpinner className="animate-spin text-lg" /> : text}
     </button>

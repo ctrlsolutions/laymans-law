@@ -17,7 +17,7 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<Partial<LoginData>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleInputChange(event, setForm, setErrors, validateField);
@@ -68,12 +68,12 @@ export default function LoginForm() {
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
-      setLoading(false); // Set loading to false after submission is complete
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full ">
       <ToastContainer />
 
       {/* Email */}
@@ -110,7 +110,7 @@ export default function LoginForm() {
       </div>
 
       {/* Remember Me & Forgot Account */}
-      <div className="flex justify-between items-center text-sm sm:text-base text-black">
+      <div className="flex justify-between items-center text-xs xs:text-sm sm:text-base text-black">
         <label className="flex items-center space-x-2 cursor-pointer">
           <input
             type="checkbox"

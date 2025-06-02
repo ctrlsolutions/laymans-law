@@ -77,7 +77,7 @@ export default function Home() {
             className="w-50 sm:w-60 md:w-96 lg:w-96 xl:w-[30rem] md:text-l lg:text-l ml-0 sm:ml-10 md:ml-0 lg:ml-0 xl:ml-10 "
           />
 
-          <div className="mt-6 leading-snug text-sm sm:text-lg md:text-m lg:text-l ml-0 sm:ml-20 md:ml-0 lg:ml-20 xl:ml-32 text-black font-semibold">
+          <div className="mt-4 leading-snug text-xs xs:text-sm sm:text-lg md:text-base lg:text-lg ml-0 xs:ml-10 sm:ml-20 md:ml-0 lg:ml-20 xl:ml-32 text-black font-semibold">
             Intindihin ang mga{" "}
             <span className="font-extrabold text-blue">BATAS</span>,<br />
             Alamin ang iyong mga{" "}
@@ -89,9 +89,13 @@ export default function Home() {
               text="LOG IN"
               route="/login"
               variant="red"
-              width="10rem"
-              height="3rem"
-              fontSize="1.25rem"
+              className="
+                  w-24 h-8 text-xs
+                xs:w-[10rem] xs:h-[3rem] xs:text-[1.25rem]
+                md:w-[25rem] md:h-[3.5rem] md:text-md
+                lg:w-[15rem] lg:h-[3rem] lg:text-xl
+                xl:w-[15rem] xl:h-[3rem] xl:text-xl
+              "
               loading={isLoggingIn}
               onClick={handleLogin}
             />
@@ -99,9 +103,13 @@ export default function Home() {
               text="SIGN UP"
               route="/signup"
               variant="blue"
-              width="10rem"
-              height="3rem"
-              fontSize="1.25rem"
+              className="
+                  w-24 h-8 text-xs
+                xs:w-[10rem] xs:h-[3rem] xs:text-[1.25rem]
+                md:w-[25rem] md:h-[3.5rem] md:text-md
+                lg:w-[15rem] lg:h-[3rem] lg:text-xl
+                xl:w-[15rem] xl:h-[3rem] xl:text-xl
+              "
               loading={isSigningUp}
               onClick={handleSignUp}
             />
