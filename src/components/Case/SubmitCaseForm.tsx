@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
@@ -8,17 +7,27 @@ import { SubmitCaseFormData } from "@/interface/CaseTypes";
 import Textarea from "@/components/Global/BaseTextArea";
 import { toast, ToastContainer } from "react-toastify";
 import { submitCase } from "@/services/CaseServices";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CaseSubmissionForm() {
+  const router = useRouter();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const id = localStorage.getItem("user_id");
+    setUserId(id);
+  }, []);
+
   const [formData, setFormData] = useState<SubmitCaseFormData>({
     title: "",
-    case_type: "",
+    case_type: "family",
     description: "",
   });
 
   interface OtherData {
     legalTopic: string;
-    files: File[]; // ✅ array of File
+    files: File[];
   }
 
   const [otherData, setOtherData] = useState<OtherData>({
@@ -27,22 +36,12 @@ export default function CaseSubmissionForm() {
   });
 
   const caseTypeChoices = [
-    { value: "", label: "Case Type" },
     { value: "family", label: "Family Law" },
     { value: "criminal", label: "Criminal Law" },
     { value: "civil", label: "Civil Law" },
     { value: "labor", label: "Labor Law" },
     { value: "commercial", label: "Commercial and Business Law" },
     { value: "other", label: "Others" },
-    
-  ];
-
-  const legalTopicChoices = [
-    { value: "", label: "Case Type" },
-    { value: "litigation", label: "Litigation" },
-    { value: "consultation", label: "Consultation" },
-    { value: "document_review", label: "Document Review" },
-    { value: "mediation", label: "Mediation" },
   ];
 
   const handleChange = (
@@ -59,7 +58,7 @@ export default function CaseSubmissionForm() {
     if (files) {
       setOtherData((prev) => ({
         ...prev,
-        files: [...(prev.files || []), ...Array.from(files)], // Append new files to the existing list
+        files: [...(prev.files || []), ...Array.from(files)],
       }));
     }
   };
@@ -67,7 +66,7 @@ export default function CaseSubmissionForm() {
   const handleRemoveFile = (index: number) => {
     setOtherData((prev) => ({
       ...prev,
-      files: prev.files.filter((_, i) => i !== index), // Remove the file at the specified index
+      files: prev.files.filter((_, i) => i !== index),
     }));
   };
 
@@ -80,15 +79,20 @@ export default function CaseSubmissionForm() {
     if (response.success) {
       toast.success("Case submitted successfully!");
       console.log(response.message);
+
+      setTimeout(() => {
+        router.push(`/${userId}/submitted-cases`);
+      }, 1500);
     } else {
       console.error(response.message);
+      toast.error("Submission failed. Please try again.");
     }
   };
 
   const handleCancel = () => {
     setFormData({
       title: "",
-      case_type: "",
+      case_type: "family",
       description: "",
     });
     setOtherData({ legalTopic: "", files: [] });
@@ -104,7 +108,6 @@ export default function CaseSubmissionForm() {
 
         <BaseFormInput
           label=" "
-
           name="title"
           type="text"
           value={formData.title}
@@ -115,7 +118,6 @@ export default function CaseSubmissionForm() {
         />
 
         <div className="grid grid-cols-2 gap-3 overflow-hidden z-0">
-
           <BaseFormSelect
             label=" "
             name="case_type"
@@ -144,7 +146,10 @@ export default function CaseSubmissionForm() {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
           </div>
-          <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto" style={{ maxHeight: '7.5rem' }}>
+          <div
+            className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto"
+            style={{ maxHeight: "7.5rem" }}
+          >
             {otherData.files && otherData.files.length > 0 ? (
               <ul className="text-md text-gray-700 text-center space-y-1 w-full mt-3 px-8 py-2">
                 {otherData.files.map((file, index) => (
@@ -170,7 +175,12 @@ export default function CaseSubmissionForm() {
         </div>
 
         <div className="mt-8 flex flex-col gap-4 justify-end">
-          <BaseButton color="gray-200" textColor="gray-500" onClick={handleCancel} width="100%">
+          <BaseButton
+            color="gray-200"
+            textColor="gray-500"
+            onClick={handleCancel}
+            width="100%"
+          >
             Cancel
           </BaseButton>
           <BaseButton color="red" type="submit" width="100%">
