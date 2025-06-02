@@ -34,20 +34,16 @@ const getCategoryColor = (category: string) => {
       return "bg-gray-400 text-white";
   }
 };
+import Image from 'next/image';
 
 export default function AcceptCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showAllMedia, setShowAllMedia] = useState(false);
-  const [showAllFiles, setShowAllFiles] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
-  const [cases, setCases] = useState<Case[]>([]);
-  const [isAccepting, setIsAccepting] = useState(false);
+  const [user] = useState<{ firstName: string } | null>(null);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
@@ -106,7 +102,7 @@ export default function AcceptCasePage() {
       console.log("Case ID from params:", case_id); 
   
       if (response.success && response.data) {
-        const foundCase = response.data.find((c: Case) => {
+        const foundCase = (response.data as Case[]).find((c: Case) => {
           console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
           return String(c.id) === case_id; 
         });
@@ -177,7 +173,6 @@ export default function AcceptCasePage() {
       return;
     }
 
-    setIsAccepting(true);
     setError(null); 
 
     const response = await acceptCase(case_id);
@@ -190,7 +185,6 @@ export default function AcceptCasePage() {
     } else {
       setError(response.message || "Failed to accept the case. Please try again.");
       toast.error(`Error: ${response.message || "Failed to accept the case."}`);
-      setIsAccepting(false); 
     }
   };
 
@@ -230,8 +224,8 @@ export default function AcceptCasePage() {
           <Header 
             searchQuery={searchQuery} 
             setSearchQuery={setSearchQuery} 
-            openCaseCount={cases.length} 
-            user={user} 
+            openCaseCount={0} 
+            user={user}
           />
         </div>
 
@@ -342,15 +336,19 @@ export default function AcceptCasePage() {
                             }`}
                           >
                             {fileType === 'image' ? (
-                              <img
-                                src={attachment.file}
-                                alt="case attachment"
-                                className="rounded-md object-cover h-full w-full cursor-pointer"
-                                onClick={() => {
-                                  setSelectedImage(attachment.file);
-                                  setCurrentMediaIndex(index);
-                                }}
-                              />
+                              <div className="relative h-full w-full">
+                                <Image
+                                  src={attachment.file}
+                                  alt="case attachment"
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  className="rounded-md object-cover cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedImage(attachment.file);
+                                    setCurrentMediaIndex(index);
+                                  }}
+                                />
+                              </div>
                             ) : fileType === 'video' ? (
                               <div className="relative h-full w-full">
                                 <video
@@ -416,11 +414,15 @@ export default function AcceptCasePage() {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <img 
-                          src={attachment.file} 
-                          alt="Preview" 
-                          className="h-full w-full object-cover"
-                        />
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={attachment.file}
+                            alt="Preview"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="rounded-md object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                           <FaCirclePlay color="white"/>
@@ -467,7 +469,7 @@ export default function AcceptCasePage() {
                     className="rounded-full w-10 h-10 mx-auto mb-2"
                   />
                 </div>
-                <div className="text-gray-700 text-left ml-3">
+                <div className="text-gray-700 text-left ml-3"
                   <p>Anonymous</p>
                 </div>
               </div>
@@ -537,11 +539,15 @@ export default function AcceptCasePage() {
               {/* Media display */}
               <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
                 {getFileType(selectedImage) === 'image' ? (
-                  <img
-                    src={selectedImage}
-                    alt="enlarged media"
-                    className="rounded-md h-full w-full object-contain"
-                  />
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={selectedImage}
+                      alt="enlarged media"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 80vw"
+                      className="rounded-md object-contain"
+                    />
+                  </div>
                 ) : (
                   <video
                     controls

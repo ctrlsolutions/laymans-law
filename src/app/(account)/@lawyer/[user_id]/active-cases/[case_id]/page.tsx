@@ -16,24 +16,7 @@ import { IoSend } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
-
-const getCategoryColor = (category: string) => {
-  switch (category.toLowerCase()) {
-    case "divorce cases":
-      return "bg-green-800 text-white";
-    case "land ownership":
-      return "bg-cyan-400 border border-blue-400 text-black";
-      case "civil rights":
-        return "bg-blue text-white";
-    case "environmental law":
-      return "bg-fuchsia-600 text-white";
-    case "human rights":
-      return "bg-rose-500 text-white";
-    default:
-      return "bg-gray-400 text-white";
-  }
-};
+import Image from "next/image";
 
 export default function AcceptCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -41,9 +24,6 @@ export default function AcceptCasePage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
-  const [cases, setCases] = useState<Case[]>([]);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
@@ -60,16 +40,6 @@ export default function AcceptCasePage() {
   const userId = params?.user_id as string;
 
   const API_CASES_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cases`;
-
-  const getCategoryColor = (categoryId: string) => {
-    const category = categories.find((c) => c.id === categoryId);
-    if (!category) return "bg-gray-300 text-black";
-  
-    const isDark = category.color.includes('600') || 
-                  category.color.includes('800') || 
-                  category.color.includes('blue');
-    return `${category.color} ${isDark ? 'text-white' : 'text-black'}`;
-  };
 
   const getCategoryName = (caseTypeId: string): string => {
     const category = categories.find((c) => c.id === caseTypeId);
@@ -91,7 +61,7 @@ export default function AcceptCasePage() {
       console.log("Case ID from params:", case_id); 
   
       if (response.success && response.data) {
-        const foundCase = response.data.find((c: Case) => {
+        const foundCase = (response.data as Case[]).find((c: Case) => {
           console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
           return String(c.id) === case_id; 
         });
@@ -213,7 +183,6 @@ export default function AcceptCasePage() {
   };
 
   if (loading) return <p className="p-8">Loading...</p>;
-  if (error) return <p className="p-8 text-red-500">Error: {error}</p>;
   if (!caseData) return <p className="p-8">Case not found.</p>;
 
 
@@ -225,8 +194,8 @@ export default function AcceptCasePage() {
           <Header 
             searchQuery={searchQuery} 
             setSearchQuery={setSearchQuery} 
-            openCaseCount={cases.length} 
-            user={user} 
+            openCaseCount={0} 
+            user={null} 
           />
         </div>
 
@@ -257,9 +226,19 @@ export default function AcceptCasePage() {
                   </p>
                   <p>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(
-                        caseData.case_type
-                      )}`}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${
+                        caseData.case_type === "divorce cases"
+                          ? "bg-green-800 text-white"
+                          : caseData.case_type === "land ownership"
+                          ? "bg-cyan-400 border border-blue-400 text-black"
+                          : caseData.case_type === "civil rights"
+                          ? "bg-blue text-white"
+                          : caseData.case_type === "environmental law"
+                          ? "bg-fuchsia-600 text-white"
+                          : caseData.case_type === "human rights"
+                          ? "bg-rose-500 text-white"
+                          : "bg-gray-400 text-white"
+                      }`}
                     >
                       {getCategoryName(caseData.case_type)}
                     </span>
@@ -327,10 +306,12 @@ export default function AcceptCasePage() {
                             }`}
                           >
                             {fileType === 'image' ? (
-                              <img
+                              <Image
                                 src={attachment.file}
                                 alt="case attachment"
                                 className="rounded-md object-cover h-full w-full cursor-pointer"
+                                width={200}
+                                height={200}
                                 onClick={() => {
                                   setSelectedImage(attachment.file);
                                   setCurrentMediaIndex(index);
@@ -401,10 +382,12 @@ export default function AcceptCasePage() {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <img 
+                        <Image 
                           src={attachment.file} 
                           alt="Preview" 
                           className="h-full w-full object-cover"
+                          width={48}
+                          height={48}
                         />
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
@@ -524,10 +507,12 @@ export default function AcceptCasePage() {
               {/* Media display */}
               <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
                 {getFileType(selectedImage) === 'image' ? (
-                  <img
+                  <Image
                     src={selectedImage}
                     alt="enlarged media"
                     className="rounded-md h-full w-full object-contain"
+                    width={800}
+                    height={800}
                   />
                 ) : (
                   <video

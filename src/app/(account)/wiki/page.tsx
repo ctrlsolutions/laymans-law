@@ -6,6 +6,8 @@ import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { fetchAllLaws } from "@/services/WikiServices";
 import { wikiLaw } from "@/constants/caseConstants";
+import { User } from "@/interface/AuthTypes";
+import { getProfile } from "@/services/ProfileServices";
 
 function getCategoryById(case_type: string) {
   return wikiLaw.find((cat) => cat.id === case_type);
@@ -125,7 +127,7 @@ const MainContent: React.FC<
 
 const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [wikiSearchQuery, setWikiSearchQuery] = useState("");
+  const [wikiSearchQuery] = useState("");
   const [selectedLaw, setSelectedLaw] = useState<LawData | null>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -133,7 +135,11 @@ const Page: React.FC = () => {
 
   const [selectedLanguage, setSelectedLanguage] = useState("Tagalog");
 
+  const openCaseCount = cases.filter((c) => c.status === "open").length;
+
   const [laws, setLaws] = useState<LawData[]>([]);
+
+  const [user, setUser] = useState<User | null>(null);
 
   const filteredLaws = laws.filter(
     (law) =>
@@ -155,7 +161,7 @@ const Page: React.FC = () => {
       const result = await fetchAllLaws();
       if (result) {
         setLaws(
-          result.map((law: any) => ({
+          result.map((law: LawData) => ({
             id: law.id,
             title: law.title,
             code: law.code,
@@ -182,10 +188,34 @@ const Page: React.FC = () => {
     loadLaws();
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchUserProfile = async () => {
+      const response = await getProfile();
+      if (isMounted) {
+        if (response.success && response.data) {
+          setUser(response.data as User);
+        } else {
+          console.error("Error fetching user data:", response.message);
+        }
+      }
+    };
+
+    fetchUserProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        openCaseCount={openCaseCount}
+        user={user ? { firstName: user.first_name } : null}
+      />
       <section
         ref={sectionRef}
         className={`flex gap-10 p-10 my-8 mx-20 max-w-none max-md:flex-col max-sm:p-2.5 h-[calc(86vh-100px)] ${

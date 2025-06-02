@@ -36,17 +36,29 @@ export default function NavButton({
 }: NavButtonProps) {
   const router = useRouter();
 
+  const bgColorMap: Record<string, string> = {
+    red: "bg-red",
+    blue: "bg-blue",
+    black: "bg-black",
+  };
+
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (type !== "submit") {
       e.preventDefault();
     }
 
     if (!loading) {
-      onClick?.();
+      if (onClick) {
+        onClick();
+      }
 
       if (route) {
         setTimeout(() => {
-          replace ? router.replace(route) : router.push(route);
+          if (replace) {
+            router.replace(route);
+          } else {
+            router.push(route);
+          }
         }, 700);
       }
     }
@@ -58,16 +70,14 @@ export default function NavButton({
       onClick={handleClick}
       disabled={loading}
       style={{ opacity, borderRadius, width, height }}
-      className={`
-        font-bold transition duration-200 ease-in-out hover:opacity-80
-      flex items-center justify-center
-        ${
-          loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : `bg-${variant} text-white`
-        }
-        ${className}
-      `}
+      className={[
+        "font-bold transition duration-200 ease-in-out hover:opacity-80",
+        "flex items-center justify-center",
+        loading
+          ? "bg-gray-400 cursor-not-allowed"
+          : `${bgColorMap[variant] || "bg-red"} text-white`,
+        className,
+      ].join(" ")}
     >
       {loading ? <FaSpinner className="animate-spin text-lg" /> : text}
     </button>

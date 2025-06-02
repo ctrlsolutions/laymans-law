@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { Case, Category } from "@/interface/CaseTypes";
 import Card from "@/components/Profile/Card";
 
@@ -62,12 +63,14 @@ const CaseCard: React.FC<{
           onClick={onClick}
         >
           <div className="flex items-center gap-6">
-            <img
+            <Image
               src={
                 caseItem.avatar ||
                 "https://www.w3schools.com/howto/img_avatar.png"
               }
               alt="Avatar"
+              width={70}
+              height={70}
               className="w-[70px] rounded-full"
             />
             <div className="flex flex-col text-sm">

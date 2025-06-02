@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { toast, ToastContainer } from "react-toastify";
 import Button from "@/components/Global/BaseButton";
 import { getProfile, updateProfile } from "@/services/ProfileServices";
@@ -27,7 +27,7 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
   const [editableFields, setEditableFields] = useState<Record<string, boolean>>(
     {}
   );
-  const [updatedFields, setUpdatedFields] = useState<Record<string, any>>({});
+  const [updatedFields, setUpdatedFields] = useState<Record<string, unknown>>({});
 
   const toggleEditable = (field: string) => {
     if (!(field in editableFields)) {
@@ -84,9 +84,11 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
       <div className="flex flex-row gap-5">
         <div className="relative">
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">
-            <img
+            <Image
               src="/blank-profile.svg"
               alt="Profile"
+              width={160}
+              height={160}
               className="w-full h-full object-cover"
             />
           </div>

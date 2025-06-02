@@ -2,7 +2,6 @@
 
 import AuthContainer from "@/components/Auth/AuthContainer";
 import RecoverAccountForm from "@/components/Auth/RecoverAccountForm";
-import SecurityCodeForm from "@/components/Auth/SecurityCodeForm";
 
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa"; 

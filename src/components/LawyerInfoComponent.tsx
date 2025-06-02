@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface LawyerInfoProps {
     name?: string;
     address?: string;
@@ -22,7 +24,13 @@ const LawyerInfo: React.FC<LawyerInfoProps> = ({
             {/* Profile Picture (Overlapping the Card) */}
             <div className="absolute -top-28 left-1/2 transform -translate-x-1/2">
                 <div className="w-[220px] h-[220px] rounded-full border-4 border-white shadow-md overflow-hidden">
-                    <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+                    <Image 
+                        src={imageUrl} 
+                        alt={name} 
+                        width={220}
+                        height={220}
+                        className="w-full h-full object-cover" 
+                    />
                 </div>
             </div>
 

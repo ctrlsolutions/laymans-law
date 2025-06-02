@@ -1,4 +1,5 @@
 import { IoMdCheckmark } from "react-icons/io";
+import Image from "next/image";
 import { CaseFilterButtonProps } from "@/interface/CaseTypes";
 
 export const CaseFilterButton: React.FC<CaseFilterButtonProps> = ({
@@ -16,9 +17,11 @@ export const CaseFilterButton: React.FC<CaseFilterButtonProps> = ({
         isSelected ? "text-[#0838E5] font-bold" : "text-black"
       }`}
     >
-      <img
+      <Image
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/89e03529fdda8df1e9cb5db7f312b9b67dd7af7e?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
         alt=""
+        width={40}
+        height={40}
         className="w-[40px]"
         aria-hidden="true"
       />

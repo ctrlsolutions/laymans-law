@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { UserLogout } from "@/services/AuthServices";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function AccountLayout({
   lawyer,
@@ -17,10 +18,9 @@ export default function AccountLayout({
   const handleLogout = async () => {
     try {
       await UserLogout();
-
       router.push("/login");
-    } catch (error) {
-      toast.error("Failed to lsog out. Please try again.");
+    } catch {
+      toast.error("Failed to log out. Please try again.");
     }
   };
 
@@ -118,7 +118,13 @@ export default function AccountLayout({
       <div
         className={`absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[22vw] ${sidebarBg} ml-8 p-6 pl-0 rounded-3xl flex flex-col justify-between font-extrabold`}
       >
-        <img src="/logo.png" alt="Logo" className="max-w-full h-auto m-10" />
+        <Image 
+          src="/logo.png" 
+          alt="Logo" 
+          width={200} 
+          height={200} 
+          className="max-w-full h-auto m-10" 
+        />
         <div className="flex flex-col text-center pb-[10vh] text-[1.1rem]">
           {tabs.map((tab, index) => (
             <Link

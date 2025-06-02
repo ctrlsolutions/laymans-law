@@ -12,6 +12,8 @@ import { IoClose } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
 import { getProfile } from "@/services/ProfileServices";
 import { toast, ToastContainer } from "react-toastify";
+import Image from 'next/image';
+import { User } from "@/interface/AuthTypes";
 
 
 interface Attachment {
@@ -45,11 +47,6 @@ const getCategoryColor = (categoryId: string) => {
   return `${category.color} ${isDark ? 'text-white' : 'text-black'}`;
 };
 
-const getCategoryName = (caseTypeId: string): string => {
-  const category = categories.find((c) => c.id === caseTypeId);
-  return category ? category.name : caseTypeId;
-};
-
 const getFileType = (filename: string) => {
   const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
   const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
@@ -74,8 +71,7 @@ export default function EditCasePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState(null);
-  const [cases, setCases] = useState<Case[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   
 
   useEffect(() => {
@@ -89,10 +85,10 @@ export default function EditCasePage() {
         }
 
         const data = response.data;
-        setCaseData(data);
-        setTitle(data.title);
-        setDescription(data.description);
-        setCategory(data.case_type);
+        setCaseData(data as Case);
+        setTitle((data as Case).title);
+        setDescription((data as Case).description);
+        setCategory((data as Case).case_type);
       } catch (err) {
         console.error("Error fetching case data:", err);
         setError(err instanceof Error ? err.message : "Failed to load case data");
@@ -111,7 +107,7 @@ export default function EditCasePage() {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
@@ -378,7 +374,7 @@ export default function EditCasePage() {
                   </>
                 )}
               </div>
-
+        
               {/* Bottom Panel - Action Buttons */}
               <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
                 <BaseButton

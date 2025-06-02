@@ -1,33 +1,36 @@
 "use client";
 import * as React from "react";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
-import { Case, Category } from "@/interface/CaseTypes";
+import { Case } from "@/interface/CaseTypes";
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
 import ActiveCasesSidebar from "@/components/Cases/ActiveCasesSidebar";
 import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
-import { filterCases } from "@/utils/caseFilters";
 import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
+import { User } from "@/interface/AuthTypes";
 
 const ActiveCasesPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const userId = params.user_id as string;
 
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [cases, setCases] = useState<Case[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const [sortOrder, setSortOrder] = React.useState("latest");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCaseType, setSelectedCaseType] = useState("all");
 
   const [cases, setCases] = useState<Case[]>([]);
   const [casesLoading, setCasesLoading] = useState(true);
   const [casesError, setCasesError] = useState("");
   const [status, setStatus] = useState<string | "">("ongoing");
-
-  const [user, setUser] = useState(null);
 
   const filteredCases = cases.filter((caseItem) => {
     const query = searchQuery.toLowerCase();
@@ -59,11 +62,11 @@ const ActiveCasesPage: React.FC = () => {
       if (isMounted) {
         if (response.success && response.data) {
           console.log('Fetched cases:', response.data);
-          setCases(response.data);
+          setCases(response.data as Case[]);
         } else {
-          setCasesError(response.message || "Failed to load cases");
+          setError(response.message || "Failed to load cases");
         }
-        setCasesLoading(false);
+        setLoading(false);
       }
     };
 
@@ -81,7 +84,7 @@ const ActiveCasesPage: React.FC = () => {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
@@ -101,7 +104,7 @@ const ActiveCasesPage: React.FC = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
-        user={user}
+        user={user ? { firstName: user.first_name } : null}
       />
 
       <section
@@ -123,12 +126,12 @@ const ActiveCasesPage: React.FC = () => {
             </div>
 
             <div className="overflow-y-auto max-h-[calc(75vh-3rem)] pr-1">
-              {casesLoading ? (
+              {loading ? (
                 <p className="text-center text-gray-500 mt-20">
                   Loading cases...
                 </p>
-              ) : casesError ? (
-                <p className="text-center text-red-500 mt-20">{casesError}</p>
+              ) : error ? (
+                <p className="text-center text-red-500 mt-20">{error}</p>
               ) : filteredCases.length > 0 ? (
                 filteredCases.map((caseItem) => (
                   <CaseCard

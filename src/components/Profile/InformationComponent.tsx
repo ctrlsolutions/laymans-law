@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
+import Image from "next/image";
+import { FaEnvelope, FaPhone, FaUser, FaBirthdayCake } from "react-icons/fa";
 
-interface UserProfileProps {
+export interface UserProfileProps {
   first_name: string;
   last_name: string;
   avatar: string;
@@ -23,9 +23,11 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
     <>
       <div className="flex flex-col items-center gap-4">
         <div className="w-28 h-28 rounded-full overflow-hidden">
-          <img
+          <Image
             src={userData.avatar || defaultAvatar}
             alt={`Profile picture of ${userData.first_name}`}
+            width={112}
+            height={112}
             className="w-full h-full object-cover"
           />
         </div>
@@ -37,8 +39,8 @@ const UserProfile: React.FC<{ userData: UserProfileProps }> = ({ userData }) => 
         </div>
         <div className="flex flex-col gap-3 mt-4 text-sm text-black font-bold truncate">
           {/* <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-sm" />{userData.address}</p> */}
-          <p className="flex items-center gap-3"><FaEnvelope className="text-sm" /><a href={`mailto:${userData.email}`} className="hover:underline">{userData.email}</a></p>
-          <p className="flex items-center gap-3"><FaPhone className="text-sm" /><a href={`tel:${userData.contact_number}`} className="hover:underline">{userData.contact_number}</a></p>
+          <p className="flex items-center gap-3"><FaEnvelope className="text-sm" /><a rel="noopener noreferrer" target="_blank" href={`mailto:${userData.email}`} className="hover:underline">{userData.email}</a></p>
+          <p className="flex items-center gap-3"><FaPhone className="text-sm" /><a rel="noopener noreferrer" target="_blank" href={`tel:${userData.contact_number}`} className="hover:underline">{userData.contact_number}</a></p>
           <p className="flex items-center gap-3">
             <FaUser className="text-sm" />
             {userData.gender === "M" ? "Male" : userData.gender === "F" ? "Female" : "Other"}

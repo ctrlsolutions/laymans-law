@@ -16,12 +16,15 @@ export interface SignupData {
   user_type: string;
   roll_number?: string;
   roll_signed_date?: string;
+  [key: string]: string | undefined;
 }
 
-export interface ApiResponse {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
-  [key: string]: any;
+  data?: T;
+  error?: string;
+  [key: string]: unknown;
 }
 
 export interface ProfileSettingsData {
@@ -34,8 +37,22 @@ export interface ProfileSettingsData {
   roll_number?: string;
   roll_signed_date?: string;
 }
+
 export interface PasswordChangeData {
   old_password: string;
   new_password: string;
   confirm_password: string;
+}
+
+export interface User {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  contact_number?: string;
+  gender?: string;
+  birth_date?: string;
+  user_type: string;
+  roll_number?: string;
+  roll_signed_date?: string;
 }

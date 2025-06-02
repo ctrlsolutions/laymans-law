@@ -1,5 +1,6 @@
 import React from "react";
 import { Case } from "@/interface/CaseTypes";
+import Image from 'next/image';
 
 interface CaseModalProps {
   caseData: Case;
@@ -25,19 +26,23 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
           <p className="text-gray-700 mb-4">
             {caseData.description || "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum"}
           </p>
-          <img
+          <Image
             src="https://via.placeholder.com/400x200"
             alt="case visual"
+            width={400}
+            height={200}
             className="rounded-lg mb-4"
           />
         </div>
 
         {/* Right Panel */}
         <div className="w-1/3 bg-gray-100 p-6 border-l border-gray-200 flex flex-col items-center">
-          <img
+          <Image
             src="https://via.placeholder.com/80"
             alt="avatar"
-            className="rounded-full w-20 h-20 mb-2"
+            width={80}
+            height={80}
+            className="rounded-full mb-2"
           />
           <h3 className="text-lg font-semibold">
             { caseData.created_by 
@@ -59,10 +64,12 @@ const CaseModal: React.FC<CaseModalProps> = ({ caseData, onClose }) => {
             <p className="font-semibold text-sm mb-2">Media</p>
             <div className="grid grid-cols-3 gap-2">
               {[...Array(6)].map((_, i) => (
-                <img
+                <Image
                   key={i}
                   src="https://via.placeholder.com/60"
                   alt={`media-${i}`}
+                  width={60}
+                  height={60}
                   className="rounded-md w-full h-auto"
                 />
               ))}

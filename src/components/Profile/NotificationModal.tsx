@@ -8,6 +8,7 @@ interface NotificationModalProps {
     notifications: {
         id: number;
         title: string;
+        username: string;
         timeAgo: string;
         description: string;
         category: string;

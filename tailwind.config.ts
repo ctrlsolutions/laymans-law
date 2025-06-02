@@ -69,7 +69,7 @@ export default {
     },
   },
   plugins: [
-    function ({ addUtilities }) {
+    function ({ addUtilities }: { addUtilities: (utilities: Record<string, Record<string, string>>) => void }) {
       addUtilities({
         ".animation-delay-0": { "animation-delay": "0ms" },
         ".animation-delay-100": { "animation-delay": "100ms" },

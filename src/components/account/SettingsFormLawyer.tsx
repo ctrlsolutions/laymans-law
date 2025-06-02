@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import BaseFormInput from "@/components/Global/BaseFormInput";
-import Button from "@/components/BaseButton";
+import Button from "@/components/Global/BaseButton";
 
 export default function Home() {
     const [formData, setFormData] = useState({
@@ -38,9 +39,11 @@ export default function Home() {
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <div className="relative">
             <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200 mr-6">
-              <img
+              <Image
                 src="https://i.pinimg.com/736x/93/dd/a6/93dda651f941477847f7f74835f67288.jpg"
                 alt="Profile"
+                width={160}
+                height={160}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -147,7 +150,7 @@ export default function Home() {
               type="text"
               color="gray-900"
               icon="hash"
-              value={formData.occupation}
+              value={formData.specialization}
               onChange={handleInputChange}
             />
             <div className="grid grid-cols-2 gap-4 mt-4">
@@ -168,7 +171,7 @@ export default function Home() {
                     type="date"
                     color="gray-900"
                     icon="calendar"
-                    value={formData.birthday}
+                    value={formData.rolldate}
                     onChange={handleInputChange}
                     className="font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 w-full"
                 />
@@ -176,8 +179,8 @@ export default function Home() {
           </div>
         </div> 
         <div className="flex justify-between text-sm mt-10">
-              <Button text="Delete Account" color="red" onClick={handleDeleteAccount} />
-              <Button text="Save Changes" color="red" onClick={handleSaveChanges} />
+              <Button color="red" onClick={handleDeleteAccount}>Delete Account</Button>
+              <Button color="red" onClick={handleSaveChanges}>Save Changes</Button>
         </div>
       </div>
     );

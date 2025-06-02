@@ -4,17 +4,17 @@ import { getProfile } from "@/services/ProfileServices";
 import InformationContainer from "@/components/Profile/InformationContainer";
 import InformationComponent from "@/components/Profile/InformationComponent";
 import Card from "@/components/Profile/Card";
-
+import { UserProfileProps } from "@/components/Profile/InformationComponent";
 
 export default function LawyerDetails() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserProfileProps | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
         const response = await getProfile();
         if (response.success && response.data) {
-            setUser(response.data);
+            setUser(response.data as UserProfileProps);
         } else {
             console.error("Error fetching user data:", response.message);
         }

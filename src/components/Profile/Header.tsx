@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { cases } from "@/interface/CaseTypes";
 import { HeaderProps } from "@/interface/CaseTypes";
+import Image from 'next/image';
 
 
 const SearchBar: React.FC<{
@@ -48,7 +49,7 @@ const NotificationIcon: React.FC<{
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [setIsOpen]);
 
   return (
     <div className="relative inline-block select-none" ref={notificationRef}>
@@ -68,9 +69,11 @@ const NotificationIcon: React.FC<{
                   key={c.id}
                   className="flex items-center space-x-3 text-xs text-gray-700 py-2 border-b last:border-b-0"
                 >
-                  <img
+                  <Image
                     src={c.avatar}
                     alt="avatar"
+                    width={32}
+                    height={32}
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
@@ -81,7 +84,7 @@ const NotificationIcon: React.FC<{
                       {c.title}
                     </p>
                     <p className="text-gray-500 text-[10px]">
-                      {c.created_by} • {c.created_by}
+                      {c.created_by.first_name} • {c.created_by.last_name}
                     </p>
                   </div>
                 </li>
@@ -114,10 +117,12 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex max-md:flex-col">
         <div className="w-[77%] max-md:w-full">
           <div className="flex flex-wrap gap-6 text-xs">
-            <img
+            <Image
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/5676b5cbc1d09b6b170298efcc84d833fd17cbb2?placeholderIfAbsent=true&apiKey=b97adb845ad745fdabf283f95e3c166e"
               alt="Logo"
-              className="w-[139px] object-contain cursor-pointer"
+              width={139}
+              height={40}
+              className="object-contain cursor-pointer"
               onClick={() => router.push("/")}
             />
             <SearchBar
@@ -142,12 +147,14 @@ const Header: React.FC<HeaderProps> = ({
             className="z-0 flex gap-4 ml-5 items-start text-xs font-medium cursor-pointer transition-transform duration-200 hover:scale-105"
             onClick={() => router.push(`/${userId}`)}
           >
-            <img
+            <Image
               src="/blank-profile.svg"
               alt="Profile"
-              className="z-10 w-[60px] rounded-full mt-3"
+              width={60}
+              height={60}
+              className="z-10 rounded-full mt-3"
             />
-            <span className="my-auto">{user?.first_name || "Guest"}</span>
+            <span className="my-auto">{user?.firstName || "Guest"}</span>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Forum } from "@/interface/ForumTypes";
+import { User } from "@/interface/AuthTypes";
 
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import ForumCard from "@/components/Forum/ForumCard";
@@ -19,11 +20,8 @@ import { checkIfBookmarked, toggleBookmark } from "@/services/ForumServices";
 
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterForum } from "@/utils/filterForum";
-import { useRouter } from "next/navigation";
 
 const ForumPage: React.FC = () => {
-  const router = useRouter();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
@@ -32,8 +30,7 @@ const ForumPage: React.FC = () => {
   const [forumLoading, setForumLoading] = useState(true);
   const [forumError, setForumError] = useState("");
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
   const ForumCount = filteredForum.filter((f) => f.title).length;
@@ -60,16 +57,6 @@ const ForumPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleForumUpdate = (updatedForum: Forum) => {
-    setForum((prevForums) =>
-      prevForums.map((f) =>
-        f.id === updatedForum.id ? { ...f, ...updatedForum } : f
-      )
-    );
-    setSelectedForum((prev) =>
-      prev && prev.id === updatedForum.id ? { ...prev, ...updatedForum } : prev
-    );
-  };
   const handleBookmarkToggle = async (id: number) => {
     const result = await toggleBookmark(id);
     if (!result) {
@@ -115,7 +102,7 @@ const ForumPage: React.FC = () => {
       if (selectedCaseType === "bookmarked") {
         const bookmarked = await fetchBookmarkedForumPosts();
         setForum(
-          (bookmarked || []).map((forumItem: any) => ({
+          (bookmarked || []).map((forumItem: Forum) => ({
             ...forumItem,
             bookmark: true,
           }))
@@ -124,10 +111,10 @@ const ForumPage: React.FC = () => {
         const all = await fetchAllForums();
         if (all.success && all.data) {
           const forumsWithBookmarks = await Promise.all(
-            all.data.map(async (item: Forum) => {
+            (all.data as Forum[]).map(async (item: Forum) => {
               try {
                 const result = await checkIfBookmarked(item.id);
-                return { ...item, bookmark: result?.bookmarked };
+                return { ...item, bookmark: result?.bookmarked ?? false };
               } catch (error) {
                 console.error("Error checking bookmark:", error);
                 return { ...item, bookmark: false };
@@ -152,11 +139,10 @@ const ForumPage: React.FC = () => {
       const response = await getProfile();
       if (isMounted) {
         if (response.success && response.data) {
-          setUser(response.data);
+          setUser(response.data as User);
         } else {
           console.error("Error fetching user data:", response.message);
         }
-        setLoading(false);
       }
     };
 
@@ -175,7 +161,7 @@ const ForumPage: React.FC = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={ForumCount}
-        user={user}
+        user={user ? { firstName: user.first_name } : null}
       />
 
       <section
@@ -232,8 +218,6 @@ const ForumPage: React.FC = () => {
         <ForumModal onClose={closeModal}>
           <ForumModalContent
             post={selectedForum}
-            onClose={closeModal}
-            onUpdate={handleForumUpdate}
             onDelete={handleForumDelete}
           />
         </ForumModal>

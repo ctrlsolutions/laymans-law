@@ -25,14 +25,14 @@ export default function TermsAndConditions({ show, onClose }: TermsAndConditions
           <div>
             <p><strong>1. Acceptance of Terms</strong></p>
             <p className="pl-4">
-                By accessing or using Layman’s Law (“the Platform”), a project of Ctrl Solutions, you agree to be bound by these Terms and Conditions. If you do not agree with any part, you must not use the Platform.
+                By accessing or using Layman&apos;s Law (the Platform), a project of Ctrl Solutions, you agree to be bound by these Terms and Conditions. If you do not agree with any part, you must not use the Platform.
             </p>
             </div>
 
             <div>
             <p><strong>2. Description of Service</strong></p>
             <p className="pl-4">
-                Layman’s Law provides legal wikis, translations, case submission, lawyer Q&A, forums, and OFW support. These services aim to empower marginalized communities with legal information and access to professionals.
+                Layman&apos;s Law provides legal wikis, translations, case submission, lawyer Q&A, forums, and OFW support. These services aim to empower marginalized communities with legal information and access to professionals.
             </p>
             </div>
 
@@ -53,7 +53,7 @@ export default function TermsAndConditions({ show, onClose }: TermsAndConditions
             <div>
             <p><strong>5. User-Generated Content</strong></p>
             <p className="pl-4">
-                You retain ownership of your content but grant Layman’s Law a license to use it. You agree not to post unlawful, misleading, or harmful content.
+                You retain ownership of your content but grant Layman&apos;s Law a license to use it. You agree not to post unlawful, misleading, or harmful content.
             </p>
             </div>
 
@@ -102,7 +102,7 @@ export default function TermsAndConditions({ show, onClose }: TermsAndConditions
             <div>
             <p><strong>12. Contact</strong></p>
             <p className="pl-4">
-                For any concerns, contact us at: <a href="mailto:ctrlsolutions.space@gmail.com" className="text-blue-600 underline">ctrlsolutions.space@gmail.com</a>
+                For any concerns, contact us at: <a href="mailto:ctrlsolutions.space@gmail.com" className="text-blue-600 underline" rel="noopener noreferrer" target="_blank">ctrlsolutions.space@gmail.com</a>
             </p>
             </div>
         </div>

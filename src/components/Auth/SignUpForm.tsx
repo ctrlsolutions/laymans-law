@@ -15,7 +15,6 @@ import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-import { FaSpinner } from "react-icons/fa";
 import React from "react";
 
 export default function SignupForm({ userType = "layman" }: SignupFormProps) {
@@ -70,15 +69,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
     setLoading(true);
 
     try {
-      const newErrors: Partial<SignupData> = {
-        email: validateField("email", form.email, form),
-        confirm_password: validateField(
-          "confirm_password",
-          form.confirm_password,
-          form
-        ),
-      };
-
       const response = await UserSignup(form);
       if (response.success) {
         toast("Signup successful. Welcome aboard!", {

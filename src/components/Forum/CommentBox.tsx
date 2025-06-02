@@ -29,12 +29,13 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   const handleAddReply = () => {
     if (!replyText.trim()) return;
     onAddReply(commentPath, {
-      author: {
-        name: "You",
-        avatar: "/profile.png",
-      },
-      createdAt: "just now",
+      id: Date.now(),
+      post: comment.post,
+      author: 0, // or the current user's ID
+      author_username: "You",
       content: replyText,
+      created_at: "just now",
+      updated_at: "just now",
       replies: [],
     });
     setReplyText("");
@@ -46,8 +47,8 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     <div className={`flex ${isReply ? "ml-10 mt-2" : "mt-4"}`}>
       <div className="flex flex-col items-center mr-4">
         <Image
-          src={comment.author.avatar || "/default-avatar.png"}
-          alt={comment.author.name}
+          src={"/default-avatar.png"}
+          alt={comment.author_username}
           width={36}
           height={36}
           className="rounded-full border"
@@ -58,9 +59,9 @@ const CommentBox: React.FC<CommentBoxProps> = ({
       <div className="bg-white border rounded-xl shadow-sm px-4 py-2 max-w-3xl w-full">
         <div className="flex items-center justify-between">
           <div className="font-medium text-xs text-black">
-            {comment.author.name}
+            {comment.author_username}
           </div>
-          <div className="text-xs text-gray-500 ml-9">{comment.createdAt}</div>
+          <div className="text-xs text-gray-500 ml-9">{comment.created_at}</div>
         </div>
         <p className="text-gray-700 text-xs mt-2 break-words">
           {comment.content}
@@ -123,7 +124,13 @@ const CommentBox: React.FC<CommentBoxProps> = ({
             {comment.replies.map((reply, idx) => (
               <CommentBox
                 key={idx}
-                comment={reply}
+                comment={{
+                  ...reply,
+                  post: comment.post,
+                  created_at: reply.created_at,
+                  updated_at: reply.created_at,
+                  replies: reply.replies || [],
+                }}
                 isReply={true}
                 commentPath={[...commentPath, idx]}
                 onAddReply={onAddReply}
