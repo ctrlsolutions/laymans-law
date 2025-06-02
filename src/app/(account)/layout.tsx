@@ -66,6 +66,7 @@ export default function AccountLayout({
             key: "settings",
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
+            matchNested: true,
           },
         ]
       : [
@@ -83,6 +84,7 @@ export default function AccountLayout({
             key: "settings",
             name: "Settings",
             path: (id: string) => `/${id}/settings`,
+            matchNested: true,
           },
           {
             key: "ofw-support",
