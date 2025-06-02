@@ -37,7 +37,6 @@ export interface FormButtonProps {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   className?: string;
-  textSize?: string;
   loading?: boolean;
   disabled?: boolean;
 }

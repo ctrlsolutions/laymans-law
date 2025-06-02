@@ -1,5 +1,6 @@
 import React from "react";
-import { UserType, Comment } from "@/interface/CaseTypes";
+import { Comment } from "@/interface/CaseTypes";
+import Image from "next/image";
 
 interface CommentCardProps {
   comment: Comment;
@@ -36,10 +37,12 @@ const CommentCard: React.FC<CommentCardProps> = ({
     return (
     <div className="flex w-full bg-white rounded-md px-3 py-2 text-xs text-gray-800 shadow-sm">
         <div className="mr-2">
-            <img 
+            <Image 
                 src={"/blank-profile.svg"} 
                 alt={showAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
                 className="w-6 h-6 rounded-full object-cover"
+                width={24}
+                height={24}
             />
         </div>
         <div className="flex-1">

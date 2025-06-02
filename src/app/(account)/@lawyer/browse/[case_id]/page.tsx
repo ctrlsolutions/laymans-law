@@ -34,7 +34,7 @@ export default function AcceptCasePage() {
 
   const [comments, setComments] = useState<Comment[]>([]); 
   const [newComment, setNewComment] = useState('');
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [currentUser] = useState<UserType | null>(null);
 
   const router = useRouter();
   const params = useParams();
@@ -60,7 +60,7 @@ export default function AcceptCasePage() {
       if (case_id) {
         const response = await fetchComments(case_id);
         if (response.success) {
-          setComments(response.data);
+          setComments(response.data as Comment[]);
         }
       }
     }
@@ -171,13 +171,24 @@ export default function AcceptCasePage() {
     }
   };
 
+  const handleAddComment = async () => {
+    if (newComment.trim() === '') return;
+    const response = await addComment(case_id, newComment);
+    if (response.success) {
+      setComments([...comments, response.data as Comment]);
+      setNewComment('');
+      toast.success(response.message);
+    } else {
+      toast.error(response.error || "Failed to add comment");
+    }
+  };
 
   if (loading) return <p className="p-8">Loading...</p>;
-  if (error) return <p className="p-8 text-red-500">Error: {error}</p>; // Show specific error
-  if (!caseData) return <p className="p-8">Case not found.</p>; // Specific message if no data after loading/no error
+  if (error) return <p className="p-8 text-red-500">Error: {error}</p>;
+  if (!caseData) return <p className="p-8">Case not found.</p>;
 
   return (
-    <>
+    <div>
       <ToastContainer />
       <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
         <div className="pb-2 px-0 rounded-b-2xl text-black">
@@ -200,11 +211,8 @@ export default function AcceptCasePage() {
 
             <button
               className="flex items-center gap-2 text-blue text-sm font-semibold bg-white border-none px-2 py-1 rounded-md transition hover:opacity-80 hover:shadow-md"
-              // onClick={handleInterested}
             >
-              <HiLightBulb 
-                size={20}
-              /> 
+              <HiLightBulb size={20}/> 
               Interested
             </button>
           </div>
@@ -272,7 +280,6 @@ export default function AcceptCasePage() {
 
                 {/* Media Display */}
                 <div className="mb-0 flex justify-center items-center">
-
                   {/* Previous button */}
                   {caseData.attachments?.length > 1 && (
                     <button 
@@ -418,7 +425,6 @@ export default function AcceptCasePage() {
             </div>
 
             {/* Right Panel */}
-            
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
                 <Image
@@ -427,20 +433,25 @@ export default function AcceptCasePage() {
                   width={80}
                   height={80}
                   className="rounded-full mx-auto mb-2"
+                  priority
                 />
                 <h3 className="text-lg text-black font-semibold">
-              <p className="text-xxs text-black font-semibold mb-2">Posted by:</p>
-              <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
-                <div>
-                  <img
-                    src="/blank-profile.svg"
-                    alt="avatar"
-                    className="rounded-full w-10 h-10 mx-auto mb-2"
-                  />
-                </div>
-                <div className="text-gray-700 text-left ml-3">
-                  <p>Anonymous</p>
-                </div>
+                  <p className="text-xxs text-black font-semibold mb-2">Posted by:</p>
+                  <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
+                    <div>
+                      <Image
+                        src="/blank-profile.svg"
+                        alt="avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-full mx-auto mb-2"
+                      />
+                    </div>
+                    <div className="text-gray-700 text-left ml-3">
+                      <p>Anonymous</p>
+                    </div>
+                  </div>
+                </h3>
               </div>
               <div className="flex flex-col h-full mb-2 bg-gray-200 rounded-md p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -558,6 +569,6 @@ export default function AcceptCasePage() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

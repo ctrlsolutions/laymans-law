@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Case, Comment, UserType } from "@/interface/CaseTypes";
+import { Case, Comment } from "@/interface/CaseTypes";
 import { fetchCases } from "@/services/CaseService";
 import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
@@ -13,7 +13,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
-import CommentCard from "@/components/Case/CommentCard";
 import { getProfile } from "@/services/ProfileServices";
 import { categories } from "@/constants/caseConstants";
 import { User } from "@/interface/AuthTypes";
@@ -32,8 +31,6 @@ export default function SubmittedCasePage() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [comments, setComments] = useState<Comment[]>([]); 
   const [newComment, setNewComment] = useState('');
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  const isCaseAccepted = caseData?.status === 'ongoing' && caseData?.assigned_to !== null;
 
   const router = useRouter();
   const params = useParams();
@@ -167,7 +164,7 @@ export default function SubmittedCasePage() {
   useEffect(() => {
     async function loadComments() {
       if (case_id) {
-        const response = await fetchComments(case_id);
+        const response = await fetchComments(case_id) as { success: boolean; data: Comment[]; message?: string };
         if (response.success) {
           setComments(response.data);
         }
@@ -253,7 +250,7 @@ export default function SubmittedCasePage() {
     
     const response = await addComment(case_id, newComment);
     if (response.success) {
-      setComments([...comments, response.data]);
+      setComments([...comments, response.data as Comment]);
       setNewComment('');
       toast.success(response.message);
     } else {
@@ -437,13 +434,15 @@ export default function SubmittedCasePage() {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <Image 
-                          src={attachment.file} 
-                          alt="Preview" 
-                          width={48}
-                          height={48}
-                          className="h-full w-full object-cover"
-                        />
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={attachment.file}
+                            alt="Preview"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="rounded-md object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                           <FaCirclePlay color="white"/>
@@ -475,6 +474,7 @@ export default function SubmittedCasePage() {
                   width={80}
                   height={80}
                   className="rounded-full mx-auto mb-2"
+                  priority
                 />
                 <h3 className="text-lg text-black font-semibold">
                   { caseData.created_by 

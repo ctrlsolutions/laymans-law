@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Case, Comment, UserType } from "@/interface/CaseTypes";
+import { Case, Comment } from "@/interface/CaseTypes";
 import { fetchCases } from "@/services/CaseService";
 import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
@@ -30,9 +30,6 @@ export default function AcceptCasePage() {
   const [hasOverflow, setHasOverflow] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]); 
   const [newComment, setNewComment] = useState('');
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-
-  const isCaseAccepted = caseData?.status === 'ongoing' && caseData?.assigned_to !== null;
 
   const router = useRouter();
   const params = useParams();
@@ -88,7 +85,7 @@ export default function AcceptCasePage() {
   useEffect(() => {
     async function loadComments() {
       if (case_id) {
-        const response = await fetchComments(case_id);
+        const response = await fetchComments(case_id) as { success: boolean; data: Comment[]; message?: string };
         if (response.success) {
           setComments(response.data);
         }
@@ -174,7 +171,7 @@ export default function AcceptCasePage() {
     
     const response = await addComment(case_id, newComment);
     if (response.success) {
-      setComments([...comments, response.data]);
+      setComments([...comments, response.data as Comment]);
       setNewComment('');
       toast.success(response.message);
     } else {
@@ -185,6 +182,7 @@ export default function AcceptCasePage() {
   if (loading) return <p className="p-8">Loading...</p>;
   if (!caseData) return <p className="p-8">Case not found.</p>;
 
+  const isCaseAccepted = caseData?.status === 'ongoing' && caseData?.assigned_to !== null;
 
   return (
     <>
@@ -310,8 +308,8 @@ export default function AcceptCasePage() {
                                 src={attachment.file}
                                 alt="case attachment"
                                 className="rounded-md object-cover h-full w-full cursor-pointer"
-                                width={200}
-                                height={200}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 onClick={() => {
                                   setSelectedImage(attachment.file);
                                   setCurrentMediaIndex(index);
@@ -386,8 +384,8 @@ export default function AcceptCasePage() {
                           src={attachment.file} 
                           alt="Preview" 
                           className="h-full w-full object-cover"
-                          width={48}
-                          height={48}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
                         />
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
@@ -428,8 +426,9 @@ export default function AcceptCasePage() {
                     src="/blank-profile.svg"
                     alt="avatar"
                     className="rounded-full w-10 h-10 mx-auto mb-2"
-                  width={80}
-                  height={80}
+                    width={40}
+                    height={40}
+                    priority
                   />
                 </div>
                 <div className="text-gray-700 text-left ml-3">
@@ -453,11 +452,11 @@ export default function AcceptCasePage() {
                 </div>
                 <div className="flex flex-col gap-2 overflow-y-auto max-h-[36vh]">
                   {comments.length > 0 ? (
-                    comments.map(comment => (
-                      <CommentCard 
-                        key={comment.id} 
-                        comment={comment} 
-                        currentUserId={currentUser?.user_id?.toString()} 
+                    (comments as Comment[]).map((comment) => (
+                      <CommentCard
+                        key={comment.id}
+                        comment={comment}
+                        currentUserId={undefined}
                         isCaseAccepted={isCaseAccepted}
                       />
                     ))
@@ -513,8 +512,8 @@ export default function AcceptCasePage() {
                     src={selectedImage}
                     alt="enlarged media"
                     className="rounded-md h-full w-full object-contain"
-                    width={800}
-                    height={800}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
                   />
                 ) : (
                   <video
