@@ -81,7 +81,7 @@ const NotificationIcon: React.FC<{
                       {c.title}
                     </p>
                     <p className="text-gray-500 text-[10px]">
-                      {c.created_by} • {c.created_by}
+                      {c.created_by.last_name} • {c.created_by.last_name}
                     </p>
                   </div>
                 </li>
@@ -143,7 +143,11 @@ const Header: React.FC<HeaderProps> = ({
             onClick={() => router.push(`/${userId}`)}
           >
             <img
-              src="/blank-profile.svg"
+              src={
+                user?.user_type?.toLowerCase() === "lawyer"
+                  ? "/3.svg"
+                  : "/4.svg"
+              }
               alt="Profile"
               className="z-10 w-[60px] rounded-full mt-3"
             />

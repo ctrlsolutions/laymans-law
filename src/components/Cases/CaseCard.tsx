@@ -29,13 +29,13 @@ const CaseCard: React.FC<{
   const StatusIndicator: React.FC<{ status: string }> = ({ status }) => {
     const color =
     status === "open"
-      ? "bg-[#4BB328]"         // Green
+      ? "bg-[#4BB328]"         
       : status === "closed"
-      ? "bg-gray-500"          // Gray
-      : "bg-orange-500";      // Orange for ongoing
+      ? "bg-gray-500"          
+      : "bg-orange-500";      
     return (
       <span
-        className={`flex self-center shrink-0 w-4 h-4 ${color} rounded-full`}
+        className={`flex self-center shrink-0 w-2.5 h-2.5 ${color} rounded-full`}
         aria-hidden="true"
       />
     );
@@ -65,7 +65,7 @@ const CaseCard: React.FC<{
             <img
               src={
                 caseItem.avatar ||
-                "https://www.w3schools.com/howto/img_avatar.png"
+                "/4.svg"
               }
               alt="Avatar"
               className="w-[70px] rounded-full"

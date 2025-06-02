@@ -5,12 +5,12 @@ import { Case, Category } from "@/interface/CaseTypes";
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import Header from "@/components/Profile/Header";
-import Sidebar from "@/components/Cases/Sidebar";
 import CaseCard from "@/components/Cases/CaseCard";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterCases } from "@/utils/caseFilters";
 import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
+import BrowseCasesSidebar from "@/components/Cases/BrowseCasesSidebar";
 
 const BrowseCasesPage: React.FC = () => {
   const router = useRouter();
@@ -139,7 +139,7 @@ const BrowseCasesPage: React.FC = () => {
             </div>
           </div>
 
-          <Sidebar
+          <BrowseCasesSidebar
             selectedCaseType={selectedCaseType}
             setSelectedCaseType={setSelectedCaseType}
             categories={categories}

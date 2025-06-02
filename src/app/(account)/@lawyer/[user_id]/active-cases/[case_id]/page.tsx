@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Case, Comment, UserType } from "@/interface/CaseTypes";
 import { fetchCases } from "@/services/CaseService";
+import { getProfile } from "@/services/ProfileServices";
 import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
@@ -83,6 +84,31 @@ export default function AcceptCasePage() {
       setHasOverflow(isOverflowing);
     }
   }, [caseData?.description]);
+
+  useEffect(() => {
+
+    let isMounted = true;
+
+
+
+    const fetchUserProfile = async () => {
+      const response = await getProfile();
+      if (isMounted) {
+        if (response.success && response.data) {
+          setUser(response.data);
+        } else {
+          console.error("Error fetching user data:", response.message);
+        }
+      }
+    };
+
+    fetchUserProfile();
+
+    return () => {
+      isMounted = false;
+    };
+
+  }, []);
 
   useEffect(() => {
     async function loadCase() {
@@ -442,7 +468,7 @@ export default function AcceptCasePage() {
               <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
                 <div>
                   <img
-                    src="/blank-profile.svg"
+                    src="/4.svg"
                     alt="avatar"
                     className="rounded-full w-10 h-10 mx-auto mb-2"
                   />

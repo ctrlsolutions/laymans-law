@@ -4,6 +4,8 @@ export interface UserType {
   last_name: string;
   email: string;
   contact_number?: string;
+  user_type?: string;
+  is_lawyer: boolean;
 }
 
 export interface CaseAttachment {
@@ -49,7 +51,7 @@ export interface HeaderProps {
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   openCaseCount: number;
-  user: { firstName: string } | null;
+  user: UserType | null;
 }
 
 export interface CaseFilterButtonProps {

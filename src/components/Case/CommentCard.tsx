@@ -37,9 +37,13 @@ const CommentCard: React.FC<CommentCardProps> = ({
     <div className="flex w-full bg-white rounded-md px-3 py-2 text-xs text-gray-800 shadow-sm">
         <div className="mr-2">
             <img 
-                src={"/blank-profile.svg"} 
-                alt={showAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
-                className="w-6 h-6 rounded-full object-cover"
+            src={
+                comment.is_lawyer
+                ? "/3.svg"
+                : "/4.svg"
+            }
+            alt={showAnonymous ? "Anonymous" : `${comment.author.first_name} ${comment.author.last_name}`}
+            className="w-5 h-5 rounded-full object-cover"
             />
         </div>
         <div className="flex-1">
