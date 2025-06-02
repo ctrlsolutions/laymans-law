@@ -70,18 +70,18 @@ export interface SidebarProps {
 export interface LawData {
   id: number;
   title: string;
-  chapter: string;
-  tags: string[];
-  content: string;
-  translation: {
+  code: string;
+  full_law: string;
+  case_type: string;
+  tags: string | string[];
+  summary?: {
+    summary: string;
+  };
+  translation?: {
     language_tagalog: string;
     language_bisaya: string;
     language_waray: string;
-  };
-  code?: string;
-  full_law?: string;
-  summary?: {
-    summary: string;
+    language_chavacano?: string;
   };
 }
 export interface SubmitCaseFormData {
