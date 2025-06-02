@@ -9,6 +9,7 @@ import ForumSideBar from "@/components/Forum/ForumSideBar";
 import Header from "@/components/Profile/Header";
 import ForumModal from "@/components/Forum/ForumModal";
 import ForumModalContent from "@/components/Forum/ForumModalContent";
+import toast, { Toaster } from "react-hot-toast";
 
 import { getProfile } from "@/services/ProfileServices";
 import {
@@ -38,12 +39,10 @@ const ForumPage: React.FC = () => {
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
   const ForumCount = filteredForum.filter((f) => f.title).length;
 
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
 
   const openModal = (forumItem: Forum) => {
-    // Find the latest forum object from state
     const latestForum = forum.find((f) => f.id === forumItem.id) || forumItem;
     setSelectedForum(latestForum);
     setIsModalOpen(true);
@@ -96,17 +95,14 @@ const ForumPage: React.FC = () => {
         : prev
     );
   };
-
   useEffect(() => {
-    if (forum.length > 0) {
-      const filtered = filterForum(
-        forum,
-        searchQuery,
-        sortOrder,
-        selectedCaseType
-      );
-      setFilteredForum(filtered);
-    }
+    const filtered = filterForum(
+      forum,
+      searchQuery,
+      sortOrder,
+      selectedCaseType
+    );
+    setFilteredForum(filtered);
   }, [forum, searchQuery, selectedCaseType, sortOrder]);
 
   useEffect(() => {
@@ -177,7 +173,7 @@ const ForumPage: React.FC = () => {
         openCaseCount={ForumCount}
         user={user}
       />
-
+      <Toaster position="top-right" reverseOrder={false} />
       <section
         className="self-center mt-10 pb-10 w-full max-w-[1080px] h-[calc(100vh-40px)] max-h-[77vh] flex flex-col"
         aria-label="Case listings"

@@ -6,6 +6,7 @@ import { Forum } from "@/interface/ForumTypes";
 import { categories } from "@/constants/caseConstants";
 import { updateForumPost, deleteForumPost } from "@/services/ForumServices";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
+import toast from "react-hot-toast";
 
 const ForumModalContent: React.FC<{
   post: Forum;
@@ -23,6 +24,7 @@ const ForumModalContent: React.FC<{
   }));
   const userId = parseInt(localStorage.getItem("user_id") || "");
   const userType = localStorage.getItem("user_type");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
     setTitle(post.title);
@@ -70,27 +72,28 @@ const ForumModalContent: React.FC<{
       });
       onUpdate(updated);
       setIsEditing(false);
+      toast.success("Post updated successfully.");
     } catch (err) {
-      alert("Failed to update post.");
+      toast.error("Failed to update post.");
     }
   };
 
   const handleDeleteClick = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this post?"
-    );
-    if (!confirmDelete) return;
+    setIsConfirmOpen(true);
+  };
 
+  const confirmDelete = async () => {
+    setIsConfirmOpen(false);
     try {
       const success = await deleteForumPost(post.id);
       if (success) {
-        alert("Post deleted successfully.");
+        toast.success("Post deleted successfully.");
         onDelete(post.id);
       } else {
-        alert("Failed to delete post.");
+        toast.error("Failed to delete post.");
       }
     } catch (err) {
-      alert("An error occurred while deleting the post.");
+      toast.error("An error occurred while deleting the post.");
     }
   };
 
@@ -209,6 +212,29 @@ const ForumModalContent: React.FC<{
           </div>
         )}
       </div>
+      {isConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white p-6 rounded-xl shadow-md max-w-sm w-full text-center">
+            <h2 className="text-lg font-semibold mb-4">
+              Are you sure you want to delete this post?
+            </h2>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={confirmDelete}
+                className="bg-red text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setIsConfirmOpen(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
