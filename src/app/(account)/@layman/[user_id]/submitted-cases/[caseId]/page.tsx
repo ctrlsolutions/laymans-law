@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Case, Comment } from "@/interface/CaseTypes";
-import { fetchCases } from "@/services/CaseService";
+import { fetchCaseById } from "@/services/CaseService";
 import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
@@ -132,27 +132,17 @@ export default function SubmittedCasePage() {
 
   useEffect(() => {
     async function loadCase() {
-      const response = await fetchCases();
-      console.log("API response:", response);
+      const response = await fetchCaseById(case_id);
+      console.log("API response for single case:", response);
       console.log("Case ID from params:", case_id); 
   
       if (response.success && response.data) {
-        const foundCase = (response.data as Case[]).find((c: Case) => {
-          console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
-          return String(c.id) === case_id; 
+        setCaseData({
+          ...(response.data as Case),
         });
-        console.log("Found case:", foundCase);
-  
-        if (foundCase) {
-          console.log("Case attachments:", foundCase.attachments);
-          console.log("First attachment URL:", foundCase.attachments?.[0]?.file);
-          setCaseData({
-            ...foundCase,
-          });
-        }
-        else {
-          console.error(`Case with ID ${case_id} not found in the fetched list.`);
-        }
+        console.log("Case data loaded:", response.data);
+      } else {
+        console.error(`Case with ID ${case_id} not found or failed to fetch:`, response.message);
       }
   
       setLoading(false);
@@ -248,13 +238,18 @@ export default function SubmittedCasePage() {
   const handleAddComment = async () => {
     if (newComment.trim() === '') return;
     
-    const response = await addComment(case_id, newComment);
-    if (response.success) {
-      setComments([...comments, response.data as Comment]);
-      setNewComment('');
-      toast.success(response.message);
-    } else {
-      toast.error(response.error || "Failed to add comment");
+    try {
+      const response = await addComment(case_id, newComment);
+      if (response.success) {
+        setComments([...comments, response.data as Comment]);
+        setNewComment('');
+        toast.success(response.message || "Comment added successfully");
+      } else {
+        toast.error(response.error || response.message || "Failed to add comment");
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      toast.error("An unexpected error occurred while adding the comment");
     }
   };
 
@@ -275,7 +270,7 @@ export default function SubmittedCasePage() {
         </div>
 
         <div className="w-[70vw] h-[73vh] mx-auto rounded-2xl overflow-hidden shadow bg-white mt-5 mb-10">
-          <div className="bg-violet-950 text-white px-8 py-4 flex justify-between items-center">
+          <div className="bg-red text-white px-8 py-4 flex justify-between items-center">
             <button
               onClick={() => router.push(`/${userId}/submitted-cases`)}
               className="text-white hover:underline"
@@ -467,42 +462,45 @@ export default function SubmittedCasePage() {
 
             {/* Right Panel */}
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
-              <div className="text-center mb-4 shrink-0">
-                <Image
-                  src="/blank-profile.svg"
-                  alt="avatar"
-                  width={80}
-                  height={80}
-                  className="rounded-full mx-auto mb-2"
-                  priority
-                />
-                <h3 className="text-lg text-black font-semibold">
-                  { caseData.created_by 
-                  ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
-                  : "Unknown User" }
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">Layman</p>
-                <div className="text-sm text-gray-700 text-left ml-3">
-                  <p className="font-semibold">Contact Number</p>
-                  <p className="mb-2">{caseData.created_by?.contact_number}</p>
-                  <p className="font-semibold">Email Address</p>
-                  <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not Provided"}</p>
+              {/* Comments Section */}
+              <div className="flex flex-col flex-grow overflow-y-auto mb-4">
+                <div className="flex items-center mb-4">
+                  <h4 className="text-lg font-semibold text-black">Comments</h4>
+                  <span className="ml-2 px-2 py-0.5 text-xs font-semibold bg-red text-white rounded-full">
+                    {comments.length}
+                  </span>
                 </div>
+                {comments.length === 0 ? (
+                  <p className="text-gray-500 text-sm text-center">No comments yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {comments.map((comment) => (
+                      <div key={comment.id} className="bg-white p-3 rounded-md shadow-sm">
+                        <p className="text-sm text-gray-800 break-words">{comment.content}</p>
+                        <p className="text-xs text-gray-500 mt-1 text-right">
+                          By {comment.author?.first_name || 'Unknown'} on {new Date(comment.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="flex mb-4 gap-2">
+             
+              {/* Comment Input Area */}
+              <div className="flex gap-2">
                 <input 
                   type="text" 
                   placeholder="Enter a comment..." 
-                  className="rounded-md w-full px-2 py-1 text-xs text-black"
+                  className="rounded-md w-full px-2 py-1 text-sm text-black border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
                 />
                 <button 
-                  className="flex bg-red rounded-full items-center p-2"
+                  className="flex-shrink-0 w-10 h-10 bg-red rounded-full flex items-center justify-center hover:bg-red-600 transition"
                   onClick={handleAddComment}
                 >
-                  <IoSend color="white"/>
+                  <IoSend color="white" size={20}/>
                 </button>
               </div>
             </div>
