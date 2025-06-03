@@ -56,3 +56,8 @@ export interface User {
   roll_number?: string;
   roll_signed_date?: string;
 }
+
+export interface LawyerStatisticsData {
+  cases_active: number;
+  cases_finished: number;
+}
