@@ -40,6 +40,13 @@ export default function AcceptCasePage() {
   const params = useParams();
   const case_id = params.case_id as string;
 
+  useEffect(() => {
+    if (selectedImage) {
+      console.log('Modal opened. selectedImage:', selectedImage);
+      console.log('getFileType(selectedImage):', getFileType(selectedImage));
+    }
+  }, [selectedImage]);
+
   const getCategoryColor = (categoryId: string) => {
     const category = categories.find((c) => c.id === categoryId);
     if (!category) return "bg-gray-300 text-black";
@@ -498,7 +505,7 @@ export default function AcceptCasePage() {
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
             onClick={() => setSelectedImage(null)}
           >
-            <div className="relative flex">
+            <div className="relative flex" onClick={(e) => e.stopPropagation()}>
               {/* Previous button */}
               <button 
                 onClick={(e) => {
@@ -513,23 +520,21 @@ export default function AcceptCasePage() {
               </button>
               
               {/* Media display */}
-              <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
+              <div className="relative flex-1 flex items-center justify-center">
                 {getFileType(selectedImage) === 'image' ? (
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={selectedImage}
-                      alt="enlarged media"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 80vw"
-                      className="rounded-md object-contain"
-                    />
-                  </div>
+                  <Image
+                    src={selectedImage}
+                    alt="enlarged media"
+                    width={1000}
+                    height={800}
+                    className="rounded-md object-contain h-[80vh] w-auto"
+                  />
                 ) : (
                   <video
                     controls
                     autoPlay
                     playsInline
-                    className="rounded-md h-full w-full"
+                    className="rounded-md h-[80vh] w-auto"
                     key={selectedImage}
                   >
                     <source 
@@ -556,7 +561,10 @@ export default function AcceptCasePage() {
               
               {/* Close button */}
               <button
-                onClick={() => setSelectedImage(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(null);
+                }}
                 className="absolute top-2 right-2 bg-white text-black p-2 rounded-full shadow hover:bg-gray-300"
               >
                 <IoClose />
