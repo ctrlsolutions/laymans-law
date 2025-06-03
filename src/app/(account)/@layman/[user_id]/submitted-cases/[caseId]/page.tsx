@@ -12,11 +12,11 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { IoSend } from "react-icons/io5";
-import { FaCirclePlay } from "react-icons/fa6";
 import { getProfile } from "@/services/ProfileServices";
 import { categories } from "@/constants/caseConstants";
 import { User } from "@/interface/AuthTypes";
 import { toast, ToastContainer } from "react-toastify";
+import { FaCirclePlay } from "react-icons/fa6";
 
 export default function SubmittedCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -328,7 +328,7 @@ export default function SubmittedCasePage() {
 
               {/* Media Gallery */}
               <div className="shrink-0 mt-4">
-                <div className="flex items-center justify-center">
+                <div className="mb-0 flex justify-center items-center">
                   {/* Previous button */}
                   {caseData.attachments?.length > 1 && (
                     <button 
@@ -339,69 +339,70 @@ export default function SubmittedCasePage() {
                     </button>
                   )}
 
-                  {/* Media container */}
-                  <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    {caseData.attachments?.map((attachment, index) => {
-                      const fileType = getFileType(attachment.file);
-                      
-                      return (
-                        <div 
-                          key={attachment.id}
-                          className={`absolute inset-0 transition-opacity duration-300 ${
-                            currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                          }`}
-                        >
-                          {fileType === 'image' ? (
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={attachment.file}
-                                alt="case attachment"
-                                fill
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                                className="rounded-md object-cover cursor-pointer"
-                                onClick={() => {
-                                  setSelectedImage(attachment.file);
-                                  setCurrentMediaIndex(index);
-                                }}
-                              />
-                            </div>
-                          ) : fileType === 'video' ? (
-                            <div className="relative h-full w-full">
-                              <video
-                                ref={el => {
-                                  if (el) {
-                                    videoRefs.current[index] = el;
-                                  }
-                                }}
-                                controls
-                                className="rounded-md object-cover h-full w-full"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setSelectedImage(attachment.file);
-                                  setCurrentMediaIndex(index);
-                                }}
-                                preload="metadata"
-                                onPause={() => {
-                                  if (currentMediaIndex !== index && videoRefs.current[index]) {
-                                    videoRefs.current[index]!.currentTime = 0;
-                                  }
-                                }}
-                              >
-                                <source 
-                                  src={attachment.file} 
-                                  type={`video/${attachment.file.split('.').pop()}`}
+                  <div className="relative mb-0 h-[26vh] w-[22vw]">
+                    {caseData.attachments?.length > 0 && (
+                      caseData.attachments.map((attachment, index) => {
+                        const fileType = getFileType(attachment.file);
+                        
+                        return (
+                          <div 
+                            key={attachment.id}
+                            className={`absolute inset-0 transition-opacity duration-300 ${
+                              currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                            }`}
+                          >
+                            {fileType === 'image' ? (
+                              <div className="relative h-full w-full">
+                                <Image
+                                  src={attachment.file}
+                                  alt="case attachment"
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  className="rounded-md object-cover cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedImage(attachment.file);
+                                    setCurrentMediaIndex(index);
+                                  }}
                                 />
-                                Your browser does not support the video tag.
-                              </video>
-                            </div>
-                          ) : (
-                            <div className="h-full w-full bg-gray-100 flex items-center justify-center">
-                              <span>Unsupported file type</span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                              </div>
+                            ) : fileType === 'video' ? (
+                              <div className="relative h-full w-full">
+                                <video
+                                  ref={el => {
+                                    if (el) {
+                                      videoRefs.current[index] = el;
+                                    }
+                                  }}
+                                  controls
+                                  className="rounded-md object-cover h-full w-full"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setSelectedImage(attachment.file);
+                                    setCurrentMediaIndex(index);
+                                  }}
+                                  preload="metadata"
+                                  onPause={() => {
+                                    if (currentMediaIndex !== index && videoRefs.current[index]) {
+                                      videoRefs.current[index]!.currentTime = 0;
+                                    }
+                                  }}
+                                >
+                                  <source 
+                                    src={attachment.file} 
+                                    type={`video/${attachment.file.split('.').pop()}`}
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                              </div>
+                            ) : (
+                              <div className="h-full w-full bg-gray-100 flex items-center justify-center">
+                                <span>Unsupported file type</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
 
                   {/* Next button */}
@@ -415,13 +416,12 @@ export default function SubmittedCasePage() {
                   )}
                 </div>
 
-                {/* Thumbnail Toggle */}
+                {/* Thumbnail Carousel */}
                 <div className="flex justify-center gap-4 mt-3">
                   {caseData.attachments?.map((attachment, index) => (
                     <button
                       key={attachment.id}
                       onClick={() => {
-                        setSelectedImage(attachment.file)
                         setCurrentMediaIndex(index);
                       }}
                       className={`h-12 w-12 rounded-md overflow-hidden ${
@@ -440,7 +440,7 @@ export default function SubmittedCasePage() {
                         </div>
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                          <FaCirclePlay color="white"/>
+                          <FaCirclePlay className="text-4xl text-gray-400" />
                         </div>
                       )}
                     </button>
@@ -513,7 +513,7 @@ export default function SubmittedCasePage() {
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
             onClick={() => setSelectedImage(null)}
           >
-            <div className="relative flex">
+            <div className="relative flex" onClick={(e) => e.stopPropagation()}>
               {/* Previous button */}
               <button 
                 onClick={(e) => {
@@ -528,23 +528,21 @@ export default function SubmittedCasePage() {
               </button>
               
               {/* Media display */}
-              <div onClick={(e) => e.stopPropagation()} className="relative max-h-[60vh] max-w-[60vw]">
+              <div className="relative flex-1 flex items-center justify-center">
                 {getFileType(selectedImage) === 'image' ? (
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={selectedImage}
-                      alt="enlarged media"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 60vw"
-                      className="rounded-md object-contain"
-                    />
-                  </div>
+                  <Image
+                    src={selectedImage}
+                    alt="enlarged media"
+                    width={1000}
+                    height={800}
+                    className="rounded-md object-contain h-[80vh] w-auto"
+                  />
                 ) : (
                   <video
                     controls
                     autoPlay
                     playsInline
-                    className="rounded-md h-full w-full"
+                    className="rounded-md h-[80vh] w-auto"
                     key={selectedImage}
                   >
                     <source 
@@ -571,7 +569,10 @@ export default function SubmittedCasePage() {
               
               {/* Close button */}
               <button
-                onClick={() => setSelectedImage(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(null);
+                }}
                 className="absolute top-2 right-2 bg-white text-black p-2 rounded-full shadow hover:bg-gray-300"
               >
                 <IoClose />
