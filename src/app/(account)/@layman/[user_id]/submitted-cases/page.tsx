@@ -53,10 +53,20 @@ const SubmittedCasesPage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
+          console.log('Raw API response data:', response.data);
+          console.log('Current user ID:', userId);
+          
           const userCases = (response.data as Case[]).filter((caseItem: Case) => {
-            return caseItem.created_by?.user_id?.toString() === userId?.toString();
+            console.log('Case item:', caseItem);
+            console.log('Case created_by:', caseItem.created_by);
+            const caseUserId = typeof caseItem.created_by === 'object' && caseItem.created_by !== null
+              ? String(caseItem.created_by.user_id)
+              : String(caseItem.created_by);
+            console.log('Comparing IDs:', caseUserId, userId?.toString());
+            return caseUserId === userId?.toString();
           });
-
+          
+          console.log('Filtered user cases:', userCases);
           setCases(userCases);
         } else {
           setCasesError(response.message || "Failed to load cases");
