@@ -78,7 +78,7 @@ export default function LoginForm() {
           color="black"
           width="100%"
         />
-        {errors.email && <p className="text-gray-500">{errors.email}</p>}
+        {errors.email && <p className="text-red">{errors.email}</p>}
       </div>
       {/* Password */}
       <div>
@@ -94,7 +94,7 @@ export default function LoginForm() {
           onBlur={handleBlur}
           onIconClick={() => setShowPassword(!showPassword)}
         />
-        {errors.password && <p className="text-gray-500">{errors.password}</p>}
+        {errors.password && <p className="text-red">{errors.password}</p>}
       </div>
 
       {/* Remember Me & Forgot Account */}
