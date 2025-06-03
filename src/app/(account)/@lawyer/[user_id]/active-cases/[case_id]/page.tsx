@@ -70,6 +70,7 @@ export default function AcceptCasePage() {
           setCaseData({
             ...foundCase,
           });
+          setSelectedImage(null);
         }
         else {
           console.error(`Case with ID ${case_id} not found in the fetched list.`);
@@ -280,7 +281,6 @@ export default function AcceptCasePage() {
 
                 {/* Media Display */}
                 <div className="mb-0 flex justify-center items-center">
-
                   {/* Previous button */}
                   {caseData.attachments?.length > 1 && (
                     <button 
@@ -304,17 +304,19 @@ export default function AcceptCasePage() {
                             }`}
                           >
                             {fileType === 'image' ? (
-                              <Image
-                                src={attachment.file}
-                                alt="case attachment"
-                                className="rounded-md object-cover h-full w-full cursor-pointer"
-                                fill
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                                onClick={() => {
-                                  setSelectedImage(attachment.file);
-                                  setCurrentMediaIndex(index);
-                                }}
-                              />
+                              <div className="relative h-full w-full">
+                                <Image
+                                  src={attachment.file}
+                                  alt="case attachment"
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  className="rounded-md object-cover cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedImage(attachment.file);
+                                    setCurrentMediaIndex(index);
+                                  }}
+                                />
+                              </div>
                             ) : fileType === 'video' ? (
                               <div className="relative h-full w-full">
                                 <video
@@ -380,13 +382,15 @@ export default function AcceptCasePage() {
                       }`}
                     >
                       {getFileType(attachment.file) === 'image' ? (
-                        <Image 
-                          src={attachment.file} 
-                          alt="Preview" 
-                          className="h-full w-full object-cover"
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={attachment.file}
+                            alt="Preview"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="rounded-md object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                           <FaCirclePlay color="white"/>
@@ -491,7 +495,7 @@ export default function AcceptCasePage() {
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
             onClick={() => setSelectedImage(null)}
           >
-            <div className="relative flex">
+            <div className="relative flex" onClick={(e) => e.stopPropagation()}>
               {/* Previous button */}
               <button 
                 onClick={(e) => {
@@ -506,21 +510,21 @@ export default function AcceptCasePage() {
               </button>
               
               {/* Media display */}
-              <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
+              <div className="relative flex-1 flex items-center justify-center">
                 {getFileType(selectedImage) === 'image' ? (
                   <Image
                     src={selectedImage}
                     alt="enlarged media"
-                    className="rounded-md h-full w-full object-contain"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 80vw"
+                    width={1000}
+                    height={800}
+                    className="rounded-md object-contain h-[80vh] w-auto"
                   />
                 ) : (
                   <video
                     controls
                     autoPlay
                     playsInline
-                    className="rounded-md h-full w-full"
+                    className="rounded-md h-[80vh] w-auto"
                     key={selectedImage}
                   >
                     <source 
@@ -547,7 +551,10 @@ export default function AcceptCasePage() {
               
               {/* Close button */}
               <button
-                onClick={() => setSelectedImage(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(null);
+                }}
                 className="absolute top-2 right-2 bg-white text-black p-2 rounded-full shadow hover:bg-gray-300"
               >
                 <IoClose />
