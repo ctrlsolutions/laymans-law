@@ -427,17 +427,9 @@ export default function AcceptCasePage() {
             {/* Right Panel */}
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
-                <Image
-                  src="/blank-profile.svg"
-                  alt="avatar"
-                  width={80}
-                  height={80}
-                  className="rounded-full mx-auto mb-2"
-                  priority
-                />
                 <h3 className="text-lg text-black font-semibold">
-                  <p className="text-xxs text-black font-semibold mb-2">Posted by:</p>
-                  <div className="flex justify-center items-center text-xxs mb-4 shrink-0">
+                  
+                  <div className="flex justify-left items-center text-xxs mb-4 shrink-0">
                     <div>
                       <Image
                         src="/blank-profile.svg"
@@ -451,6 +443,10 @@ export default function AcceptCasePage() {
                       <p>Anonymous</p>
                     </div>
                   </div>
+                  <p className="text-xxs text-black italic font-thin pt-0 mt-0 text-left leading-tight">
+                    Note: person will remain anonymous until you accept the case
+                  </p>
+
                 </h3>
               </div>
               <div className="flex flex-col h-full mb-2 bg-gray-200 rounded-md p-4">
