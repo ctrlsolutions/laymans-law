@@ -1,20 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import BaseButton from '@/components/Global/BaseButton';
-import { fetchCaseById, updateCase } from '@/services/CaseService';
-import { categories } from '@/constants/caseConstants';
+import { useEffect, useState, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import BaseButton from "@/components/Global/BaseButton";
+import { fetchCaseById, updateCase } from "@/services/CaseService";
+import { categories } from "@/constants/caseConstants";
 import Header from "@/components/Profile/Header";
 import { FaCirclePlay } from "react-icons/fa6";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
 import { getProfile } from "@/services/ProfileServices";
-import Image from 'next/image';
+import Image from "next/image";
 import { User } from "@/interface/AuthTypes";
 import { toast, ToastContainer } from "react-toastify";
-
 
 interface Attachment {
   id: string;
@@ -40,20 +39,21 @@ interface Case {
 const getCategoryColor = (categoryId: string) => {
   const category = categories.find((c) => c.id === categoryId);
   if (!category) return "bg-gray-300 text-black";
-  
-  const isDark = category.color.includes('600') || 
-                 category.color.includes('800') || 
-                 category.color.includes('blue');
-  return `${category.color} ${isDark ? 'text-white' : 'text-black'}`;
+
+  const isDark =
+    category.color.includes("600") ||
+    category.color.includes("800") ||
+    category.color.includes("blue");
+  return `${category.color} ${isDark ? "text-white" : "text-black"}`;
 };
 
 const getFileType = (filename: string) => {
   const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
   const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
-  
-  if (imageExtensions.test(filename)) return 'image';
-  if (videoExtensions.test(filename)) return 'video';
-  return 'other';
+
+  if (imageExtensions.test(filename)) return "image";
+  if (videoExtensions.test(filename)) return "video";
+  return "other";
 };
 
 export default function EditCasePage() {
@@ -62,9 +62,9 @@ export default function EditCasePage() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const [caseData, setCaseData] = useState<Case | null>(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<string>('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<string>("");
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -72,16 +72,15 @@ export default function EditCasePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<User | null>(null);
-  
 
   useEffect(() => {
     const fetchCaseData = async () => {
       try {
         setIsLoading(true);
         const response = await fetchCaseById(caseId as string);
-        
+
         if (!response.success) {
-          throw new Error(response.message || 'Failed to fetch case');
+          throw new Error(response.message || "Failed to fetch case");
         }
 
         const data = response.data;
@@ -91,7 +90,9 @@ export default function EditCasePage() {
         setCategory((data as Case).case_type);
       } catch (err) {
         console.error("Error fetching case data:", err);
-        setError(err instanceof Error ? err.message : "Failed to load case data");
+        setError(
+          err instanceof Error ? err.message : "Failed to load case data"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -125,28 +126,34 @@ export default function EditCasePage() {
     setIsSaving(true);
     setError(null);
 
-    const selectedCategory = categories.find(cat => cat.id === category);
+    const selectedCategory = categories.find((cat) => cat.id === category);
 
     const updatedCase = {
       title,
       description,
       case_type: category,
-      category: selectedCategory || { id: category, name: category, color: 'gray' } // fallback
+      category: selectedCategory || {
+        id: category,
+        name: category,
+        color: "gray",
+      }, // fallback
     };
 
     try {
       const response = await updateCase(caseId as string, updatedCase);
-      
+
       if (!response.success) {
-        throw new Error(response.message || 'Failed to update case');
+        throw new Error(response.message || "Failed to update case");
       }
       toast.success("Case edited successfully.");
       setTimeout(() => {
         router.push(`/${user_id}/submitted-cases/${caseId}`);
       }, 3000);
     } catch (error) {
-      console.error('Error updating case:', error);
-      setError(error instanceof Error ? error.message : 'Failed to update case');
+      console.error("Error updating case:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to update case"
+      );
     } finally {
       setIsSaving(false);
     }
@@ -154,50 +161,53 @@ export default function EditCasePage() {
 
   const handlePrev = () => {
     if (!caseData || !caseData.attachments?.length) return;
-    
-    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === "video") {
       const video = videoRefs.current[currentMediaIndex];
       if (video) {
         video.pause();
         video.currentTime = 0;
       }
     }
-    
-    const newIndex = currentMediaIndex === 0 
-      ? caseData.attachments.length - 1 
-      : currentMediaIndex - 1;
+
+    const newIndex =
+      currentMediaIndex === 0
+        ? caseData.attachments.length - 1
+        : currentMediaIndex - 1;
     setCurrentMediaIndex(newIndex);
   };
 
   const handleNext = () => {
     if (!caseData || !caseData.attachments?.length) return;
-    
-    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === "video") {
       const video = videoRefs.current[currentMediaIndex];
       if (video) {
         video.pause();
         video.currentTime = 0;
       }
     }
-    
+
     const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
     setCurrentMediaIndex(newIndex);
   };
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-950"></div>
-    </div>
-  );
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-950"></div>
+      </div>
+    );
 
-  if (error) return (
-    <div className="p-8 text-center">
-      <p className="text-red-600 mb-4">{error}</p>
-      <BaseButton color="red" textColor="white" onClick={() => router.back()}>
-        Go Back
-      </BaseButton>
-    </div>
-  );
+  if (error)
+    return (
+      <div className="p-8 text-center">
+        <p className="text-red-600 mb-4">{error}</p>
+        <BaseButton color="red" textColor="white" onClick={() => router.back()}>
+          Go Back
+        </BaseButton>
+      </div>
+    );
 
   if (!caseData) return null;
 
@@ -206,10 +216,10 @@ export default function EditCasePage() {
       <ToastContainer />
       <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
         <div className="pb-2 px-0 rounded-b-2xl text-black">
-          <Header 
-            searchQuery={searchQuery} 
-            setSearchQuery={setSearchQuery} 
-            openCaseCount={0} 
+          <Header
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            openCaseCount={0}
             user={user ? { firstName: user.first_name } : null}
           />
         </div>
@@ -241,11 +251,13 @@ export default function EditCasePage() {
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(category)}`}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(
+                        category
+                      )}`}
                     >
                       {categories.map((cat) => (
-                        <option 
-                          key={cat.id} 
+                        <option
+                          key={cat.id}
                           value={cat.id}
                           className="bg-white text-black"
                         >
@@ -260,7 +272,9 @@ export default function EditCasePage() {
               {/* Scrollable Middle Panel */}
               <div className="flex-grow overflow-y-auto pr-10 pt-0 pl-3">
                 <div className="mb-4">
-                  <label className="block font-bold text-black mb-2">Description</label>
+                  <label className="block font-bold text-black mb-2">
+                    Description
+                  </label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -275,43 +289,45 @@ export default function EditCasePage() {
                   <>
                     <div className="mb-0 flex justify-center items-center">
                       {caseData.attachments.length > 1 && (
-                        <button 
+                        <button
                           onClick={handlePrev}
                           className="p-2 mr-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
                         >
-                          <IoIosArrowBack color="black"/>
+                          <IoIosArrowBack color="black" />
                         </button>
                       )}
 
                       <div className="relative mb-0 h-[26vh] w-[22vw]">
                         {caseData.attachments.map((attachment, index) => {
                           const fileType = getFileType(attachment.file);
-                          
+
                           return (
-                            <div 
+                            <div
                               key={attachment.id}
                               className={`absolute inset-0 transition-opacity duration-300 ${
-                                currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                                currentMediaIndex === index
+                                  ? "opacity-100"
+                                  : "opacity-0 pointer-events-none"
                               }`}
                             >
-                              {fileType === 'image' ? (
+                              {fileType === "image" ? (
                                 <div className="relative h-full w-full">
-                                <Image
+                                  <Image
                                     src={attachment.file}
                                     alt="case attachment"
-                                  fill
-                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
                                     className="rounded-md object-cover cursor-pointer"
                                     onClick={() => {
                                       setSelectedImage(attachment.file);
                                       setCurrentMediaIndex(index);
                                     }}
                                   />
-                              </div>
-                              ) : fileType === 'video' ? (
+                                </div>
+                              ) : fileType === "video" ? (
                                 <div className="relative h-full w-full">
                                   <video
-                                    ref={el => {
+                                    ref={(el) => {
                                       if (el) {
                                         videoRefs.current[index] = el;
                                       }
@@ -340,11 +356,11 @@ export default function EditCasePage() {
                       </div>
 
                       {caseData.attachments.length > 1 && (
-                        <button 
+                        <button
                           onClick={handleNext}
                           className="p-2 ml-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
                         >
-                          <IoIosArrowForward color="black"/>
+                          <IoIosArrowForward color="black" />
                         </button>
                       )}
                     </div>
@@ -358,22 +374,24 @@ export default function EditCasePage() {
                             setCurrentMediaIndex(index);
                           }}
                           className={`h-12 w-12 rounded-md overflow-hidden ${
-                            currentMediaIndex === index ? "ring-2 ring-blue-500" : ""
+                            currentMediaIndex === index
+                              ? "ring-2 ring-blue-500"
+                              : ""
                           }`}
                         >
-                          {getFileType(attachment.file) === 'image' ? (
+                          {getFileType(attachment.file) === "image" ? (
                             <div className="relative h-full w-full">
-                            <Image
+                              <Image
                                 src={attachment.file}
                                 alt="Preview"
-                              fill
-                              sizes="(max-width: 768px) 100vw, 50vw"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 className="rounded-md object-cover"
                               />
-                          </div>
+                            </div>
                           ) : (
                             <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                              <FaCirclePlay color="white"/>
+                              <FaCirclePlay color="white" />
                             </div>
                           )}
                         </button>
@@ -388,7 +406,9 @@ export default function EditCasePage() {
                 <BaseButton
                   color="gray"
                   textColor="black"
-                  onClick={() => router.push(`/${user_id}/submitted-cases/${caseId}`)}
+                  onClick={() =>
+                    router.push(`/${user_id}/submitted-cases/${caseId}`)
+                  }
                 >
                   Cancel
                 </BaseButton>
@@ -398,33 +418,39 @@ export default function EditCasePage() {
                   onClick={handleSave}
                   // disabled={isSaving}
                 >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
+                  {isSaving ? "Saving..." : "Save Changes"}
                 </BaseButton>
               </div>
             </div>
 
             {/* Right Panel */}
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
-              <p className="text-xs text-black font-semibold mb-2">Posted by:</p>
+              <p className="text-xs text-black font-semibold mb-2">
+                Posted by:
+              </p>
               <div className="text-center mb-4 shrink-0">
                 <Image
                   src="/blank-profile.svg"
                   alt="avatar"
-                width={80}
-                height={80}
+                  width={80}
+                  height={80}
                   className="rounded-full mx-auto mb-2"
                 />
                 <h3 className="text-lg text-black font-semibold">
-                  {caseData.created_by 
-                    ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}` 
+                  {caseData.created_by
+                    ? `${caseData.created_by.first_name} ${caseData.created_by.last_name}`
                     : "Unknown User"}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">Layman</p>
                 <div className="text-sm text-gray-700 text-left ml-3">
                   <p className="font-semibold">Contact Number</p>
-                  <p className="mb-2">{caseData.created_by?.contact_number || "Not provided"}</p>
+                  <p className="mb-2">
+                    {caseData.created_by?.contact_number || "Not provided"}
+                  </p>
                   <p className="font-semibold">Email Address</p>
-                  <p className="mb-2 text-blue-600">{caseData.created_by?.email || "Not provided"}</p>
+                  <p className="mb-2 text-blue-600">
+                    {caseData.created_by?.email || "Not provided"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -438,29 +464,34 @@ export default function EditCasePage() {
             onClick={() => setSelectedImage(null)}
           >
             <div className="relative flex">
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const newIndex = (currentMediaIndex - 1 + caseData.attachments.length) % caseData.attachments.length;
+                  const newIndex =
+                    (currentMediaIndex - 1 + caseData.attachments.length) %
+                    caseData.attachments.length;
                   setCurrentMediaIndex(newIndex);
                   setSelectedImage(caseData.attachments[newIndex].file);
                 }}
                 className="p-4 mr-4 text-white text-2xl"
               >
-                <IoIosArrowBack/>
+                <IoIosArrowBack />
               </button>
-              
-              <div onClick={(e) => e.stopPropagation()} className="max-h-[80vh] max-w-[80vw]">
-                {getFileType(selectedImage) === 'image' ? (
+
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="max-h-[80vh] max-w-[80vw]"
+              >
+                {getFileType(selectedImage) === "image" ? (
                   <div className="relative w-full h-full">
-                  <Image
+                    <Image
                       src={selectedImage}
                       alt="enlarged media"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 80vw"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 80vw"
                       className="rounded-md object-contain"
                     />
-                </div>
+                  </div>
                 ) : (
                   <video
                     controls
@@ -474,19 +505,20 @@ export default function EditCasePage() {
                   </video>
                 )}
               </div>
-              
-              <button 
+
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
+                  const newIndex =
+                    (currentMediaIndex + 1) % caseData.attachments.length;
                   setCurrentMediaIndex(newIndex);
                   setSelectedImage(caseData.attachments[newIndex].file);
                 }}
                 className="p-4 ml-4 text-white text-2xl"
               >
-                <IoIosArrowForward/>
+                <IoIosArrowForward />
               </button>
-              
+
               <button
                 onClick={() => setSelectedImage(null)}
                 className="absolute top-2 right-2 bg-white text-black p-2 rounded-full shadow hover:bg-gray-300"

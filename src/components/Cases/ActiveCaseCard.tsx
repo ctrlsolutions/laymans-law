@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { Case, Category } from "@/interface/CaseTypes";
 import Card from "@/components/Profile/Card";
 

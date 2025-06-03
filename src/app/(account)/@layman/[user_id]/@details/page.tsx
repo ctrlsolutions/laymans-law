@@ -19,45 +19,52 @@ export default function LaymanDetails() {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-        const response = await getProfile();
-        if (response.success && response.data) {
-            setUser(response.data as User);
-        } else {
-            console.error("Error fetching user data:", response.message);
-        }
-        setLoading(false);
+      const response = await getProfile();
+      if (response.success && response.data) {
+        setUser(response.data as User);
+      } else {
+        console.error("Error fetching user data:", response.message);
+      }
+      setLoading(false);
     };
 
     fetchUserProfile();
   }, []);
 
-    return (
-      <>
-        {loading ? (
-            <p>Loading...</p>
-        ) : user ? (
-          <Card className="h-[55vh]">
-            <InformationContainer>
-              <InformationComponent userData={{
+  return (
+    <>
+      {loading ? (
+        <div className="flex items-center justify-center h-[57vh]">
+          <p>Loading...</p>
+        </div>
+      ) : user ? (
+        <Card className="h-[55vh] flex items-center justify-center">
+          <InformationContainer>
+            <InformationComponent
+              userData={{
                 ...{
                   first_name: String((user as ExtendedUser).first_name || ""),
                   last_name: String((user as ExtendedUser).last_name || ""),
-                  avatar: String((user as ExtendedUser).avatar || "/blank-profile.svg"),
+                  avatar: String(
+                    (user as ExtendedUser).avatar || "/blank-profile.svg"
+                  ),
                   role: String((user as ExtendedUser).role || "User"),
                   address: String((user as ExtendedUser).address || ""),
                   email: String((user as ExtendedUser).email || ""),
-                  contact_number: String((user as ExtendedUser).contact_number || ""),
+                  contact_number: String(
+                    (user as ExtendedUser).contact_number || ""
+                  ),
                   gender: String((user as ExtendedUser).gender || ""),
                   birth_date: String((user as ExtendedUser).birth_date || ""),
-                  occupation: String((user as ExtendedUser).occupation || "")
-                }
-              }} />
-            </InformationContainer>
-          </Card>
-        ) : (
-            <p>Error loading user data.</p>
-        )}
-      </>
-    );
-  }
-  
+                  occupation: String((user as ExtendedUser).occupation || ""),
+                },
+              }}
+            />
+          </InformationContainer>
+        </Card>
+      ) : (
+        <p>Error loading user data.</p>
+      )}
+    </>
+  );
+}
