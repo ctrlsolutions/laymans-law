@@ -10,12 +10,19 @@ import { UserSignup } from "@/services/AuthServices";
 import TermsAndConditions from "@/components/Global/TermsAndConditions";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import { SignupFormProps } from "@/interface/AuthContainer";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import React from "react";
-export default function SignupForm({ userType = "layman" }: SignupFormProps) {
+interface SignupFormProps {
+  userType: "lawyer" | "layman";
+  onBack?: () => void; // Add this line
+}
+export default function SignupForm({
+  userType = "layman",
+  onBack,
+}: SignupFormProps) {
   const router = useRouter();
+  const [isExiting] = useState(false);
   const [form, setForm] = useState<SignupData>({
     first_name: "",
     last_name: "",
@@ -85,11 +92,22 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
       setLoading(false);
     }
   };
+  const handleBack = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onBack) {
+      onBack();
+    }
+  };
   return (
-    <div className="p-4 text-black w-full mx-auto h-full flex flex-col">
+    <div
+      className={`p-4 text-black w-full mx-auto h-full flex flex-col transition-all duration-500 ${
+        isExiting ? "animate-slide-to-left" : "animate-bounce-to-center"
+      }`}
+    >
       <ToastContainer />
       <Link
         href="/"
+        onClick={handleBack}
         className="top-6 left-6 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
       >
         <FaArrowLeft className="mr-2" />

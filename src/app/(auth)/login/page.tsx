@@ -1,15 +1,35 @@
 "use client";
 import AuthContainer from "@/components/Auth/AuthContainer";
 import LoginForm from "@/components/Auth/LogInForm";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 export default function LoginPage() {
+  const [isExiting, setIsExiting] = useState(false);
+  const router = useRouter();
+
+  const handleBack = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
+  };
   return (
-    <AuthContainer bgColor="black" className="animate-bounce-to-center">
+    <AuthContainer
+      bgColor="black"
+      className={
+        isExiting ? "animate-slide-to-left" : "animate-bounce-to-center"
+      }
+    >
       <div className="relative h-full w-full flex items-center justify-center">
         {/* Back to Landing Button in Top-Right */}
         <Link
           href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            handleBack();
+          }}
           className="absolute -top-3 -left-2 xs:top-4 xs:left-4 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
         >
           <FaArrowLeft className="mr-2" />

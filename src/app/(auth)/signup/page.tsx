@@ -48,20 +48,30 @@ import Container from "@/components/Auth/AuthContainer";
 
 export default function SignupChoicePage() {
   const [userType, setUserType] = useState<"lawyer" | "layman" | null>(null);
+  const [isExiting, setIsExiting] = useState(false);
 
   if (!userType) {
-    // No background/layout for the choice step
     return <SignUpPage onChoose={setUserType} />;
   }
 
-  // Show background/layout only for the form
+  // Handler for back button in the form
+  const handleBack = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setUserType(null); // Go back to choice step
+      setIsExiting(false); // Reset animation state
+    }, 500); // Match your animation duration
+  };
+
   return (
     <Container
       bgColor={userType === "lawyer" ? "blue" : "red"}
-      className="animate-bounce-to-center"
+      className={
+        isExiting ? "animate-slide-to-left" : "animate-bounce-to-center"
+      }
     >
       <div className="flex items-center justify-center h-full">
-        <SignupForm userType={userType} />
+        <SignupForm userType={userType} onBack={handleBack} />
       </div>
     </Container>
   );

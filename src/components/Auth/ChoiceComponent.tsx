@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 interface SignUpPageProps {
@@ -7,11 +8,20 @@ interface SignUpPageProps {
 }
 const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
   const [isExiting, setIsExiting] = useState(false);
+  const router = useRouter();
+
   const handleChoose = (type: "lawyer" | "layman") => {
     setIsExiting(true);
     setTimeout(() => {
       onChoose(type);
-    }, 300);
+    }, 500);
+  };
+
+  const handleBack = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      router.push("/");
+    }, 500);
   };
   return (
     <div
@@ -30,6 +40,10 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
       >
         <Link
           href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            handleBack();
+          }}
           className="top-6 left-6 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
         >
           <FaArrowLeft className="mr-2" />
