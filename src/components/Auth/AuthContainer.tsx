@@ -1,4 +1,5 @@
 import { ContainerProps } from "@/interface/AuthContainer";
+import Image from "next/image";
 interface AuthContainerProps extends ContainerProps {
   className?: string;
 }
@@ -17,7 +18,15 @@ const Layout = ({
           className="absolute inset-0 "
           style={{ backgroundColor: bgColor, opacity: 0.1 }}
         ></div>
-        <img src="/logo.png" alt="Logo" className="max-w-full h-auto" />
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          fill={false}
+          width={300}
+          height={300}
+          className="max-w-full h-auto"
+          priority
+        />
       </div>
 
       {/* Main Content */}

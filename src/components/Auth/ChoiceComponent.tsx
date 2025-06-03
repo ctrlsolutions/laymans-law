@@ -7,9 +7,7 @@ interface SignUpPageProps {
 }
 const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
   const [isExiting, setIsExiting] = useState(false);
-  const [choice, setChoice] = useState<"lawyer" | "layman" | null>(null);
   const handleChoose = (type: "lawyer" | "layman") => {
-    setChoice(type);
     setIsExiting(true);
     setTimeout(() => {
       onChoose(type);

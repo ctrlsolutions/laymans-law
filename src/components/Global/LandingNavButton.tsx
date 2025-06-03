@@ -21,8 +21,6 @@ export default function NavButton({
   text = "Placeholder",
   opacity = 1,
   borderRadius = "2rem",
-  width = "8rem",
-  height = "1.5rem",
   onClick,
   type = "button",
   route,
@@ -37,10 +35,14 @@ export default function NavButton({
       e.preventDefault();
     }
     if (!loading) {
-      onClick?.();
+      if (onClick) onClick();
       if (route) {
         setTimeout(() => {
-          replace ? router.replace(route) : router.push(route);
+          if (replace) {
+            router.replace(route);
+          } else {
+            router.push(route);
+          }
         }, 700);
       }
     }

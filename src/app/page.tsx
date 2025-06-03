@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import LandingNavButton from "@/components/Global/LandingNavButton";
+import Link from "next/link";
 import Head from "next/head";
 export default function Home() {
   const [animateNav, setAnimateNav] = useState(false);
@@ -31,30 +32,30 @@ export default function Home() {
           animateNav ? "animate-nav-links" : ""
         }`}
       >
-        <a
+        <Link
           href="/forum"
           className={`hover:underline ${
             animateNav ? "animate-move-up animation-delay-0" : ""
           }`}
         >
           FORUM
-        </a>
-        <a
+        </Link>
+        <Link
           href="/wiki"
           className={`hover:underline ${
             animateNav ? "animate-move-up animation-delay-100" : ""
           }`}
         >
           WIKI
-        </a>
-        <a
+        </Link>
+        <Link
           href="/about"
           className={`hover:underline ${
             animateNav ? "animate-move-up animation-delay-200" : ""
           }`}
         >
           ABOUT
-        </a>
+        </Link>
       </nav>
       <div
         className={`absolute inset-0 flex items-center bg-cover bg-center bg-fixed h-full bg-[url(/upperBG.png)] transition-transform duration-1000 ease-in-out ${
