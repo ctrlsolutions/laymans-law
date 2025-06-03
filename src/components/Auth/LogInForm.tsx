@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BaseButton from "@/components/Global/BaseButton";
@@ -10,44 +9,35 @@ import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { UserLogin } from "@/services/AuthServices";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import Link from "next/link";
-
 export default function LoginForm() {
   const router = useRouter();
   const [form, setForm] = useState<LoginData>({ email: "", password: "" });
   const [errors, setErrors] = useState<Partial<LoginData>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleInputChange(event, setForm, setErrors, validateField);
   };
-
   const handleBlur = (
     event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     handleInputBlur(event, setErrors, validateField, form);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const newErrors = {
       email: validateField("email", form.email, form),
       password: validateField("password", form.password, form),
     };
-
     setErrors(newErrors);
-
     if (newErrors.email || newErrors.password) return;
-
     setLoading(true);
-
     try {
       const response = await UserLogin(form.email, form.password);
-
       if (response.success) {
-        toast("Login successful. Welcome back!", {
+        toast("Login successful!", {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -58,7 +48,6 @@ export default function LoginForm() {
           theme: "dark",
           transition: Bounce,
         });
-
         setTimeout(() => {
           router.push(`${response.user_id}`);
         }, 2000);
@@ -68,12 +57,12 @@ export default function LoginForm() {
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
-      setLoading(false); // Set loading to false after submission is complete
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full ">
       <ToastContainer />
 
       {/* Email */}
@@ -91,7 +80,6 @@ export default function LoginForm() {
         />
         {errors.email && <p className="text-gray-500">{errors.email}</p>}
       </div>
-
       {/* Password */}
       <div>
         <BaseFormInput
@@ -110,7 +98,7 @@ export default function LoginForm() {
       </div>
 
       {/* Remember Me & Forgot Account */}
-      <div className="flex justify-between items-center text-sm sm:text-base text-black">
+      <div className="flex justify-between items-center text-xs xs:text-sm sm:text-base text-black">
         <label className="flex items-center space-x-2 cursor-pointer">
           <input
             type="checkbox"
@@ -127,7 +115,6 @@ export default function LoginForm() {
           Forgot Account?
         </Link>
       </div>
-
       {/* Submit */}
       <BaseButton
         type="submit"

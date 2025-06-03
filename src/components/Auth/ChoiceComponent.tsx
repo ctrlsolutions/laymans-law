@@ -2,28 +2,34 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-
 interface SignUpPageProps {
   onChoose: (type: "lawyer" | "layman") => void;
 }
-
-export default function ChoiceComponent({ onChoose }: SignUpPageProps) {
+const SignUpPage: React.FC<SignUpPageProps> = ({ onChoose }) => {
   const [isExiting, setIsExiting] = useState(false);
-
+  const [choice, setChoice] = useState<"lawyer" | "layman" | null>(null);
   const handleChoose = (type: "lawyer" | "layman") => {
+    setChoice(type);
     setIsExiting(true);
     setTimeout(() => {
       onChoose(type);
     }, 300);
   };
-
   return (
     <div
       className={`min-h-screen flex items-center justify-center bg-cover animate-bounce-to-center bg-center ${
         isExiting ? "animate-slide-to-left" : ""
       }`}
     >
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-[40vw] text-black">
+      <div
+        className="
+          bg-white rounded-2xl shadow-lg 
+          p-4 xs:p-6 md:p-8 
+          w-[95vw] xs:w-[70vw] sm:w-[50vw] md:w-[80vw] lg:w-[50vw] xl:w-[50vw]
+          min-h-[60vh] xs:min-h-[55vh] md:min-h-[40vh] lg:min-h-[45vh] xl:min-h-[40vh]
+          text-black
+        "
+      >
         <Link
           href="/"
           className="top-6 left-6 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
@@ -31,11 +37,12 @@ export default function ChoiceComponent({ onChoose }: SignUpPageProps) {
           <FaArrowLeft className="mr-2" />
           Back
         </Link>
-        <h1 className="text-[50px] font-black tracking-tight mt-1">Sign Up</h1>
+        <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl md:mb-3 font-black tracking-tight mt-1">
+          Sign Up
+        </h1>
         <p className="mb-6">
           Before proceeding, please choose between the two options below.
         </p>
-
         <div className="space-y-4 text-white">
           <button
             onClick={() => handleChoose("lawyer")}
@@ -49,7 +56,6 @@ export default function ChoiceComponent({ onChoose }: SignUpPageProps) {
             </div>
             <span className="text-xl text-[5vh]">→</span>
           </button>
-
           <button
             onClick={() => handleChoose("layman")}
             className="w-full bg-red py-4 rounded-lg flex items-center justify-between px-6"
@@ -69,4 +75,5 @@ export default function ChoiceComponent({ onChoose }: SignUpPageProps) {
       </div>
     </div>
   );
-}
+};
+export default SignUpPage;

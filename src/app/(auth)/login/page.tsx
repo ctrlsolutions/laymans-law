@@ -1,10 +1,8 @@
 "use client";
-
 import AuthContainer from "@/components/Auth/AuthContainer";
 import LoginForm from "@/components/Auth/LogInForm";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-
 export default function LoginPage() {
   return (
     <AuthContainer bgColor="black" className="animate-bounce-to-center">
@@ -12,7 +10,7 @@ export default function LoginPage() {
         {/* Back to Landing Button in Top-Right */}
         <Link
           href="/"
-          className="absolute top-6 left-6 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
+          className="absolute -top-3 -left-2 xs:top-4 xs:left-4 inline-flex items-center text-sm text-gray-700 hover:text-black transition"
         >
           <FaArrowLeft className="mr-2" />
           Back
@@ -20,16 +18,16 @@ export default function LoginPage() {
 
         {/* Centered Login Form */}
         <div className="w-full flex flex-col gap-6 px-6 sm:gap-4 items-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black">
             Login
           </h1>
-          <p className="text-gray-600 sm:text-xl text-center">
+          <p className="text-xs xs:text-sm text-gray-600 text-center">
             Welcome back! Please log in to your account.
           </p>
 
           <LoginForm />
 
-          <p className="text-center text-black text-base mt-6">
+          <p className="text-center text-black text-xs xs:text-base mt-6">
             Don’t have an account?{" "}
             <Link href="/signup">
               <span className="font-bold hover:underline">Sign Up.</span>

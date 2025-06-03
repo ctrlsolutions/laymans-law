@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -31,6 +30,14 @@ export default {
     "bg-pink-800",
   ],
   theme: {
+    screens: {
+      xs: "400px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
       colors: {
         background: "var(--background)",
@@ -69,7 +76,7 @@ export default {
     },
   },
   plugins: [
-    function ({ addUtilities }: { addUtilities: (utilities: Record<string, Record<string, string>>) => void }) {
+    function ({ addUtilities }) {
       addUtilities({
         ".animation-delay-0": { "animation-delay": "0ms" },
         ".animation-delay-100": { "animation-delay": "100ms" },

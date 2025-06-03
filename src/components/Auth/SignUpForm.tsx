@@ -1,10 +1,8 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import BaseButton from "@/components/Global/BaseButton";
-
 import { useRouter } from "next/navigation";
 import { SignupData } from "@/interface/AuthTypes";
 import { validateField } from "@/utils/AuthValidators";
@@ -15,11 +13,10 @@ import { ToastContainer, toast, Bounce } from "react-toastify";
 import { SignupFormProps } from "@/interface/AuthContainer";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
 import React from "react";
-
 export default function SignupForm({ userType = "layman" }: SignupFormProps) {
   const router = useRouter();
-
   const [form, setForm] = useState<SignupData>({
     first_name: "",
     last_name: "",
@@ -33,33 +30,28 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
     roll_number: "",
     roll_signed_date: "",
   });
-
   const [errors, setErrors] = useState<Partial<SignupData>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false); // Add state for checkbox
   const [showTermsModal, setShowTermsModal] = useState(false);
-
   useEffect(() => {
     setForm((prevForm) => ({
       ...prevForm,
       user_type: userType,
     }));
   }, [userType]);
-
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     handleInputChange<SignupData>(event, setForm, setErrors, validateField);
   };
-
   const handleBlur = (
     event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     handleInputBlur(event, setErrors, validateField, form);
   };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!agreed) {
@@ -67,8 +59,15 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
       return;
     }
     setLoading(true);
-
     try {
+      const newErrors: Partial<SignupData> = {
+        email: validateField("email", form.email, form),
+        confirm_password: validateField(
+          "confirm_password",
+          form.confirm_password,
+          form
+        ),
+      };
       const response = await UserSignup(form);
       if (response.success) {
         toast("Signup successful. Welcome aboard!", {
@@ -92,7 +91,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
       setLoading(false);
     }
   };
-
   return (
     <div className="p-4 text-black w-full mx-auto h-full flex flex-col">
       <ToastContainer />
@@ -103,7 +101,9 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         <FaArrowLeft className="mr-2" />
         Back
       </Link>
-      <h2 className="text-3xl font-extrabold text-center">Create an account</h2>
+      <h2 className="text-xl xs:text-xl sm:text-2xl md:text-2xl lg:text-4xl font-extrabold text-center">
+        Create an account
+      </h2>
 
       <TermsAndConditions
         show={showTermsModal}
@@ -112,7 +112,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
       <form className="overflow-y-auto p-4" onSubmit={handleSubmit}>
         {/* First & Last Name */}
-        <div className="grid grid-cols-2 gap-6 mb-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
           <BaseFormInput
             label="First Name"
             name="first_name"
@@ -134,7 +134,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             onBlur={handleBlur}
           />
         </div>
-
         {/* Email */}
         <BaseFormInput
           label="Email"
@@ -147,7 +146,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           onBlur={handleBlur}
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-
         {/* Contact No. */}
         <BaseFormInput
           label="Contact No."
@@ -160,7 +158,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
           onBlur={handleBlur}
         />
 
-        <div className="grid grid-cols-2 gap-6 mb-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
           <BaseFormSelect
             label="Select Gender"
             name="gender"
@@ -174,7 +172,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
               { value: "O", label: "Other" },
             ]}
           />
-
           <BaseFormInput
             label="Date of Birth"
             name="birth_date"
@@ -189,7 +186,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
 
         {/* Conditional Fields for Lawyers */}
         {userType === "lawyer" && (
-          <div className="grid grid-cols-2 gap-6 mb-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
             <BaseFormInput
               label="Roll No."
               name="roll_number"
@@ -212,7 +209,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             />
           </div>
         )}
-
         {/* Password Fields */}
         <BaseFormInput
           label="Password"
@@ -241,7 +237,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
         )}
 
         {/* Terms & Conditions Checkbox */}
-        <div className="flex items-center mt-4 mb-2">
+        <div className="flex items-center mt-3 mb-1 xs:mt-4 xs:mb-2 sm:mt-5 sm:mb-3 md:mt-6 md:mb-4 lg:mt-8 lg:mb-6 text-xs xs:text-sm sm:text-base">
           <input
             id="terms"
             type="checkbox"
@@ -249,7 +245,7 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             onChange={() => setAgreed(!agreed)}
             className="mr-2 accent-red-800"
           />
-          <label htmlFor="terms" className="text-sm">
+          <label htmlFor="terms" className="text-xs xs:text-sm sm:text-base">
             I agree with the{" "}
             <button
               type="button"
@@ -261,7 +257,6 @@ export default function SignupForm({ userType = "layman" }: SignupFormProps) {
             </button>
           </label>
         </div>
-
         <div className="mt-5">
           <BaseButton
             type="submit"

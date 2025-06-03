@@ -1,9 +1,7 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FaSpinner } from "react-icons/fa";
-
 interface NavButtonProps {
   text?: string;
   opacity?: number;
@@ -19,7 +17,6 @@ interface NavButtonProps {
   className?: string;
   loading?: boolean;
 }
-
 export default function NavButton({
   text = "Placeholder",
   opacity = 1,
@@ -35,49 +32,36 @@ export default function NavButton({
   loading = false,
 }: NavButtonProps) {
   const router = useRouter();
-
-  const bgColorMap: Record<string, string> = {
-    red: "bg-red",
-    blue: "bg-blue",
-    black: "bg-black",
-  };
-
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (type !== "submit") {
       e.preventDefault();
     }
-
     if (!loading) {
-      if (onClick) {
-        onClick();
-      }
-
+      onClick?.();
       if (route) {
         setTimeout(() => {
-          if (replace) {
-            router.replace(route);
-          } else {
-            router.push(route);
-          }
+          replace ? router.replace(route) : router.push(route);
         }, 700);
       }
     }
   };
-
   return (
     <button
       type={type}
       onClick={handleClick}
       disabled={loading}
-      style={{ opacity, borderRadius, width, height }}
-      className={[
-        "font-bold transition duration-200 ease-in-out hover:opacity-80",
-        "flex items-center justify-center",
-        loading
-          ? "bg-gray-400 cursor-not-allowed"
-          : `${bgColorMap[variant] || "bg-red"} text-white`,
-        className,
-      ].join(" ")}
+      style={{ opacity, borderRadius }}
+      className={`
+        font-bold transition duration-200 ease-in-out hover:opacity-80
+        flex items-center justify-center
+        ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : `bg-${variant} text-white`
+        }
+        w-32 h-10 text-base xs:w-40 xs:h-12 xs:text-lg
+        ${className}
+    `}
     >
       {loading ? <FaSpinner className="animate-spin text-lg" /> : text}
     </button>
