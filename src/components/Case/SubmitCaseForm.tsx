@@ -4,21 +4,21 @@ import { useState } from "react";
 import BaseButton from "@/components/Global/BaseButton";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
+import { SubmitCaseFormData } from "@/interface/CaseTypes";
 import Textarea from "@/components/Global/BaseTextArea";
 import { toast, ToastContainer } from "react-toastify";
 import { submitCase } from "@/services/CaseServices";
 
-export default function SubmitCaseForm() {
-  const [formData, setFormData] = useState({
+export default function CaseSubmissionForm() {
+  const [formData, setFormData] = useState<SubmitCaseFormData>({
     title: "",
-    description: "",
     case_type: "",
-    attachments: [] as File[],
+    description: "",
   });
 
   interface OtherData {
     legalTopic: string;
-    files: File[]; // ✅ array of File
+    files: File[];
   }
 
   const [otherData, setOtherData] = useState<OtherData>({
@@ -50,7 +50,7 @@ export default function SubmitCaseForm() {
     if (files) {
       setOtherData((prev) => ({
         ...prev,
-        files: [...(prev.files || []), ...Array.from(files)], // Append new files to the existing list
+        files: [...(prev.files || []), ...Array.from(files)],
       }));
     }
   };
@@ -58,21 +58,18 @@ export default function SubmitCaseForm() {
   const handleRemoveFile = (index: number) => {
     setOtherData((prev) => ({
       ...prev,
-      files: prev.files.filter((_, i) => i !== index), // Remove the file at the specified index
+      files: prev.files.filter((_, i) => i !== index),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form data:", formData);
-
     const response = await submitCase(formData, otherData.files);
 
     if (response.success) {
       toast.success("Case submitted successfully!");
-      console.log(response.message);
     } else {
-      console.error(response.message);
+      toast.error(response.message);
     }
   };
 
@@ -81,13 +78,12 @@ export default function SubmitCaseForm() {
       title: "",
       case_type: "",
       description: "",
-      attachments: [],
     });
     setOtherData({ legalTopic: "", files: [] });
   };
 
   return (
-    <div className=" rounded-lg p-6 sm:p-8">
+    <div className="rounded-lg p-6 sm:p-8">
       <h1 className="text-md font-extrabold text-gray-900 mb-2">Submit Case</h1>
       <hr className="mb-3" />
 
@@ -96,7 +92,6 @@ export default function SubmitCaseForm() {
 
         <BaseFormInput
           label=" "
-
           name="title"
           type="text"
           value={formData.title}
@@ -107,7 +102,6 @@ export default function SubmitCaseForm() {
         />
 
         <div className="grid grid-cols-2 gap-3 overflow-hidden z-0">
-
           <BaseFormSelect
             label=" "
             name="case_type"
@@ -127,18 +121,27 @@ export default function SubmitCaseForm() {
           required
         />
 
-        <div className="relative border border-gray-300 rounded-lg p-4 h-30">
-          <div className="absolute inset-10 w-15 h-10">
-            <input
-              type="file"
-              multiple
-              onChange={handleFileChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-          </div>
-          <div className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start overflow-y-auto" style={{ maxHeight: '7.5rem' }}>
-            {otherData.files && otherData.files.length > 0 ? (
-              <ul className="text-md text-gray-700 text-center space-y-1 w-full mt-3 px-8 py-2">
+        {/* File Upload Box */}
+        <div className="relative border border-gray-300 rounded-lg p-4 h-28">
+          <div
+            className="w-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-start"
+            style={{ maxHeight: "5rem", minHeight: "5rem" }}
+          >
+            {otherData.files.length === 0 ? (
+              <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer w-full h-full ">
+                <span className="text-gray-500 text-4xl">+</span>
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            ) : (
+              <ul
+                className="text-md text-gray-700 text-center space-y-1 w-full mt-3 px-8 py-2 overflow-y-auto"
+                style={{ maxHeight: "5.5rem" }}
+              >
                 {otherData.files.map((file, index) => (
                   <li
                     key={index}
@@ -148,21 +151,24 @@ export default function SubmitCaseForm() {
                     <button
                       type="button"
                       onClick={() => handleRemoveFile(index)}
-                      className="text-red-500 hover:text-red-700 text-sm ml-4 mr-2 mb-1 pointer-events-auto"
+                      className="text-red-900 hover:text-red-700 text-sm ml-4 mr-2 mb-1 pointer-events-auto"
                     >
                       x
                     </button>
                   </li>
                 ))}
               </ul>
-            ) : (
-              <span className="text-gray-500 text-2xl mt-7 mb-7">+</span>
             )}
           </div>
         </div>
 
         <div className="mt-8 flex flex-col gap-4 justify-end">
-          <BaseButton color="gray-200" textColor="gray-500" onClick={handleCancel} width="100%">
+          <BaseButton
+            color="gray-200"
+            textColor="gray-500"
+            onClick={handleCancel}
+            width="100%"
+          >
             Cancel
           </BaseButton>
           <BaseButton color="red" type="submit" width="100%">
