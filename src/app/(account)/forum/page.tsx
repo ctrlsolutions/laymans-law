@@ -154,7 +154,7 @@ const ForumPage: React.FC = () => {
 
   return (
     <main
-      className="flex flex-col text-black w-full font-[Poppins]"
+      className="flex flex-col text-black w-full font-[Poppins] "
       role="main"
     >
       <Header
@@ -165,10 +165,12 @@ const ForumPage: React.FC = () => {
       />
 
       <section
-        className="self-center mt-10 pb-10 w-full max-w-[1080px] h-[calc(100vh-40px)] max-h-[77vh] flex flex-col"
+        className="self-center mt-6 pb-10 w-full h-[calc(100vh-40px)] max-h-[78vh] md:h-[60vh]  flex flex-col
+        max-sm:h-[68vh]
+        "
         aria-label="Case listings"
       >
-        <div className="flex gap-5 max-md:flex-col h-full overflow-hidden">
+        <div className="flex gap-5 px-10 max-md:flex-col h-full overflow-hidden max-md:overflow-y-auto">
           <div className="w-[77%] h-[98%] max-md:w-full flex flex-col">
             <div className="flex justify-between gap-2 max-md:flex-col mr-6">
               <BaseFormSelect

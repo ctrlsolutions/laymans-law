@@ -112,11 +112,13 @@ export default function AccountLayout({
 
   return (
     <div
-      className="flex h-screen items-center bg-cover bg-center relative"
+      className="flex h-screen items-center bg-cover bg-center relative 
+      max-sm:h-[100vh] max-sm:overflow-y-auto max-sm:scrollbar-hide"
       style={{ backgroundImage: `url("/bg-base.png")` }}
     >
       <div
-        className={`absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[22vw] ${sidebarBg} ml-8 p-6 pl-0 rounded-3xl flex flex-col justify-between font-extrabold`}
+        className={`absolute left-0 top-1/2 transform -translate-y-1/2 h-[88vh] w-[22vw] ${sidebarBg} ml-6 p-6 pl-0 rounded-3xl flex flex-col justify-between font-extrabold 
+        max-sm:hidden max-md:hidden`}
       >
         <Image 
           src="/logo.png" 
@@ -133,7 +135,7 @@ export default function AccountLayout({
               className={`w-full h-[5vh] p-6 hover:text-xl transition-all duration-350 ease-in-out flex items-center justify-center ml-4 rounded-l-3xl ${
                 activeTab === tab.name
                   ? "bg-white text-black text-[1.3rem]"
-                  : "bg-transparent text-white hover:bg-white hover:text-black hover:font-bold hover:shadow-lg"
+                  : "bg-transparent text-white xl:text-lg lg:text-lg md:text-sm hover:bg-white hover:text-black hover:font-bold hover:shadow-lg"
               }`}
             >
               {tab.name}
@@ -148,7 +150,8 @@ export default function AccountLayout({
           Logout
         </button>
       </div>
-      <div className="h-[95vh] w-[90vw] bg-white rounded-xl z-10 ml-[23vw] mr-[20px] border-none">
+      <div className="h-[95vh] w-[90vw] bg-white rounded-xl z-10 ml-[23vw] mr-[20px] border-none
+        max-sm:ml-5 max-sm:w-full">
         {contentToShow}
       </div>
     </div>

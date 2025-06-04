@@ -83,7 +83,11 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
       <ToastContainer />
       <div className="flex flex-row gap-5">
         <div className="relative">
-          <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">
+          <div className="w-40 h-40 
+            max-sm:w-16 max-sm:h-16 max-sm:mt-4 
+            md:w-40 md:h-40 
+            lg:w-48 lg:h-48 
+            rounded-full overflow-hidden bg-gray-200">
             <Image
               src="/blank-profile.svg"
               alt="Profile"

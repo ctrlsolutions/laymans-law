@@ -243,7 +243,7 @@ const Page: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-400 italic">
+          <div className="flex-1 flex items-center justify-center text-gray-400 italic md:pr-16">
             <div className="pb-[120px]">
               Select a law to preview its content.
             </div>

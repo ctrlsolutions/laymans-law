@@ -22,13 +22,13 @@ const BaseFormSelect: FC<FormSelectProps> = ({
       <span
         className={`font-extrabold ${
           textSize || "text-sm"
-        } sm:text-sm md:text-sm lg:text-sm xl:text-sm`}
+        } sm:text-sm md:text-base lg:text-base xl:text-lg`}
       >
         {label}
       </span>
 
       <div
-        className={`relative flex items-center ${width || ""}`}
+        className={`relative flex items-center w-full`}
         style={{ width, height }}
       >
         <select
@@ -36,18 +36,17 @@ const BaseFormSelect: FC<FormSelectProps> = ({
           name={name}
           value={value}
           onChange={onChange}
-          className={`text-${color} ${textSize || "text-sm"} border-${color}
-            p-2 w-full text-ellipsis
-            border border-gray-300
-            font-semibold 
-            focus:outline-none 
-            focus:ring-0
-            h-[1rem] rounded-[0.375rem] pl-4 pr-6  
-            sm:h-[1.5rem] sm:rounded-[0.4375rem] sm:pl-3 sm:pr-6 
-            md:h-[2.0rem] md:rounded-[0.5rem] md:pl-4 md:pr-8  
-            lg:h-[2.5rem] lg:rounded-[0.5625rem] lg:pl-6 lg:pr-10 
-            xl:h-[3rem] xl:rounded-[1rem] xl:pl-5 xl:pr-12    
-            appearance-none
+          className={`
+            text-${color} ${textSize || "text-sm"}
+            border border-gray-300 border-${color}
+            font-semibold focus:outline-none focus:ring-0 appearance-none
+            text-ellipsis w-full p-2
+            h-8 rounded-md pl-3 pr-6
+
+            sm:h-10 sm:rounded-md sm:pl-4 sm:pr-8
+            md:h-11 md:rounded-lg md:pl-5 md:pr-10
+            lg:h-12 lg:rounded-xl lg:pl-6 lg:pr-12
+            xl:h-12 xl:rounded-2xl xl:pl-7 xl:pr-14
           `}
         >
           {choices.map((option) => (
@@ -56,7 +55,8 @@ const BaseFormSelect: FC<FormSelectProps> = ({
             </option>
           ))}
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center px-2 text-gray-700">
+
+        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
           <svg
             className="w-4 h-4"
             xmlns="http://www.w3.org/2000/svg"
