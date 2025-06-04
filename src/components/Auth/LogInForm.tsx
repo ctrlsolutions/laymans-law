@@ -108,12 +108,12 @@ export default function LoginForm() {
           />
           <span>Remember Me</span>
         </label>
-        <Link
+        {/* <Link
           href="/login/recover-account"
           className="text-black underline hover:text-gray-700"
         >
           Forgot Account?
-        </Link>
+        </Link> */}
       </div>
       {/* Submit */}
       <BaseButton

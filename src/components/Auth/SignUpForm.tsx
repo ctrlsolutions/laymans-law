@@ -171,19 +171,35 @@ export default function SignupForm({
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
-          <BaseFormSelect
-            label="Select Gender"
-            name="gender"
-            color="blue"
-            value={form.gender}
-            onChange={handleChange}
-            choices={[
-              { value: "", label: "Select", disabled: true },
-              { value: "M", label: "Male" },
-              { value: "F", label: "Female" },
-              { value: "O", label: "Other" },
-            ]}
-          />
+          {userType === "layman" ? (
+            <BaseFormSelect
+              label="Select Gender"
+              name="gender"
+              color="red"
+              value={form.gender}
+              onChange={handleChange}
+              choices={[
+                { value: "", label: "Select", disabled: true },
+                { value: "M", label: "Male" },
+                { value: "F", label: "Female" },
+                { value: "O", label: "Other" },
+              ]}
+            />
+          ) : (
+            <BaseFormSelect
+              label="Select Gender"
+              name="gender"
+              color="blue"
+              value={form.gender}
+              onChange={handleChange}
+              choices={[
+                { value: "", label: "Select", disabled: true },
+                { value: "M", label: "Male" },
+                { value: "F", label: "Female" },
+                { value: "O", label: "Other" },
+              ]}
+            />
+          )}
           <BaseFormInput
             label="Date of Birth"
             name="birth_date"
