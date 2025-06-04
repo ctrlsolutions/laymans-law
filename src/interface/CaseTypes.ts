@@ -45,13 +45,6 @@ export interface Category {
 export const categories: Category[] = [];
 export const cases: Case[] = [];
 
-export interface HeaderProps {
-  searchQuery: string;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  openCaseCount: number;
-  user: { firstName: string } | null;
-}
-
 export interface CaseFilterButtonProps {
   caseType: string;
   selectedCaseType: string;

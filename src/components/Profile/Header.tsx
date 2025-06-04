@@ -1,27 +1,40 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiBellOn, CiSearch } from "react-icons/ci";
 import { useRouter, useParams } from "next/navigation";
 import BaseFormInput from "@/components/Global/BaseFormInput";
 import { cases } from "@/interface/CaseTypes";
-import { HeaderProps } from "@/interface/CaseTypes";
-import Image from 'next/image';
-
+import { HeaderProps } from "@/interface/ComponentTypes";
+import Image from "next/image";
 
 const SearchBar: React.FC<{
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-}> = ({ searchQuery, setSearchQuery }) => {
+  placeholderText?: string;
+}> = ({ searchQuery, setSearchQuery, placeholderText }) => {
+  const [animatedPlaceholder, setAnimatedPlaceholder] =
+    useState(placeholderText);
+
+  useEffect(() => {
+    if (placeholderText !== animatedPlaceholder) {
+      const timeout = setTimeout(() => {
+        setAnimatedPlaceholder(placeholderText);
+      }, 200);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [placeholderText, animatedPlaceholder]);
+
   return (
     <div className="relative flex items-center border border-black rounded-[40px] mt-7 px-5 py-2.5 w-full h-10 max-w-2lg sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
       <BaseFormInput
         label=""
         name="search"
         type="text"
-        placeholder="Search"
+        placeholder={placeholderText}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="px-4 py-2 mb-5 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+        className="transition-opacity duration-500 ease-in-out w-[32rem] px-4 py-2 mb-5 focus:outline-none focus:ring-0 focus:border-transparent"
       />
       <CiSearch className="absolute right-4 text-blue-500 text-xl" />
     </div>
@@ -106,6 +119,7 @@ const Header: React.FC<HeaderProps> = ({
   setSearchQuery,
   openCaseCount,
   user,
+  placeholderText,
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -128,6 +142,7 @@ const Header: React.FC<HeaderProps> = ({
             <SearchBar
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
+              placeholderText={placeholderText}
             />
           </div>
         </div>

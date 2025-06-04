@@ -13,6 +13,13 @@ import { filterCases } from "@/utils/caseFilters";
 import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
 
+const placeholderSuggestions = [
+  "Search your submitted cases...",
+  "Search by case status: open, closed, ongoing, discarded...",
+  "Search by case type: family law, criminal law...",
+  "Search by case title or description...",
+];
+
 const SubmittedCasesPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
@@ -53,20 +60,24 @@ const SubmittedCasesPage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log('Raw API response data:', response.data);
-          console.log('Current user ID:', userId);
-          
-          const userCases = (response.data as Case[]).filter((caseItem: Case) => {
-            console.log('Case item:', caseItem);
-            console.log('Case created_by:', caseItem.created_by);
-            const caseUserId = typeof caseItem.created_by === 'object' && caseItem.created_by !== null
-              ? String(caseItem.created_by.user_id)
-              : String(caseItem.created_by);
-            console.log('Comparing IDs:', caseUserId, userId?.toString());
-            return caseUserId === userId?.toString();
-          });
-          
-          console.log('Filtered user cases:', userCases);
+          console.log("Raw API response data:", response.data);
+          console.log("Current user ID:", userId);
+
+          const userCases = (response.data as Case[]).filter(
+            (caseItem: Case) => {
+              console.log("Case item:", caseItem);
+              console.log("Case created_by:", caseItem.created_by);
+              const caseUserId =
+                typeof caseItem.created_by === "object" &&
+                caseItem.created_by !== null
+                  ? String(caseItem.created_by.user_id)
+                  : String(caseItem.created_by);
+              console.log("Comparing IDs:", caseUserId, userId?.toString());
+              return caseUserId === userId?.toString();
+            }
+          );
+
+          console.log("Filtered user cases:", userCases);
           setCases(userCases);
         } else {
           setCasesError(response.message || "Failed to load cases");
@@ -103,13 +114,31 @@ const SubmittedCasesPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
   return (
-    <main className="flex flex-col text-black w-full font-[Poppins]" role="main">
+    <main
+      className="flex flex-col text-black w-full font-[Poppins]"
+      role="main"
+    >
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
         user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <section
@@ -143,11 +172,15 @@ const SubmittedCasesPage: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() => router.push(`/${userId}/submitted-cases/${caseItem.id}/`)}
+                    onClick={() =>
+                      router.push(`/${userId}/submitted-cases/${caseItem.id}/`)
+                    }
                   />
                 ))
               ) : (
-                <p className="text-center text-gray-500 mt-20">No cases found</p>
+                <p className="text-center text-gray-500 mt-20">
+                  No cases found
+                </p>
               )}
             </div>
           </div>

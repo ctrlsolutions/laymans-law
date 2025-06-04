@@ -125,9 +125,16 @@ const MainContent: React.FC<
   );
 };
 
+const placeholderSuggestions = [
+  "Search by law title...",
+  "Search by law code (e.g., RA 9262)...",
+  "Search by content of the law...",
+  "Search by tags: rights of women, domestic violence...",
+  "Search by law type: family law, criminal law...",
+];
+
 const Page: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [wikiSearchQuery] = useState("");
   const [selectedLaw, setSelectedLaw] = useState<LawData | null>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -141,12 +148,27 @@ const Page: React.FC = () => {
 
   const [user, setUser] = useState<User | null>(null);
 
-  const filteredLaws = laws.filter(
-    (law) =>
-      law.title.toLowerCase().includes(wikiSearchQuery.toLowerCase()) ||
-      law.code.toLowerCase().includes(wikiSearchQuery.toLowerCase()) ||
-      law.full_law.toLowerCase().includes(wikiSearchQuery.toLowerCase())
-  );
+  const filteredLaws = React.useMemo(() => {
+    const query = searchQuery.toLowerCase();
+
+    return laws.filter((law) => {
+      const titleMatch = law.title.toLowerCase().includes(query);
+      const codeMatch = law.code.toLowerCase().includes(query);
+      const fullLawMatch = law.full_law.toLowerCase().includes(query);
+      const typeMatch = law.case_type.toLowerCase().includes(query);
+      const tagMatch = law.tags.toLowerCase().includes(query);
+
+      return titleMatch || codeMatch || fullLawMatch || tagMatch || typeMatch;
+    });
+  }, [laws, searchQuery]);
+
+  useEffect(() => {
+    if (filteredLaws.length > 0) {
+      setSelectedLaw(filteredLaws[0]);
+    } else {
+      setSelectedLaw(null);
+    }
+  }, [filteredLaws]);
 
   useEffect(() => {
     if (sectionRef.current) {
@@ -167,7 +189,7 @@ const Page: React.FC = () => {
             code: law.code || "",
             full_law: law.full_law,
             case_type: law.case_type || "",
-            tags: law.tags || [],
+            tags: law.tags || "",
             summary: law.summary,
             translation: {
               language_tagalog:
@@ -208,6 +230,20 @@ const Page: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
@@ -215,6 +251,7 @@ const Page: React.FC = () => {
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
         user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <section

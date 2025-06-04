@@ -5,7 +5,9 @@ import Header from "@/components/Profile/Header";
 import BaseFormSelect from "@/components/Global/BaseFormSelect";
 import { CountryData } from "@/interface/CountryTypes";
 import { fetchOFWSupport } from "@/services/OfwServices";
-import Image from 'next/image';
+import { User } from "@/interface/AuthTypes";
+import { getProfile } from "@/services/ProfileServices";
+import Image from "next/image";
 
 type SupportSectionHeaderProps = {
   onCountryChange: (countryCode: string) => void;
@@ -140,7 +142,7 @@ const MainContent: React.FC<CountryData & { flagUrl: string }> = ({
             alt={`${country} flag`}
             width={40}
             height={40}
-            className="rounded-full border border-black"
+            className="border border-black"
             style={{
               objectFit: country === "Japan" ? "cover" : "fill",
               objectPosition: "center",
@@ -223,6 +225,8 @@ const MainContent: React.FC<CountryData & { flagUrl: string }> = ({
   </article>
 );
 
+const placeholderSuggestions = ["Search for a country..."];
+
 const Page: React.FC = () => {
   const [countries, setCountries] = useState<CountryData[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -233,6 +237,7 @@ const Page: React.FC = () => {
     null
   );
   const [flagUrls, setFlagUrls] = useState<{ [key: string]: string }>({});
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -275,25 +280,73 @@ const Page: React.FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!searchQuery) return;
+
+    const matchingCountry = countries.find((country) =>
+      country.country.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (matchingCountry) {
+      setSelectedCountry(matchingCountry);
+    }
+  }, [searchQuery, countries]);
+
+  const filteredCountries = countries.filter((country) =>
+    country.country.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchUserProfile = async () => {
+      const response = await getProfile();
+      if (isMounted) {
+        if (response.success && response.data) {
+          setUser(response.data as User);
+        } else {
+          console.error("Error fetching user data:", response.message);
+        }
+      }
+    };
+
+    fetchUserProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <main className="flex flex-col text-black font-[Poppins] w-full max-w-[100vw]">
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
-        user={null}
+        user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <SupportSectionHeader
         countries={countries}
         onCountryChange={(selected) => {
-          const selectedCountry = countries.find(
-            (country) => country.country === selected
-          );
-          if (selectedCountry) {
-            setSelectedCountry(selectedCountry);
-          } else {
-            setSelectedCountry(null);
+          const selectedData = countries.find((c) => c.country === selected);
+          if (selectedData) {
+            setSelectedCountry(selectedData);
           }
         }}
       />
@@ -305,34 +358,25 @@ const Page: React.FC = () => {
         }`}
       >
         <aside className="flex flex-col pt-0 px-4 gap-5 w-[350px] max-md:w-full overflow-y-auto overflow-x-hidden max-h-full rounded-lg">
-          {countries.map((country) => (
+          {filteredCountries.map((country) => (
             <CountryCard
-              key={country.country}
-              country={{
-                id: country.id,
-                country: country.country,
-                description: country.description,
-                support_name: country.support_name,
-                address: country.address,
-                contact_number: country.contact_number,
-                email_address: country.email_address,
-                website: country.website,
-                available_services: country.available_services,
-                working_hours: country.working_hours,
-              }}
+              key={country.id}
+              country={country}
               onClick={() => setSelectedCountry(country)}
-              selected={selectedCountry?.country === country.country}
-              countryFlagUrl={flagUrls[country.country] || ""}
+              selected={selectedCountry?.id === country.id}
+              countryFlagUrl={flagUrls[country.country]}
             />
           ))}
         </aside>
 
         {selectedCountry ? (
           <div className="flex-1 max-h-full rounded-lg">
-            <MainContent
-              {...selectedCountry}
-              flagUrl={flagUrls[selectedCountry.country] || ""}
-            />
+            {selectedCountry && (
+              <MainContent
+                {...selectedCountry}
+                flagUrl={flagUrls[selectedCountry.country] || ""}
+              />
+            )}
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400 italic">

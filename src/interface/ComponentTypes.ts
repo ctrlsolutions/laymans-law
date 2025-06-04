@@ -68,3 +68,13 @@ export interface Reply {
   created_at: string;
   replies?: Reply[];
 }
+
+export interface HeaderProps {
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  openCaseCount: number;
+  user: {
+    firstName: string;
+  } | null;
+  placeholderText?: string;
+}

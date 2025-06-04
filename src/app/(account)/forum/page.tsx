@@ -21,6 +21,12 @@ import { checkIfBookmarked, toggleBookmark } from "@/services/ForumServices";
 import { sortingOptions, categories } from "@/constants/caseConstants";
 import { filterForum } from "@/utils/filterForum";
 
+const placeholderSuggestions = [
+  "Search forum...",
+  "Search by forum type: family law, criminal law...",
+  "Search by forum title or description...",
+];
+
 const ForumPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
@@ -35,12 +41,10 @@ const ForumPage: React.FC = () => {
   const [filteredForum, setFilteredForum] = useState<Forum[]>([]);
   const ForumCount = filteredForum.filter((f) => f.title).length;
 
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
 
   const openModal = (forumItem: Forum) => {
-    // Find the latest forum object from state
     const latestForum = forum.find((f) => f.id === forumItem.id) || forumItem;
     setSelectedForum(latestForum);
     setIsModalOpen(true);
@@ -152,6 +156,20 @@ const ForumPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
@@ -162,6 +180,7 @@ const ForumPage: React.FC = () => {
         setSearchQuery={setSearchQuery}
         openCaseCount={ForumCount}
         user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <section

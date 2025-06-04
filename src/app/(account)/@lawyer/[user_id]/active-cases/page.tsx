@@ -13,6 +13,13 @@ import { useRouter, useParams } from "next/navigation";
 import { User } from "@/interface/AuthTypes";
 import { filterCases } from "@/utils/caseFilters";
 
+const placeholderSuggestions = [
+  "Search your accepted cases...",
+  "Search by case status: open, closed, ongoing, discarded...",
+  "Search by case type: family law, criminal law...",
+  "Search by case title or description...",
+];
+
 const ActiveCasesPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
@@ -91,6 +98,20 @@ const ActiveCasesPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
   return (
     <main
       className="flex flex-col text-black w-full font-[Poppins]"
@@ -101,6 +122,7 @@ const ActiveCasesPage: React.FC = () => {
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
         user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <section

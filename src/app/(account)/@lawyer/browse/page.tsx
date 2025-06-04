@@ -13,6 +13,12 @@ import { fetchCases } from "@/services/CaseService";
 import { useRouter } from "next/navigation";
 import { User } from "@/interface/AuthTypes";
 
+const placeholderSuggestions = [
+  "Search by case status: open, closed, ongoing, discarded...",
+  "Search by case type: family law, criminal law...",
+  "Search by case title or description...",
+];
+
 const BrowseCasesPage: React.FC = () => {
   const router = useRouter();
 
@@ -49,7 +55,7 @@ const BrowseCasesPage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log('Fetched cases:', response.data);
+          console.log("Fetched cases:", response.data);
           setCases(response.data as Case[]);
         } else {
           setError(response.message || "Failed to load cases");
@@ -86,13 +92,31 @@ const BrowseCasesPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
   return (
-    <main className="flex flex-col text-black w-full font-[Poppins]" role="main">
+    <main
+      className="flex flex-col text-black w-full font-[Poppins]"
+      role="main"
+    >
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={cases.length}
         user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <section
@@ -130,7 +154,9 @@ const BrowseCasesPage: React.FC = () => {
                   />
                 ))
               ) : (
-                <p className="text-center text-gray-500 mt-20">No cases found</p>
+                <p className="text-center text-gray-500 mt-20">
+                  No cases found
+                </p>
               )}
             </div>
           </div>
