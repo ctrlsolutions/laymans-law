@@ -246,7 +246,14 @@ export default function AcceptCasePage() {
                   <p>
                     <span className="font-medium">Submitted:</span>{" "}
                     <strong>
-                      {new Date(caseData.created_date).toLocaleDateString()}
+                      {new Date(caseData.created_date).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
                     </strong>
                   </p>
                   <p>
