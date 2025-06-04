@@ -29,6 +29,7 @@ export default {
     "bg-teal-500",
     "bg-fuchsia-800",
     "bg-pink-800",
+    "bg-orange-500",
   ],
   theme: {
     screens: {

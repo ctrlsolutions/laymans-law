@@ -35,7 +35,9 @@ const CaseCard: React.FC<{
         ? "bg-gray-500"
         : status === "discarded"
         ? "bg-red"
-        : "bg-orange";
+        : status === "ongoing"
+        ? "bg-orange-500"
+        : "bg-yellow-500";
 
     return (
       <span

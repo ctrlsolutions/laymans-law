@@ -8,7 +8,11 @@ const settingsComponents: Record<string, React.FC> = {
   notifications: ComingSoon,
 };
 
-export default async function SettingsPage({ params }: { params: { tab: string } }) {
+export default async function SettingsPage({
+  params,
+}: {
+  params: { tab: string };
+}) {
   const Component = settingsComponents[params.tab];
 
   if (!Component) return notFound();

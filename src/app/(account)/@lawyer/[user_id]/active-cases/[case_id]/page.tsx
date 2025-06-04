@@ -294,13 +294,7 @@ export default function AcceptCasePage() {
                   </p>
                   <p>
                     <span
-                      className={`px-2 py-1 rounded-full text-white text-xs font-semibold ${
-                        caseData.status === "open"
-                          ? "bg-green-500"
-                          : caseData.status === "ongoing"
-                          ? "bg-yellow-500"
-                          : "bg-red"
-                      }`}
+                      className={`px-2 py-1 rounded-full text-white text-xs font-semibold`}
                     >
                       {caseData.status.toUpperCase()}
                     </span>
