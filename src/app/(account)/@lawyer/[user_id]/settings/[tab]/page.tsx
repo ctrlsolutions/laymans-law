@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import SettingsForm from "@/components/Profile/SettingsForm";
 import ComingSoon from "@/components/Global/ComingSoon";
+import SecuritySettingsForm from "@/components/Profile/SecuritySettingsForm";
 
 const settingsComponents: Record<string, React.FC> = {
   profile: (props) => <SettingsForm userType="lawyer" {...props} />,
-  security: ComingSoon,
+  security: SecuritySettingsForm,
   notifications: ComingSoon,
 };
 

@@ -81,7 +81,7 @@ const CaseCard: React.FC<{
                 <p className="text-xs">
                   Last updated on{" "}
                   <strong className="font-bold">
-                    {new Date(caseItem.created_date).toLocaleDateString(
+                    {new Date(caseItem.edited_date ?? "").toLocaleDateString(
                       undefined,
                       {
                         year: "numeric",
@@ -93,10 +93,13 @@ const CaseCard: React.FC<{
                   &nbsp;
                   <strong className="font-bold">
                     at{" "}
-                    {new Date(caseItem.created_date).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {new Date(caseItem.edited_date ?? "").toLocaleTimeString(
+                      [],
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }
+                    )}
                   </strong>
                 </p>
               </div>
