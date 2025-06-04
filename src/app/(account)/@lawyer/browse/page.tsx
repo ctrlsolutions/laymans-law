@@ -55,8 +55,11 @@ const BrowseCasesPage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log("Fetched cases:", response.data);
-          setCases(response.data as Case[]);
+          const allCases = response.data as Case[];
+          const openAndDiscardedCases = allCases.filter(
+            (c) => c.status === "open" || c.status === "discarded"
+          );
+          setCases(openAndDiscardedCases);
         } else {
           setError(response.message || "Failed to load cases");
         }

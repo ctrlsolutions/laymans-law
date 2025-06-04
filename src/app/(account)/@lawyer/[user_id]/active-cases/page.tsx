@@ -61,8 +61,11 @@ const ActiveCasesPage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log("Fetched cases:", response.data);
-          setCases(response.data as Case[]);
+          const allCases = response.data as Case[];
+          const openAndClosedCases = allCases.filter(
+            (c) => c.status === "ongoing" || c.status === "closed"
+          );
+          setCases(openAndClosedCases);
         } else {
           setError(response.message || "Failed to load cases");
         }

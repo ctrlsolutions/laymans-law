@@ -8,7 +8,6 @@ import { validateField } from "@/utils/AuthValidators";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { UserLogin } from "@/services/AuthServices";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import Link from "next/link";
 export default function LoginForm() {
   const router = useRouter();
   const [form, setForm] = useState<LoginData>({ email: "", password: "" });
@@ -108,12 +107,12 @@ export default function LoginForm() {
           />
           <span>Remember Me</span>
         </label>
-        <Link
+        {/* <Link
           href="/login/recover-account"
           className="text-black underline hover:text-gray-700"
         >
           Forgot Account?
-        </Link>
+        </Link> */}
       </div>
       {/* Submit */}
       <BaseButton

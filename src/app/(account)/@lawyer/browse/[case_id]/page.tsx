@@ -7,17 +7,17 @@ import { fetchCases, acceptCase } from "@/services/CaseService";
 import { fetchComments, addComment } from "@/services/CommentServices";
 import Header from "@/components/Profile/Header";
 import BaseButton from "@/components/Global/BaseButton";
-import { categories } from "@/constants/caseConstants";
+import { wikiLaw } from "@/constants/caseConstants";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlay } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { HiLightBulb } from "react-icons/hi";
 import CommentCard from "@/components/Case/CommentCard";
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function AcceptCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -32,8 +32,8 @@ export default function AcceptCasePage() {
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
 
-  const [comments, setComments] = useState<Comment[]>([]); 
-  const [newComment, setNewComment] = useState('');
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
   const [currentUser] = useState<UserType | null>(null);
 
   const router = useRouter();
@@ -42,27 +42,28 @@ export default function AcceptCasePage() {
 
   useEffect(() => {
     if (selectedImage) {
-      console.log('Modal opened. selectedImage:', selectedImage);
-      console.log('getFileType(selectedImage):', getFileType(selectedImage));
+      console.log("Modal opened. selectedImage:", selectedImage);
+      console.log("getFileType(selectedImage):", getFileType(selectedImage));
     }
   }, [selectedImage]);
 
   const getCategoryColor = (categoryId: string) => {
-    const category = categories.find((c) => c.id === categoryId);
+    const category = wikiLaw.find((c) => c.id === categoryId);
     if (!category) return "bg-gray-300 text-black";
-  
-    const isDark = category.color.includes('600') || 
-                  category.color.includes('800') || 
-                  category.color.includes('blue');
-    return `${category.color} ${isDark ? 'text-white' : 'text-black'}`;
+
+    const isDark =
+      category.color.includes("600") ||
+      category.color.includes("800") ||
+      category.color.includes("blue");
+    return `${category.color} ${isDark ? "text-white" : "text-black"}`;
   };
 
   const getCategoryName = (caseTypeId: string): string => {
-    const category = categories.find((c) => c.id === caseTypeId);
+    const category = wikiLaw.find((c) => c.id === caseTypeId);
     return category ? category.name : caseTypeId;
   };
 
-    useEffect(() => {
+  useEffect(() => {
     async function loadComments() {
       if (case_id) {
         const response = await fetchComments(case_id);
@@ -71,7 +72,7 @@ export default function AcceptCasePage() {
         }
       }
     }
-    
+
     if (caseData) {
       loadComments();
     }
@@ -89,70 +90,79 @@ export default function AcceptCasePage() {
     async function loadCase() {
       const response = await fetchCases();
       console.log("API response:", response);
-      console.log("Case ID from params:", case_id); 
-  
+      console.log("Case ID from params:", case_id);
+
       if (response.success && response.data) {
         const foundCase = (response.data as Case[]).find((c: Case) => {
-          console.log(`Comparing URL ID "${case_id}" with Case ID ${c.id} (type: ${typeof c.id})`);
-          return String(c.id) === case_id; 
+          console.log(
+            `Comparing URL ID "${case_id}" with Case ID ${
+              c.id
+            } (type: ${typeof c.id})`
+          );
+          return String(c.id) === case_id;
         });
         console.log("Found case:", foundCase);
-  
+
         if (foundCase) {
           console.log("Case attachments:", foundCase.attachments);
-          console.log("First attachment URL:", foundCase.attachments?.[0]?.file);
+          console.log(
+            "First attachment URL:",
+            foundCase.attachments?.[0]?.file
+          );
           setCaseData({
             ...foundCase,
           });
-        }
-        else {
-          console.error(`Case with ID ${case_id} not found in the fetched list.`);
+        } else {
+          console.error(
+            `Case with ID ${case_id} not found in the fetched list.`
+          );
         }
       }
-  
+
       setLoading(false);
     }
-  
+
     loadCase();
   }, [case_id]);
 
   const getFileType = (filename: string) => {
     const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
     const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
-    
-    if (imageExtensions.test(filename)) return 'image';
-    if (videoExtensions.test(filename)) return 'video';
-    return 'other';
+
+    if (imageExtensions.test(filename)) return "image";
+    if (videoExtensions.test(filename)) return "video";
+    return "other";
   };
 
   const handlePrev = () => {
-  if (!caseData || !caseData.attachments?.length) return;
-  
-  if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
-    const video = videoRefs.current[currentMediaIndex];
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
-    }
-  }
-  
-  const newIndex = currentMediaIndex === 0 
-      ? caseData.attachments.length - 1 
-      : currentMediaIndex - 1;
-    setCurrentMediaIndex(newIndex);
-  };
-
-  const handleNext = () => {
     if (!caseData || !caseData.attachments?.length) return;
-    
-    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === "video") {
       const video = videoRefs.current[currentMediaIndex];
       if (video) {
         video.pause();
         video.currentTime = 0;
       }
     }
-    
+
+    const newIndex =
+      currentMediaIndex === 0
+        ? caseData.attachments.length - 1
+        : currentMediaIndex - 1;
+    setCurrentMediaIndex(newIndex);
+  };
+
+  const handleNext = () => {
+    if (!caseData || !caseData.attachments?.length) return;
+
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === "video") {
+      const video = videoRefs.current[currentMediaIndex];
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    }
+
     const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
     setCurrentMediaIndex(newIndex);
   };
@@ -163,7 +173,7 @@ export default function AcceptCasePage() {
       return;
     }
 
-    setError(null); 
+    setError(null);
 
     const response = await acceptCase(case_id);
 
@@ -173,17 +183,19 @@ export default function AcceptCasePage() {
         router.push("/browse");
       }, 3000);
     } else {
-      setError(response.message || "Failed to accept the case. Please try again.");
+      setError(
+        response.message || "Failed to accept the case. Please try again."
+      );
       toast.error(`Error: ${response.message || "Failed to accept the case."}`);
     }
   };
 
   const handleAddComment = async () => {
-    if (newComment.trim() === '') return;
+    if (newComment.trim() === "") return;
     const response = await addComment(case_id, newComment);
     if (response.success) {
       setComments([...comments, response.data as Comment]);
-      setNewComment('');
+      setNewComment("");
       toast.success(response.message);
     } else {
       toast.error(response.error || "Failed to add comment");
@@ -199,10 +211,10 @@ export default function AcceptCasePage() {
       <ToastContainer />
       <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
         <div className="pb-2 px-0 rounded-b-2xl text-black">
-          <Header 
-            searchQuery={searchQuery} 
-            setSearchQuery={setSearchQuery} 
-            openCaseCount={0} 
+          <Header
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            openCaseCount={0}
             user={user}
           />
         </div>
@@ -216,10 +228,8 @@ export default function AcceptCasePage() {
               ← Back
             </button>
 
-            <button
-              className="flex items-center gap-2 text-blue text-sm font-semibold bg-white border-none px-2 py-1 rounded-md transition hover:opacity-80 hover:shadow-md"
-            >
-              <HiLightBulb size={20}/> 
+            <button className="flex items-center gap-2 text-blue text-sm font-semibold bg-white border-none px-2 py-1 rounded-md transition hover:opacity-80 hover:shadow-md">
+              <HiLightBulb size={20} />
               Interested
             </button>
           </div>
@@ -236,7 +246,14 @@ export default function AcceptCasePage() {
                   <p>
                     <span className="font-medium">Submitted:</span>{" "}
                     <strong>
-                      {new Date(caseData.created_date).toLocaleDateString()}
+                      {new Date(caseData.created_date).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
                     </strong>
                   </p>
                   <p>
@@ -289,27 +306,29 @@ export default function AcceptCasePage() {
                 <div className="mb-0 flex justify-center items-center">
                   {/* Previous button */}
                   {caseData.attachments?.length > 1 && (
-                    <button 
+                    <button
                       onClick={handlePrev}
                       className="p-2 mr-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
                     >
-                      <IoIosArrowBack color="black"/>
+                      <IoIosArrowBack color="black" />
                     </button>
                   )}
 
                   <div className="relative mb-0 h-[26vh] w-[22vw]">
-                    {caseData.attachments?.length > 0 && (
+                    {caseData.attachments?.length > 0 &&
                       caseData.attachments.map((attachment, index) => {
                         const fileType = getFileType(attachment.file);
-                        
+
                         return (
-                          <div 
+                          <div
                             key={attachment.id}
                             className={`absolute inset-0 transition-opacity duration-300 ${
-                              currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                              currentMediaIndex === index
+                                ? "opacity-100"
+                                : "opacity-0 pointer-events-none"
                             }`}
                           >
-                            {fileType === 'image' ? (
+                            {fileType === "image" ? (
                               <div className="relative h-full w-full">
                                 <Image
                                   src={attachment.file}
@@ -323,10 +342,10 @@ export default function AcceptCasePage() {
                                   }}
                                 />
                               </div>
-                            ) : fileType === 'video' ? (
+                            ) : fileType === "video" ? (
                               <div className="relative h-full w-full">
                                 <video
-                                  ref={el => {
+                                  ref={(el) => {
                                     if (el) {
                                       videoRefs.current[index] = el;
                                     }
@@ -340,14 +359,19 @@ export default function AcceptCasePage() {
                                   }}
                                   preload="metadata"
                                   onPause={() => {
-                                    if (currentMediaIndex !== index && videoRefs.current[index]) {
+                                    if (
+                                      currentMediaIndex !== index &&
+                                      videoRefs.current[index]
+                                    ) {
                                       videoRefs.current[index]!.currentTime = 0;
                                     }
                                   }}
                                 >
-                                  <source 
-                                    src={attachment.file} 
-                                    type={`video/${attachment.file.split('.').pop()}`}
+                                  <source
+                                    src={attachment.file}
+                                    type={`video/${attachment.file
+                                      .split(".")
+                                      .pop()}`}
                                   />
                                   Your browser does not support the video tag.
                                 </video>
@@ -359,17 +383,16 @@ export default function AcceptCasePage() {
                             )}
                           </div>
                         );
-                      })
-                    )}
+                      })}
                   </div>
 
                   {/* Next button */}
                   {caseData.attachments?.length > 1 && (
-                    <button 
+                    <button
                       onClick={handleNext}
                       className="p-2 ml-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
                     >
-                      <IoIosArrowForward color="black"/>
+                      <IoIosArrowForward color="black" />
                     </button>
                   )}
                 </div>
@@ -380,14 +403,16 @@ export default function AcceptCasePage() {
                     <button
                       key={attachment.id}
                       onClick={() => {
-                        setSelectedImage(attachment.file)
+                        setSelectedImage(attachment.file);
                         setCurrentMediaIndex(index);
                       }}
                       className={`h-12 w-12 rounded-md overflow-hidden ${
-                        currentMediaIndex === index ? "ring-2 ring-blue-500" : ""
+                        currentMediaIndex === index
+                          ? "ring-2 ring-blue-500"
+                          : ""
                       }`}
                     >
-                      {getFileType(attachment.file) === 'image' ? (
+                      {getFileType(attachment.file) === "image" ? (
                         <div className="relative h-full w-full">
                           <Image
                             src={attachment.file}
@@ -399,7 +424,7 @@ export default function AcceptCasePage() {
                         </div>
                       ) : (
                         <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                          <FaCirclePlay color="white"/>
+                          <FaCirclePlay color="white" />
                         </div>
                       )}
                     </button>
@@ -409,13 +434,13 @@ export default function AcceptCasePage() {
 
               {/* Bottom Panel - Action Buttons */}
               <div className="shrink-0 mt-0 mb-5 ml-3 flex justify-between items-center pr-10">
-                {caseData.status === 'closed' ? (
+                {caseData.status === "closed" ? (
                   <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
                     Case has been closed
                   </div>
-                ) : caseData.status === 'ongoing' ? (
+                ) : caseData.status === "ongoing" ? (
                   <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
-                    {caseData.assigned_to 
+                    {caseData.assigned_to
                       ? "Case has been accepted by another lawyer"
                       : "Case is already ongoing"}
                   </div>
@@ -435,7 +460,6 @@ export default function AcceptCasePage() {
             <div className="md:col-span-1 bg-gray-100 p-6 mt-0 border-l border-gray-200 h-[68vh] rounded-l flex flex-col">
               <div className="text-center mb-4 shrink-0">
                 <h3 className="text-lg text-black font-semibold">
-                  
                   <div className="flex justify-left items-center text-xxs mb-4 shrink-0">
                     <div>
                       <Image
@@ -453,13 +477,12 @@ export default function AcceptCasePage() {
                   <p className="text-xxs text-black italic font-thin pt-0 mt-0 text-left leading-tight">
                     Note: person will remain anonymous until you accept the case
                   </p>
-
                 </h3>
               </div>
               <div className="flex flex-col h-full mb-2 bg-gray-200 rounded-md p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <p className="text-sm text-gray-500 font-semibold">
-                    Comments 
+                    Comments
                   </p>
                   <div className="bg-blue rounded-full text-xxs px-1.5 py-0.5 font-semibold">
                     {comments.length}
@@ -467,32 +490,34 @@ export default function AcceptCasePage() {
                 </div>
                 <div className="flex flex-col gap-2 overflow-y-auto max-h-[36vh]">
                   {comments.length > 0 ? (
-                    comments.map(comment => (
-                      <CommentCard 
-                        key={comment.id} 
-                        comment={comment} 
-                        currentUserId={currentUser?.user_id?.toString()} 
+                    comments.map((comment) => (
+                      <CommentCard
+                        key={comment.id}
+                        comment={comment}
+                        currentUserId={currentUser?.user_id?.toString()}
                       />
                     ))
                   ) : (
-                    <p className="text-xs text-gray-500 text-center py-4">No comments yet</p>
+                    <p className="text-xs text-gray-500 text-center py-4">
+                      No comments yet
+                    </p>
                   )}
                 </div>
               </div>
               <div className="flex mb-4 gap-2">
-                <input 
-                  type="text" 
-                  placeholder="Enter a comment..." 
+                <input
+                  type="text"
+                  placeholder="Enter a comment..."
                   className="rounded-md w-full px-2 py-1 text-xs text-black"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
                 />
-                <button 
+                <button
                   className="flex bg-blue rounded-full items-center p-2"
                   onClick={handleAddComment}
                 >
-                  <IoSend color="white"/>
+                  <IoSend color="white" />
                 </button>
               </div>
             </div>
@@ -507,21 +532,23 @@ export default function AcceptCasePage() {
           >
             <div className="relative flex" onClick={(e) => e.stopPropagation()}>
               {/* Previous button */}
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const newIndex = (currentMediaIndex - 1 + caseData.attachments.length) % caseData.attachments.length;
+                  const newIndex =
+                    (currentMediaIndex - 1 + caseData.attachments.length) %
+                    caseData.attachments.length;
                   setCurrentMediaIndex(newIndex);
                   setSelectedImage(caseData.attachments[newIndex].file);
                 }}
                 className="p-4 mr-4 text-white text-2xl"
               >
-                <IoIosArrowBack/>
+                <IoIosArrowBack />
               </button>
-              
+
               {/* Media display */}
               <div className="relative flex-1 flex items-center justify-center">
-                {getFileType(selectedImage) === 'image' ? (
+                {getFileType(selectedImage) === "image" ? (
                   <Image
                     src={selectedImage}
                     alt="enlarged media"
@@ -537,28 +564,29 @@ export default function AcceptCasePage() {
                     className="rounded-md h-[80vh] w-auto"
                     key={selectedImage}
                   >
-                    <source 
-                      src={selectedImage} 
-                      type={`video/${selectedImage.split('.').pop()}`}
+                    <source
+                      src={selectedImage}
+                      type={`video/${selectedImage.split(".").pop()}`}
                     />
                     Your browser does not support the video tag.
                   </video>
                 )}
               </div>
-              
+
               {/* Next button */}
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
+                  const newIndex =
+                    (currentMediaIndex + 1) % caseData.attachments.length;
                   setCurrentMediaIndex(newIndex);
                   setSelectedImage(caseData.attachments[newIndex].file);
                 }}
                 className="p-4 ml-4 text-white text-2xl"
               >
-                <IoIosArrowForward/>
+                <IoIosArrowForward />
               </button>
-              
+
               {/* Close button */}
               <button
                 onClick={(e) => {

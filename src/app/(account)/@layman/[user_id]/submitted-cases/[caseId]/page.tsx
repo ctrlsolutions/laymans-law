@@ -29,8 +29,8 @@ export default function SubmittedCasePage() {
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]); 
-  const [newComment, setNewComment] = useState('');
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
 
   const router = useRouter();
   const params = useParams();
@@ -41,11 +41,12 @@ export default function SubmittedCasePage() {
   const getCategoryColor = (categoryId: string) => {
     const category = categories.find((c) => c.id === categoryId);
     if (!category) return "bg-gray-300 text-black";
-  
-    const isDark = category.color.includes('600') || 
-                  category.color.includes('800') || 
-                  category.color.includes('blue');
-    return `${category.color} ${isDark ? 'text-white' : 'text-black'}`;
+
+    const isDark =
+      category.color.includes("600") ||
+      category.color.includes("800") ||
+      category.color.includes("blue");
+    return `${category.color} ${isDark ? "text-white" : "text-black"}`;
   };
 
   const getCategoryName = (caseTypeId: string): string => {
@@ -57,22 +58,26 @@ export default function SubmittedCasePage() {
     if (caseData?.attachments?.length) {
       caseData.attachments.forEach((attachment, index) => {
         const fileType = getFileType(attachment.file);
-        
-        if (fileType === 'image') {
-          const img = document.createElement('img');
-          img.onload = () => console.log(`Image ${index} loaded: ${attachment.file}`);
-          img.onerror = () => console.error(`Failed to load image ${index}: ${attachment.file}`);
+
+        if (fileType === "image") {
+          const img = document.createElement("img");
+          img.onload = () =>
+            console.log(`Image ${index} loaded: ${attachment.file}`);
+          img.onerror = () =>
+            console.error(`Failed to load image ${index}: ${attachment.file}`);
           img.src = attachment.file;
-        } else if (fileType === 'video') {
-          const video = document.createElement('video');
-          video.preload = 'metadata';
-          video.onloadedmetadata = () => console.log(`Video ${index} metadata loaded: ${attachment.file}`);
-          video.onerror = () => console.error(`Failed to load video ${index}: ${attachment.file}`);
+        } else if (fileType === "video") {
+          const video = document.createElement("video");
+          video.preload = "metadata";
+          video.onloadedmetadata = () =>
+            console.log(`Video ${index} metadata loaded: ${attachment.file}`);
+          video.onerror = () =>
+            console.error(`Failed to load video ${index}: ${attachment.file}`);
           video.src = attachment.file;
-          
-          video.style.display = 'none';
+
+          video.style.display = "none";
           document.body.appendChild(video);
-          
+
           setTimeout(() => {
             document.body.removeChild(video);
           }, 1000);
@@ -85,16 +90,20 @@ export default function SubmittedCasePage() {
     if (caseData?.attachments?.length) {
       caseData.attachments.forEach((attachment, index) => {
         const fileType = getFileType(attachment.file);
-        
-        if (fileType === 'image') {
-          const img = document.createElement('img');
-          img.onload = () => console.log(`Image attachment ${index} loaded successfully`);
-          img.onerror = () => console.error(`Failed to load image attachment ${index}`);
+
+        if (fileType === "image") {
+          const img = document.createElement("img");
+          img.onload = () =>
+            console.log(`Image attachment ${index} loaded successfully`);
+          img.onerror = () =>
+            console.error(`Failed to load image attachment ${index}`);
           img.src = attachment.file;
-        } else if (fileType === 'video') {
-          const video = document.createElement('video');
-          video.oncanplay = () => console.log(`Video attachment ${index} loaded successfully`);
-          video.onerror = () => console.error(`Failed to load video attachment ${index}`);
+        } else if (fileType === "video") {
+          const video = document.createElement("video");
+          video.oncanplay = () =>
+            console.log(`Video attachment ${index} loaded successfully`);
+          video.onerror = () =>
+            console.error(`Failed to load video attachment ${index}`);
           video.src = attachment.file;
         }
       });
@@ -134,33 +143,40 @@ export default function SubmittedCasePage() {
     async function loadCase() {
       const response = await fetchCaseById(case_id);
       console.log("API response for single case:", response);
-      console.log("Case ID from params:", case_id); 
-  
+      console.log("Case ID from params:", case_id);
+
       if (response.success && response.data) {
         setCaseData({
           ...(response.data as Case),
         });
         console.log("Case data loaded:", response.data);
       } else {
-        console.error(`Case with ID ${case_id} not found or failed to fetch:`, response.message);
+        console.error(
+          `Case with ID ${case_id} not found or failed to fetch:`,
+          response.message
+        );
       }
-  
+
       setLoading(false);
     }
-  
+
     loadCase();
   }, [case_id]);
 
   useEffect(() => {
     async function loadComments() {
       if (case_id) {
-        const response = await fetchComments(case_id) as { success: boolean; data: Comment[]; message?: string };
+        const response = (await fetchComments(case_id)) as {
+          success: boolean;
+          data: Comment[];
+          message?: string;
+        };
         if (response.success) {
           setComments(response.data);
         }
       }
     }
-    
+
     if (caseData) {
       loadComments();
     }
@@ -169,12 +185,11 @@ export default function SubmittedCasePage() {
   const getFileType = (filename: string) => {
     const imageExtensions = /\.(jpeg|jpg|gif|png|webp)$/i;
     const videoExtensions = /\.(mp4|webm|ogg|mov|avi)$/i;
-    
-    if (imageExtensions.test(filename)) return 'image';
-    if (videoExtensions.test(filename)) return 'video';
-    return 'other';
-  };
 
+    if (imageExtensions.test(filename)) return "image";
+    if (videoExtensions.test(filename)) return "video";
+    return "other";
+  };
 
   const handleCancelCase = async () => {
     try {
@@ -195,7 +210,9 @@ export default function SubmittedCasePage() {
           router.push(`/${userId}/submitted-cases/`);
         }, 3000);
       } else {
-        toast.error("Failed to delete case: " + (data.error || "Unknown error"));
+        toast.error(
+          "Failed to delete case: " + (data.error || "Unknown error")
+        );
       }
     } catch (error) {
       console.error("Error deleting case:", error);
@@ -205,47 +222,50 @@ export default function SubmittedCasePage() {
 
   const handlePrev = () => {
     if (!caseData || !caseData.attachments?.length) return;
-    
-    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === "video") {
       const video = videoRefs.current[currentMediaIndex];
       if (video) {
         video.pause();
         video.currentTime = 0;
       }
     }
-    
-    const newIndex = currentMediaIndex === 0 
-      ? caseData.attachments.length - 1 
-      : currentMediaIndex - 1;
+
+    const newIndex =
+      currentMediaIndex === 0
+        ? caseData.attachments.length - 1
+        : currentMediaIndex - 1;
     setCurrentMediaIndex(newIndex);
   };
 
   const handleNext = () => {
     if (!caseData || !caseData.attachments?.length) return;
-    
-    if (getFileType(caseData.attachments[currentMediaIndex].file) === 'video') {
+
+    if (getFileType(caseData.attachments[currentMediaIndex].file) === "video") {
       const video = videoRefs.current[currentMediaIndex];
       if (video) {
         video.pause();
         video.currentTime = 0;
       }
     }
-    
+
     const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
     setCurrentMediaIndex(newIndex);
   };
 
   const handleAddComment = async () => {
-    if (newComment.trim() === '') return;
-    
+    if (newComment.trim() === "") return;
+
     try {
       const response = await addComment(case_id, newComment);
       if (response.success) {
         setComments([...comments, response.data as Comment]);
-        setNewComment('');
+        setNewComment("");
         toast.success(response.message || "Comment added successfully");
       } else {
-        toast.error(response.error || response.message || "Failed to add comment");
+        toast.error(
+          response.error || response.message || "Failed to add comment"
+        );
       }
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -261,10 +281,10 @@ export default function SubmittedCasePage() {
       <ToastContainer />
       <div className="pt-0 max-w-8xl mx-auto min-h-screen mt-0">
         <div className="pb-2 px-0 rounded-b-2xl text-black">
-          <Header 
-            searchQuery={searchQuery} 
-            setSearchQuery={setSearchQuery} 
-            openCaseCount={0} 
+          <Header
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            openCaseCount={0}
             user={user ? { firstName: user.first_name } : null}
           />
         </div>
@@ -288,12 +308,17 @@ export default function SubmittedCasePage() {
                   {caseData.title}
                 </h2>
                 <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-black">
-                  <p>
-                    <span className="font-medium">Submitted:</span>{" "}
-                    <strong>
-                      {new Date(caseData.created_date).toLocaleDateString()}
-                    </strong>
-                  </p>
+                  <span className="font-medium">Submitted:</span>{" "}
+                  <strong>
+                    {new Date(caseData.created_date).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </strong>
                   <p>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${getCategoryColor(
@@ -331,27 +356,29 @@ export default function SubmittedCasePage() {
                 <div className="mb-0 flex justify-center items-center">
                   {/* Previous button */}
                   {caseData.attachments?.length > 1 && (
-                    <button 
+                    <button
                       onClick={handlePrev}
                       className="p-2 mr-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
                     >
-                      <IoIosArrowBack color="black"/>
+                      <IoIosArrowBack color="black" />
                     </button>
                   )}
 
                   <div className="relative mb-0 h-[26vh] w-[22vw]">
-                    {caseData.attachments?.length > 0 && (
+                    {caseData.attachments?.length > 0 &&
                       caseData.attachments.map((attachment, index) => {
                         const fileType = getFileType(attachment.file);
-                        
+
                         return (
-                          <div 
+                          <div
                             key={attachment.id}
                             className={`absolute inset-0 transition-opacity duration-300 ${
-                              currentMediaIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                              currentMediaIndex === index
+                                ? "opacity-100"
+                                : "opacity-0 pointer-events-none"
                             }`}
                           >
-                            {fileType === 'image' ? (
+                            {fileType === "image" ? (
                               <div className="relative h-full w-full">
                                 <Image
                                   src={attachment.file}
@@ -365,10 +392,10 @@ export default function SubmittedCasePage() {
                                   }}
                                 />
                               </div>
-                            ) : fileType === 'video' ? (
+                            ) : fileType === "video" ? (
                               <div className="relative h-full w-full">
                                 <video
-                                  ref={el => {
+                                  ref={(el) => {
                                     if (el) {
                                       videoRefs.current[index] = el;
                                     }
@@ -382,14 +409,19 @@ export default function SubmittedCasePage() {
                                   }}
                                   preload="metadata"
                                   onPause={() => {
-                                    if (currentMediaIndex !== index && videoRefs.current[index]) {
+                                    if (
+                                      currentMediaIndex !== index &&
+                                      videoRefs.current[index]
+                                    ) {
                                       videoRefs.current[index]!.currentTime = 0;
                                     }
                                   }}
                                 >
-                                  <source 
-                                    src={attachment.file} 
-                                    type={`video/${attachment.file.split('.').pop()}`}
+                                  <source
+                                    src={attachment.file}
+                                    type={`video/${attachment.file
+                                      .split(".")
+                                      .pop()}`}
                                   />
                                   Your browser does not support the video tag.
                                 </video>
@@ -401,17 +433,16 @@ export default function SubmittedCasePage() {
                             )}
                           </div>
                         );
-                      })
-                    )}
+                      })}
                   </div>
 
                   {/* Next button */}
                   {caseData.attachments?.length > 1 && (
-                    <button 
+                    <button
                       onClick={handleNext}
                       className="p-2 ml-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
                     >
-                      <IoIosArrowForward color="black"/>
+                      <IoIosArrowForward color="black" />
                     </button>
                   )}
                 </div>
@@ -425,10 +456,12 @@ export default function SubmittedCasePage() {
                         setCurrentMediaIndex(index);
                       }}
                       className={`h-12 w-12 rounded-md overflow-hidden ${
-                        currentMediaIndex === index ? "ring-2 ring-blue-500" : ""
+                        currentMediaIndex === index
+                          ? "ring-2 ring-blue-500"
+                          : ""
                       }`}
                     >
-                      {getFileType(attachment.file) === 'image' ? (
+                      {getFileType(attachment.file) === "image" ? (
                         <div className="relative h-full w-full">
                           <Image
                             src={attachment.file}
@@ -456,7 +489,7 @@ export default function SubmittedCasePage() {
                   onClick={handleCancelCase}
                 >
                   Delete Case
-                </BaseButton> 
+                </BaseButton>
               </div>
             </div>
 
@@ -471,36 +504,44 @@ export default function SubmittedCasePage() {
                   </span>
                 </div>
                 {comments.length === 0 ? (
-                  <p className="text-gray-500 text-sm text-center">No comments yet</p>
+                  <p className="text-gray-500 text-sm text-center">
+                    No comments yet
+                  </p>
                 ) : (
                   <div className="space-y-3">
                     {comments.map((comment) => (
-                      <div key={comment.id} className="bg-white p-3 rounded-md shadow-sm">
-                        <p className="text-sm text-gray-800 break-words">{comment.content}</p>
+                      <div
+                        key={comment.id}
+                        className="bg-white p-3 rounded-md shadow-sm"
+                      >
+                        <p className="text-sm text-gray-800 break-words">
+                          {comment.content}
+                        </p>
                         <p className="text-xs text-gray-500 mt-1 text-right">
-                          By {comment.author?.first_name || 'Unknown'} on {new Date(comment.created_at).toLocaleDateString()}
+                          By {comment.author?.first_name || "Unknown"} on{" "}
+                          {new Date(comment.created_at).toLocaleDateString()}
                         </p>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-             
+
               {/* Comment Input Area */}
               <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  placeholder="Enter a comment..." 
+                <input
+                  type="text"
+                  placeholder="Enter a comment..."
                   className="rounded-md w-full px-2 py-1 text-sm text-black border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
                 />
-                <button 
+                <button
                   className="flex-shrink-0 w-10 h-10 bg-red rounded-full flex items-center justify-center hover:bg-red-600 transition"
                   onClick={handleAddComment}
                 >
-                  <IoSend color="white" size={20}/>
+                  <IoSend color="white" size={20} />
                 </button>
               </div>
             </div>
@@ -515,21 +556,23 @@ export default function SubmittedCasePage() {
           >
             <div className="relative flex" onClick={(e) => e.stopPropagation()}>
               {/* Previous button */}
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const newIndex = (currentMediaIndex - 1 + caseData.attachments.length) % caseData.attachments.length;
+                  const newIndex =
+                    (currentMediaIndex - 1 + caseData.attachments.length) %
+                    caseData.attachments.length;
                   setCurrentMediaIndex(newIndex);
                   setSelectedImage(caseData.attachments[newIndex].file);
                 }}
                 className="p-4 mr-4 text-white text-2xl"
               >
-                <IoIosArrowBack/>
+                <IoIosArrowBack />
               </button>
-              
+
               {/* Media display */}
               <div className="relative flex-1 flex items-center justify-center">
-                {getFileType(selectedImage) === 'image' ? (
+                {getFileType(selectedImage) === "image" ? (
                   <Image
                     src={selectedImage}
                     alt="enlarged media"
@@ -545,28 +588,29 @@ export default function SubmittedCasePage() {
                     className="rounded-md h-[80vh] w-auto"
                     key={selectedImage}
                   >
-                    <source 
-                      src={selectedImage} 
-                      type={`video/${selectedImage.split('.').pop()}`}
+                    <source
+                      src={selectedImage}
+                      type={`video/${selectedImage.split(".").pop()}`}
                     />
                     Your browser does not support the video tag.
                   </video>
                 )}
               </div>
-              
+
               {/* Next button */}
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const newIndex = (currentMediaIndex + 1) % caseData.attachments.length;
+                  const newIndex =
+                    (currentMediaIndex + 1) % caseData.attachments.length;
                   setCurrentMediaIndex(newIndex);
                   setSelectedImage(caseData.attachments[newIndex].file);
                 }}
                 className="p-4 ml-4 text-white text-2xl"
               >
-                <IoIosArrowForward/>
+                <IoIosArrowForward />
               </button>
-              
+
               {/* Close button */}
               <button
                 onClick={(e) => {
