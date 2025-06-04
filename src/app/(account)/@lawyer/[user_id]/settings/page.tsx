@@ -13,5 +13,5 @@ export default function SettingsHome() {
     }
   }, [router]);
 
-  return <div>Loading...</div>; // Show a loading state while redirecting
+  return <div>Loading...</div>;
 }

@@ -15,10 +15,10 @@ export default function SettingsLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const currentTab = pathname.split("/").pop(); // Get active tab from URL
+  const currentTab = pathname.split("/").pop();
 
   return (
-    <div className="">
+    <div className="p-8 h-[80vh]">
       {/* Tab Navigation */}
       <div className="relative flex ml-3 z-0">
         {tabs.map((tab, index) => (
@@ -42,7 +42,7 @@ export default function SettingsLayout({
       </div>
 
       {/* Render active tab content */}
-      <div className="relative z-1 -mt-1 border-2 bg-white p-6 rounded-b-3xl rounded-tr-3xl">
+      <div className="relative z-1 -mt-1 border-2 bg-white p-4 rounded-b-3xl rounded-tr-3xl">
         {children}
       </div>
     </div>

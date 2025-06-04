@@ -11,6 +11,14 @@ import { sortingOptions, categories } from "@/constants/caseConstants";
 import { fetchCases } from "@/services/CaseService";
 import { useRouter, useParams } from "next/navigation";
 import { User } from "@/interface/AuthTypes";
+import { filterCases } from "@/utils/caseFilters";
+
+const placeholderSuggestions = [
+  "Search your accepted cases...",
+  "Search by case status: open, closed, ongoing, discarded...",
+  "Search by case type: family law, criminal law...",
+  "Search by case title or description...",
+];
 
 const ActiveCasesPage: React.FC = () => {
   const router = useRouter();
@@ -20,35 +28,31 @@ const ActiveCasesPage: React.FC = () => {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [filteredCases, setFilteredCases] = useState<Case[]>([]);
   const [sortOrder, setSortOrder] = React.useState("latest");
   const [selectedCaseType, setSelectedCaseType] = useState("all");
   const [status, setStatus] = useState<string | "">("all");
 
-  const filteredCases = cases.filter((caseItem) => {
-    const query = searchQuery.toLowerCase();
+  const openCaseCount = filteredCases.filter(
+    (c) => c.status === "ongoing"
+  ).length;
 
-    const isAssignedToCurrentLawyer = String(caseItem.assigned_to) === String(userId);
-
-    const matchesCaseType = selectedCaseType === "all"
-        ? true
-        : selectedCaseType === "ongoing"
-        ? caseItem.status.toLowerCase() === "ongoing"
-        : selectedCaseType === "closed"
-        ? caseItem.status.toLowerCase() === "closed"
-        : false;
-
-    const matchesCategory = selectedCategory === null || caseItem.category.name === selectedCategory;
-
-    const matchesSearch = caseItem.title.toLowerCase().includes(query) || caseItem.category.name.toLowerCase().includes(query);
-
-    return isAssignedToCurrentLawyer && matchesCaseType && matchesCategory && matchesSearch;
-  });
-
-  const openCaseCount = filteredCases.filter((c) => c.status === "ongoing").length;
+  useEffect(() => {
+    if (cases.length > 0) {
+      const filtered = filterCases(
+        cases,
+        searchQuery,
+        sortOrder,
+        selectedCaseType,
+        status
+      );
+      console.log("Filtered cases:", filtered);
+      setFilteredCases(filtered);
+    }
+  }, [cases, searchQuery, selectedCaseType, sortOrder, status]);
 
   useEffect(() => {
     let isMounted = true;
@@ -57,7 +61,7 @@ const ActiveCasesPage: React.FC = () => {
       const response = await fetchCases();
       if (isMounted) {
         if (response.success && response.data) {
-          console.log('Fetched cases:', response.data);
+          console.log("Fetched cases:", response.data);
           setCases(response.data as Case[]);
         } else {
           setError(response.message || "Failed to load cases");
@@ -94,13 +98,31 @@ const ActiveCasesPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % placeholderSuggestions.length;
+      setPlaceholderText(placeholderSuggestions[currentIndex]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [placeholderText, setPlaceholderText] = useState(
+    placeholderSuggestions[0]
+  );
+
   return (
-    <main className="flex flex-col text-black w-full font-[Poppins]" role="main">
+    <main
+      className="flex flex-col text-black w-full font-[Poppins]"
+      role="main"
+    >
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         openCaseCount={openCaseCount}
         user={user ? { firstName: user.first_name } : null}
+        placeholderText={placeholderText}
       />
 
       <section
@@ -134,11 +156,15 @@ const ActiveCasesPage: React.FC = () => {
                     key={caseItem.id}
                     caseItem={caseItem}
                     categories={categories}
-                    onClick={() => router.push(`/${userId}/active-cases/${caseItem.id}/`)}
+                    onClick={() =>
+                      router.push(`/${userId}/active-cases/${caseItem.id}/`)
+                    }
                   />
                 ))
               ) : (
-                <p className="text-center text-gray-500 mt-20">No cases found</p>
+                <p className="text-center text-gray-500 mt-20">
+                  No cases found
+                </p>
               )}
             </div>
           </div>

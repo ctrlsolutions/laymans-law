@@ -6,7 +6,10 @@ const nextConfig = {
       "via.placeholder.com",
       "127.0.0.1",
       "localhost",
-      ...(process.env.NEXT_PUBLIC_IMAGE_DOMAINS ? process.env.NEXT_PUBLIC_IMAGE_DOMAINS.split(',') : [])
+      "flagcdn.com",
+      ...(process.env.NEXT_PUBLIC_IMAGE_DOMAINS
+        ? process.env.NEXT_PUBLIC_IMAGE_DOMAINS.split(",")
+        : []),
     ],
   },
 };

@@ -15,7 +15,7 @@ export interface LawData {
   code: string;
   full_law: string;
   case_type: string;
-  tags: string | string[];
+  tags: string;
   summary?: Summary;
   translation?: Translation;
 }

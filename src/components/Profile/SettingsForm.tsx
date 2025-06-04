@@ -27,7 +27,9 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
   const [editableFields, setEditableFields] = useState<Record<string, boolean>>(
     {}
   );
-  const [updatedFields, setUpdatedFields] = useState<Record<string, unknown>>({});
+  const [updatedFields, setUpdatedFields] = useState<Record<string, unknown>>(
+    {}
+  );
 
   const toggleEditable = (field: string) => {
     if (!(field in editableFields)) {
@@ -93,10 +95,10 @@ export default function SettingsForm({ userType }: SettingsFormProps) {
             />
           </div>
         </div>
-        <div className="max-h-[60vh] overflow-y-auto p-2 scrollbar-hide">
+        <div className="max-h-[60vh] bg-white p-2">
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
                 Personal Information
               </h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
