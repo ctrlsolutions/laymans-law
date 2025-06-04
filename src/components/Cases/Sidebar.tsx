@@ -21,28 +21,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         setSelectedCaseType={setSelectedStatus}
         label="All Cases"
       />
-
       <CaseFilterButton
         caseType="open"
         selectedCaseType={selectedStatus}
         setSelectedCaseType={setSelectedStatus}
         label="Open Cases"
       />
-
-      <CaseFilterButton
-        caseType="closed"
-        selectedCaseType={selectedStatus}
-        setSelectedCaseType={setSelectedStatus}
-        label="Closed Cases"
-      />
-
-      <CaseFilterButton
-        caseType="ongoing"
-        selectedCaseType={selectedStatus}
-        setSelectedCaseType={setSelectedStatus}
-        label="Ongoing Cases"
-      />
-
       <CaseFilterButton
         caseType="discarded"
         selectedCaseType={selectedStatus}

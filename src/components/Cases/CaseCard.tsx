@@ -29,11 +29,14 @@ const CaseCard: React.FC<{
 
   const StatusIndicator: React.FC<{ status: string }> = ({ status }) => {
     const color =
-    status === "open"
-      ? "bg-[#4BB328]"         // Green
-      : status === "closed"
-      ? "bg-gray-500"          // Gray
-      : "bg-orange-500";      // Orange for ongoing
+      status === "open"
+        ? "bg-[#4BB328]"
+        : status === "closed"
+        ? "bg-gray-500"
+        : status === "discarded"
+        ? "bg-red"
+        : "bg-orange";
+
     return (
       <span
         className={`flex self-center shrink-0 w-4 h-4 ${color} rounded-full`}
@@ -64,10 +67,7 @@ const CaseCard: React.FC<{
         >
           <div className="flex items-center gap-6">
             <Image
-              src={
-                caseItem.avatar ||
-                "/avatar.png"
-              }
+              src={caseItem.avatar || "/avatar.png"}
               alt="Avatar"
               width={70}
               height={70}
@@ -106,10 +106,12 @@ const CaseCard: React.FC<{
             <StatusIndicator status={caseItem.status} />
             <span className="pl-1 pr-1 text-base font-extrabold">
               {caseItem.status === "open"
-              ? "Open"
-              : caseItem.status === "closed"
-              ? "Closed"
-              : "Ongoing"}
+                ? "Open"
+                : caseItem.status === "closed"
+                ? "Closed"
+                : caseItem.status === "discarded"
+                ? "Discarded"
+                : "Ongoing"}
             </span>
           </div>
         </div>
