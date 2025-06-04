@@ -3,14 +3,17 @@ import { CaseFilterButton } from "./CaseFilterButton";
 import { SidebarProps } from "@/interface/CaseTypes";
 import React from "react";
 
-const ActiveCasesSidebar: React.FC<SidebarProps> = ({
+const Sidebar: React.FC<SidebarProps> = ({
   selectedCaseType,
   setSelectedCaseType,
   categories,
   selectedStatus,
   setSelectedStatus,
 }) => (
-  <aside className="ml-5 w-[23%] max-md:ml-0 max-md:w-full" role="complementary">
+  <aside
+    className="ml-5 w-[23%] max-md:ml-0 max-md:w-full"
+    role="complementary"
+  >
     <nav className="flex flex-col mt-3 w-full text-xs font-medium">
       <CaseFilterButton
         caseType="all"
@@ -18,23 +21,18 @@ const ActiveCasesSidebar: React.FC<SidebarProps> = ({
         setSelectedCaseType={setSelectedStatus}
         label="All Cases"
       />
-
-      {/* Removed "Open Cases" filter */}
-
       <CaseFilterButton
         caseType="closed"
         selectedCaseType={selectedStatus}
         setSelectedCaseType={setSelectedStatus}
         label="Closed Cases"
       />
-
       <CaseFilterButton
         caseType="ongoing"
         selectedCaseType={selectedStatus}
         setSelectedCaseType={setSelectedStatus}
         label="Ongoing Cases"
       />
-
       <hr className="mt-3 border-black border-opacity-30" />
       <ul className="mt-5" role="list">
         {categories.map((category) => (
@@ -68,4 +66,4 @@ const ActiveCasesSidebar: React.FC<SidebarProps> = ({
   </aside>
 );
 
-export default ActiveCasesSidebar;
+export default Sidebar;
