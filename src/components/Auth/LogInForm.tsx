@@ -8,7 +8,6 @@ import { validateField } from "@/utils/AuthValidators";
 import { handleInputChange, handleInputBlur } from "@/utils/AuthUtils";
 import { UserLogin } from "@/services/AuthServices";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import Link from "next/link";
 export default function LoginForm() {
   const router = useRouter();
   const [form, setForm] = useState<LoginData>({ email: "", password: "" });
