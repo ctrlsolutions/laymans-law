@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { getProfile } from "@/services/ProfileServices";
 import InformationContainer from "@/components/Profile/InformationContainer";
@@ -12,32 +13,35 @@ export default function LawyerDetails() {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-        const response = await getProfile();
-        if (response.success && response.data) {
-            setUser(response.data as UserProfileProps);
-        } else {
-            console.error("Error fetching user data:", response.message);
-        }
-        setLoading(false);
+      const response = await getProfile();
+      if (response.success && response.data) {
+        setUser(response.data as UserProfileProps);
+      } else {
+        console.error("Error fetching user data:", response.message);
+      }
+      setLoading(false);
     };
 
     fetchUserProfile();
   }, []);
 
-    return (
-      <>
-        {loading ? (
-            <p>Loading...</p>
-        ) : user ? (
-          <Card className="h-[57vh]">
-            <InformationContainer>
-              <InformationComponent userData={user} />
-            </InformationContainer>
-          </Card>
-        ) : (
-            <p>Error loading user data.</p>
-        )}
-      </>
-    );
-  }
-  
+  return (
+    <>
+      {loading ? (
+        <div className="flex items-center justify-center h-[57vh]">
+          <p>Loading...</p>
+        </div>
+      ) : user ? (
+        <Card className="h-[56.5vh] flex items-center justify-center">
+          <InformationContainer>
+            <InformationComponent userData={user} />
+          </InformationContainer>
+        </Card>
+      ) : (
+        <div className="flex items-center justify-center h-[57vh]">
+          <p>Error loading user data.</p>
+        </div>
+      )}
+    </>
+  );
+}

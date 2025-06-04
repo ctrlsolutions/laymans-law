@@ -22,89 +22,7 @@ const ActiveCasesComponent = () => {
 
   useEffect(() => {
     // Simulate fetching active cases from the backend (Replace this with API call later)
-    const fetchedCases: Case[] = [
-      {
-        id: 1,
-        caseTitle: "Divorce Settlement",
-        timeAgo: "30 minutes ago",
-        description: "New client request for divorce settlement...",
-        category: "Divorce Cases",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/123",
-      },
-      {
-        id: 2,
-        caseTitle: "Fraud Investigation",
-        timeAgo: "1 hour ago",
-        description: "Evidence collection ongoing for fraud case...",
-        category: "Criminal Law",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/456",
-      },
-      {
-        id: 3,
-        caseTitle: "Property Dispute",
-        timeAgo: "2 hours ago",
-        description: "Hearing scheduled for property dispute case...",
-        category: "Real Estate",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/789",
-      },
-      {
-        id: 4,
-        caseTitle: "Employment Contract Review",
-        timeAgo: "3 hours ago",
-        description: "Reviewing legal aspects of a new employment contract...",
-        category: "Employment Law",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/101",
-      },
-      {
-        id: 5,
-        caseTitle: "Intellectual Property Dispute",
-        timeAgo: "4 hours ago",
-        description: "Legal claim filed regarding trademark infringement...",
-        category: "Intellectual Property",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/102",
-      },
-      {
-        id: 6,
-        caseTitle: "Medical Malpractice",
-        timeAgo: "5 hours ago",
-        description: "Client seeking representation for medical negligence...",
-        category: "Medical Law",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/103",
-      },
-      {
-        id: 7,
-        caseTitle: "Cybercrime Investigation",
-        timeAgo: "6 hours ago",
-        description: "Investigating a hacking and data breach incident...",
-        category: "Cyber Law",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/104",
-      },
-      {
-        id: 8,
-        caseTitle: "Family Custody Battle",
-        timeAgo: "7 hours ago",
-        description: "Legal dispute over child custody rights...",
-        category: "Family Law",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/105",
-      },
-      {
-        id: 9,
-        caseTitle: "Tenant-Landlord Dispute",
-        timeAgo: "8 hours ago",
-        description: "Negotiating rental terms and lease agreements...",
-        category: "Real Estate",
-        profileImage: "/DefaultProfileLawyer.png",
-        link: "/cases/106",
-      },
-    ];
+    const fetchedCases: Case[] = [];
 
     setCases(fetchedCases); // Simulate data loading
   }, []);
@@ -118,10 +36,17 @@ const ActiveCasesComponent = () => {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Image src="/ActiveCasesLogo.png" alt="Active Cases" width={30} height={30} />
+          <Image
+            src="/ActiveCasesLogo.png"
+            alt="Active Cases"
+            width={30}
+            height={30}
+          />
           <h2 className="text-2xl font-bold">Active Cases:</h2>
         </div>
-        <span className="text-purple-700 text-4xl font-bold">{cases.length}</span>
+        <span className="text-purple-700 text-4xl font-bold">
+          {cases.length}
+        </span>
       </div>
 
       <div className="mt-6 space-y-4">
@@ -140,7 +65,13 @@ const ActiveCasesComponent = () => {
               </div>
 
               <div className="flex items-center gap-3 mt-3">
-                <Image src={caseItem.profileImage} alt={caseItem.caseTitle} width={40} height={40} className="rounded-full" />
+                <Image
+                  src={caseItem.profileImage}
+                  alt={caseItem.caseTitle}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
                 <div className="flex-1">
                   <p className="font-semibold">{caseItem.caseTitle}</p>
                   <p className="text-sm text-gray-500">{caseItem.timeAgo}</p>

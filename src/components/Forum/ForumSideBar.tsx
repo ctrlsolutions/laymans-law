@@ -21,7 +21,7 @@ const ForumSideBar: React.FC<SideBar> = ({
         {/* Start a Discussion Button */}
         {userType === "lawyer" && (
           <button
-            className="bg-red text-white text-md py-4 px-4 rounded-lg font-semibold mb-4 hover:bg-gray transition shadow-lg"
+            className="bg-blue text-white text-md py-4 px-4 rounded-lg font-semibold mb-4 hover:bg-gray transition shadow-lg"
             onClick={() => router.push("/forum/create")}
           >
             Start a Discussion
