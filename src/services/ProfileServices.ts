@@ -80,3 +80,68 @@ export const updateProfile = async (
     return { success: false, message: "An error occurred. Please try again." };
   }
 };
+
+export const updateEmail = async (data: {
+  email: string;
+}): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/update_email/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      return { success: false, message: "Failed to update email." };
+    }
+
+    const result = await response.json();
+    return {
+      success: true,
+      message: "Email updated successfully!",
+      data: result,
+    };
+  } catch (error) {
+    console.error("Error updating email:", error);
+    return {
+      success: false,
+      message: "An error occurred while updating email.",
+    };
+  }
+};
+
+export const changePassword = async (data: {
+  current_password: string;
+  new_password: string;
+}): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/change_password/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      return { success: false, message: "Failed to change password." };
+    }
+
+    const result = await response.json();
+    return {
+      success: true,
+      message: "Password changed successfully!",
+      data: result,
+    };
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return {
+      success: false,
+      message: "An error occurred while changing password.",
+    };
+  }
+};

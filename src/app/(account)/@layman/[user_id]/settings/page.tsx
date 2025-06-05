@@ -1,4 +1,4 @@
-"use client"; // Ensure this runs only on the client
+"use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -13,5 +13,5 @@ export default function SettingsHome() {
     }
   }, [router]);
 
-  return <div>Loading...</div>; // Show a loading state while redirecting
+  return <div>Loading...</div>;
 }

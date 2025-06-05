@@ -17,6 +17,8 @@ import { categories } from "@/constants/caseConstants";
 import { User } from "@/interface/AuthTypes";
 import { toast, ToastContainer } from "react-toastify";
 import { FaCirclePlay } from "react-icons/fa6";
+import Link from "next/link";
+import { FaEdit } from "react-icons/fa";
 
 export default function SubmittedCasePage() {
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -297,6 +299,12 @@ export default function SubmittedCasePage() {
             >
               ← Back
             </button>
+            <Link
+              href={`/${userId}/submitted-cases/${case_id}/edit`}
+              className="text-blue-600 hover:underline flex items-center text-sm"
+            >
+              Edit <FaEdit className="ml-1" />
+            </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-1 pr-0 pl-8">

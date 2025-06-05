@@ -22,6 +22,7 @@ export interface Case {
   created_date: string;
   created_by: UserType;
   created_by_id: string;
+  edited_date?: string;
   assigned_to: UserType | null;
   openCaseCount?: number;
   user?: { firstName: string; email: string };
