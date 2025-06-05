@@ -35,13 +35,19 @@ export default function SecuritySettingsForm() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await getProfile();
-      if (res.success && res.data?.email) {
-        const { email } = res.data;
-        setFormData((prev) => ({ ...prev, email }));
+      try {
+        const res = await getProfile();
+        if (res.success && res.data?.email) {
+          const { email } = res.data;
+          setFormData((prev) => ({ ...prev, email }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+        toast.error("Failed to load profile data.");
       }
     };
-    fetchProfile();
+
+    void fetchProfile();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +64,12 @@ export default function SecuritySettingsForm() {
   const handleUpdateEmail = async () => {
     try {
       const res = await updateEmail({ email: formData.email });
-      res.success
-        ? toast.success("Email updated successfully!")
-        : toast.error(res.message || "Failed to update email.");
+      // Fixed: Replace ternary with if/else statement
+      if (res.success) {
+        toast.success("Email updated successfully!");
+      } else {
+        toast.error(res.message || "Failed to update email.");
+      }
     } catch {
       toast.error("Failed to update email.");
     }
