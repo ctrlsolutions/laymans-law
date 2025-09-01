@@ -7,18 +7,22 @@ interface RightPanelProps {
 
 export default function RightPanel({ selectedChapter }: RightPanelProps) {
   return (
-    <div className="md:w-2/3 text-black max-h-85 overflow-y-auto relative">
+    <div className="md:w-2/3 text-black max-h-[calc(100vh-200px)] overflow-hidden relative">
       <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100 h-full flex flex-col">
-        <h2 className="text-2xl font-bold mb-10 mt-5 ml-6">
+        <h2 className="text-md font-bold mb-5 mt-5 ml-6">
           R.A. Title of Law of the Philippines
         </h2>
-        <p className="text-gray-800 mb-9 ml-6">Chapter {selectedChapter}</p>
+        <p className="text-gray-800 text-sm mb-5 ml-6">
+          Chapter {selectedChapter}
+        </p>
 
-        <CustomTextarea
-          placeholder="Enter your summary here..."
-          className="h-96 border-none focus:border-white focus:ring-white ml-3"
-          style={{ textIndent: "2rem" }}
-        />
+        <div className="flex-grow overflow-hidden">
+          <CustomTextarea
+            placeholder="Enter your summary here..."
+            className="h-full w-full text-xs border-none focus:border-white focus:ring-white"
+            style={{ textIndent: "2rem" }}
+          />
+        </div>
       </div>
     </div>
   );
